@@ -1,12 +1,12 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Home, PageNotFound } from './features'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { Landing, PageNotFound } from './features'
 
 function App() {
   return (
-    <main className=''>
+    <main>
       <Router>
         <Routes>
-          <Route path='/' element={<Home />} />
+          <Route path='/' element={<Landing />} />
           <Route path='*' element={<PageNotFound />} />
         </Routes>
       </Router>

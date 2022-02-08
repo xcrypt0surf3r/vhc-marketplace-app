@@ -1,10 +1,10 @@
-import { Layout } from '../shared'
+import { LayoutDefault } from '../layout'
 
 const PageNotFound = () => {
   return (
-    <Layout>
+    <LayoutDefault>
       <div>Page Not Found</div>
-    </Layout>
+    </LayoutDefault>
   )
 }
 
