@@ -1,5 +1,17 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Home, PageNotFound } from './features'
+
 function App() {
-  return <h1 className='text-5xl font-bold'>Hello!</h1>;
+  return (
+    <main className=''>
+      <Router>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='*' element={<PageNotFound />} />
+        </Routes>
+      </Router>
+    </main>
+  )
 }
 
-export default App;
+export default App
