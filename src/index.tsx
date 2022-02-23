@@ -13,10 +13,10 @@ const prod = {
 
 const dev = {
   build: {
-    env: process.env.APP_NODE_ENV,
+    env: process.env.REACT_APP_ENV,
     deploy: process.env.REACT_APP_DEPLOY_ID,
     branch: process.env.REACT_APP_BRANCH,
-    commitUrl: `https://https://github.com/Vault-Hill/vhc-marketplace-app/commit/${process.env.REACT_APP_COMMIT}`
+    commitUrl: `https://github.com/Vault-Hill/vhc-marketplace-app/commit/${process.env.REACT_APP_COMMIT}`
   }
 }
 

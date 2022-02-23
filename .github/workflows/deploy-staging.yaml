@@ -1,7 +1,7 @@
 name: Deploy to staging
 
 env:
-  NODE_ENV: staging
+  REACT_APP_ENV: staging
   PORT: 3000
   DEPLOY_ID: ${{ github.run_id }}-${{ github.run_number }}
   APP_BRANCH: ${{ github.ref }}
@@ -31,7 +31,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
       - run: |
-          echo "NODE_ENV=${{ env.NODE_ENV }}" > .env
+          echo "REACT_APP_ENV=${{ env.REACT_APP_ENV }}" > .env
           echo "PORT=${{ env.PORT }}" >> .env
           echo "REACT_APP_DEPLOY_ID=${{ env.DEPLOY_ID }}" >> .env
           echo "REACT_APP_BRANCH=${{ env.APP_BRANCH }}" >> .env
