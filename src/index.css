@@ -1,25 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@layer components {
-  .Deluxe {
-    @apply bg-purple-100 text-purple-700;
-  }
-
-  .Premium {
-    @apply bg-gray-100 text-gray-700;
-  }
-
-  .Exclusive {
-    @apply bg-amber-100 text-amber-700;
-  }
-
-  .Standard {
-    @apply bg-blue-100 text-blue-700;
-  }
-
-  .magnify {
-    @apply hover:shadow-lg hover:scale-105 transition-all;
-  }
-}

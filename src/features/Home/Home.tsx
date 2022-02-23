@@ -1,15 +1,22 @@
-import { FilterBar, Hero, Promotion } from '../elements'
-import { LayoutDefault } from '../layout'
-import { NewestItems } from '../partials/NewestItems'
+import { Layout, AssetCard } from '../shared'
 
 const Home = () => {
   return (
-    <LayoutDefault>
-      <Hero />
-      <FilterBar />
-      <NewestItems />
-      <Promotion />
-    </LayoutDefault>
+    <Layout>
+      <div className=''>
+        <h1 className='text-3xl font-bold'>Home</h1>
+        {/* ----------------Testing----------------- */}
+        <AssetCard
+          assetName='AssetName'
+          owner='theOneOzenua'
+          avatar='https://picsum.photos/31/31/?random'
+          price='2,000'
+          fave={32}
+          asset='https://picsum.photos/600 /600/?random'
+        />
+        {/* ----------------Testing----------------- */}
+      </div>
+    </Layout>
   )
 }
 
