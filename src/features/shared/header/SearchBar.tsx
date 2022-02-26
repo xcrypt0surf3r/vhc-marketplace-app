@@ -1,7 +1,7 @@
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon } from '@heroicons/react/outline'
 import { Fragment, useState } from 'react'
-import { searchOptions } from '../../../../fake-data/searchOptions'
+import { searchOptions } from '../../../fake-data/searchOptions'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -88,4 +88,4 @@ const SearchBar = () => {
   )
 }
 
-export { SearchBar }
+export default SearchBar

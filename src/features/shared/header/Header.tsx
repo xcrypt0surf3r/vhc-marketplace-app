@@ -1,13 +1,12 @@
-/* This example requires Tailwind CSS v2.0+ */
 import { Disclosure } from '@headlessui/react'
 import { DotsVerticalIcon } from '@heroicons/react/outline'
 import { useState } from 'react'
-import { NavigationDefault } from '../navigations'
-import { navList } from '../navigations/modules'
-import { Logo } from './modules'
-import { Hamburger } from './modules/Hamburger'
+import NavigationDefault from '../navigation/NavigationDefault'
+import { navList } from '../navigation/navList'
+import Hamburger from './Hamburger'
+import Logo from './Logo'
 
-const HeaderDefault = () => {
+const Header = () => {
   const activeLink = navList[0].text
   const [isClicked, setIsClicked] = useState(activeLink)
 
@@ -96,4 +95,4 @@ const HeaderDefault = () => {
   )
 }
 
-export { HeaderDefault }
+export default Header

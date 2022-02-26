@@ -1,5 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline'
-import { AssetCard } from '../../elements/AssetCard'
+import AssetCard from '../../elements/AssetCard'
 
 const AssetsListing = ({ title, assets }: { title: string; assets: any[] }) => {
   return (

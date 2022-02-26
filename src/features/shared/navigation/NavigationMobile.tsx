@@ -1,6 +1,6 @@
 import { Disclosure } from '@headlessui/react'
 import { useState } from 'react'
-import { navList } from './modules'
+import { navList } from './navList'
 
 const NavigationMobile = () => {
   const activeLink = navList[0].text

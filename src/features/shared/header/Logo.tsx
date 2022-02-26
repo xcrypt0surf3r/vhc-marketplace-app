@@ -1,5 +1,5 @@
-import logoFull from '../../../../assets/images/logos/vaulthill-logo.png'
-import logoShort from '../../../../assets/images/logos/vaulthill-logo2.png'
+import logoFull from '../../../assets/images/logos/vaulthill-logo.png'
+import logoShort from '../../../assets/images/logos/vaulthill-logo2.png'
 
 const Logo = () => {
   return (
@@ -18,4 +18,4 @@ const Logo = () => {
   )
 }
 
-export { Logo }
+export default Logo

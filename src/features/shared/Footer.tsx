@@ -2,8 +2,8 @@ import {
   InstagramIcon,
   TelegramIcon,
   TwitterIcon
-} from '../../../assets/images/icons'
-import { Logo } from '../headers/modules'
+} from '../../assets/images/icons'
+import Logo from './header/Logo'
 
 const navigation = {
   vaulthill: [
@@ -28,7 +28,7 @@ const navigation = {
   ]
 }
 
-const FooterDefault = () => {
+const Footer = () => {
   return (
     <footer className='bg-white' aria-labelledby='footer-heading'>
       <h2 id='footer-heading' className='sr-only'>
@@ -127,4 +127,4 @@ const FooterDefault = () => {
   )
 }
 
-export { FooterDefault }
+export default Footer

@@ -17,4 +17,4 @@ const Hamburger = ({ open }: { open: boolean }) => {
   )
 }
 
-export { Hamburger }
+export default Hamburger

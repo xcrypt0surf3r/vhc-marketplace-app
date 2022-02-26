@@ -65,4 +65,4 @@ const AssetCard = ({
   )
 }
 
-export { AssetCard }
+export default AssetCard

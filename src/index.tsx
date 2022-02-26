@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import './index.css'
-import './custom.css'
+import { HelmetProvider } from 'react-helmet-async'
 import { Provider } from 'react-redux'
 import App from './App'
+import './index.css'
 import { store } from './state'
 import { isDev } from './utils'
 
@@ -29,9 +29,11 @@ w.vh = {
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <HelmetProvider>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </HelmetProvider>
   </React.StrictMode>,
   document.getElementById('root')
 )

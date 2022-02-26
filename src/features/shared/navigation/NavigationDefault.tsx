@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { navList } from './modules'
+import { navList } from './navList'
 
 const NavigationDefault = () => {
   const activeLink = navList[0].text
@@ -29,4 +29,4 @@ const NavigationDefault = () => {
   )
 }
 
-export { NavigationDefault }
+export default NavigationDefault
