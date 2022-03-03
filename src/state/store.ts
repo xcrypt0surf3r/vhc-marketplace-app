@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { assetReducer } from './assets/assetSlice'
+import { landingReducer } from './landingSlice'
 
-export const store = configureStore({
-  reducer: { assetReducer }
+const store = configureStore({
+  reducer: { landing: landingReducer }
 })
+
+export default store
 
 export type RootState = ReturnType<typeof store.getState>
 

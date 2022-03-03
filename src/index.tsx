@@ -4,7 +4,7 @@ import { HelmetProvider } from 'react-helmet-async'
 import { Provider } from 'react-redux'
 import App from './App'
 import './index.css'
-import { store } from './state'
+import store from './state/store'
 import { isDev } from './utils'
 
 const prod = {

@@ -2,7 +2,7 @@ import { lazy } from 'react'
 import { RouteProps } from 'react-router-dom'
 import DefaultLayout from './features/shared/layout/Default'
 
-const Landing = lazy(() => import('./pages/home'))
+const Landing = lazy(() => import('./pages/landing'))
 const PageNotFound = lazy(() => import('./pages/not-found'))
 
 export enum LayoutTemplate {

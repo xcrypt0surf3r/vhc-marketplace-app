@@ -28,19 +28,25 @@ const AssetsListing = ({ title, assets }: { title: string; assets: any[] }) => {
         </div>
 
         <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6 lg:gap-x-8'>
-          {assets.map((asset) => (
-            <AssetCard
-              key={asset.id}
-              id={asset.id}
-              assetName={asset.assetName}
-              owner={asset.owner}
-              avatar={asset.avatar}
-              url={asset.url}
-              type={asset.type}
-              fave={asset.fave}
-              price={asset.price}
-            />
-          ))}
+          {assets.map((asset) => {
+            const type = asset.attributes.find(
+              (attribute: { name: string; value: string }) =>
+                attribute.name === 'type'
+            )
+
+            return (
+              <AssetCard
+                key={asset.id}
+                id={asset.id}
+                name={asset.name}
+                owner={'theOneOzenua'}
+                avatar={'https://picsum.photos/id/1/31/31'}
+                image={asset.image}
+                type={type.value}
+                price={asset.price}
+              />
+            )
+          })}
         </div>
 
         {/* <div className='mt-8 text-sm md:hidden'>

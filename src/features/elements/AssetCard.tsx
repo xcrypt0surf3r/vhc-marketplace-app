@@ -1,26 +1,16 @@
-import { CurrencyDollarIcon, HeartIcon } from '@heroicons/react/outline'
+import { CurrencyDollarIcon } from '@heroicons/react/outline'
 
 type Props = {
   id: number
-  assetName: string
+  name: string
   price: string
   type: string
-  fave: number
-  url: string
+  image: string
   owner: string
   avatar: string
 }
 
-const AssetCard = ({
-  id,
-  assetName,
-  price,
-  fave,
-  url,
-  type,
-  owner,
-  avatar
-}: Props) => {
+const AssetCard = ({ id, name, price, image, type, owner, avatar }: Props) => {
   return (
     <div
       key={id}
@@ -29,22 +19,24 @@ const AssetCard = ({
       {/* Card image */}
       <div className='w-full overflow-hidden h-50 lg:h-66 xl:h-74'>
         <img
-          src={url}
-          alt={assetName}
+          src={image}
+          alt={name}
           className='w-full h-[16.5625rem] object-center object-cover animate-skeleton rounded-[.75rem]'
         />
       </div>
       {/* Card title */}
       <h3 className='p-2 font-medium text-black border-b-[.0938rem] border-gray-200 text-left'>
-        <a href={`/asset/${id}`}>{assetName}</a>
+        <a href={`/asset/${id}`}>{name}</a>
       </h3>
       {/* Card body */}
       <div className='flex justify-between py-1 px-2'>
         <p className={`px-2 rounded-md flex ${type}`}>{type}</p>
-        <div className='flex justify-between'>
-          <CurrencyDollarIcon className='h-5 w-5 text-gray-400 mr-1' />
-          <span className='font-medium'>{price} $VHC</span>
-        </div>
+        {price && (
+          <div className='flex justify-between'>
+            <CurrencyDollarIcon className='h-5 w-5 text-gray-400 mr-1' />
+            <span className='font-medium'>{price} $VHC</span>
+          </div>
+        )}
       </div>
       {/* Card footer */}
       <footer className='flex items-center justify-between leading-none my-2 flex-row px-2'>
@@ -56,10 +48,10 @@ const AssetCard = ({
           />
           <p className='ml-2 font-normal'>{owner}</p>
         </span>
-        <span className='no-underline text-grey-darker hover:text-red-dark flex'>
+        {/* <span className='no-underline text-grey-darker hover:text-red-dark flex'>
           <HeartIcon className='h-4 w-4 text-gray-400 mx-2 hover:text-rose-700' />
           {fave}
-        </span>
+        </span> */}
       </footer>
     </div>
   )
