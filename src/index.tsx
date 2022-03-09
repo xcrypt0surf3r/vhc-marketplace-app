@@ -4,7 +4,7 @@ import { HelmetProvider } from 'react-helmet-async'
 import { Provider } from 'react-redux'
 import App from './App'
 import './index.css'
-import store from './state/store'
+import { setupStore } from './state'
 import { isDev } from './utils'
 
 const prod = {
@@ -30,7 +30,7 @@ w.vh = {
 ReactDOM.render(
   <React.StrictMode>
     <HelmetProvider>
-      <Provider store={store}>
+      <Provider store={setupStore()}>
         <App />
       </Provider>
     </HelmetProvider>

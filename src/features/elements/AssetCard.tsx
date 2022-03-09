@@ -1,16 +1,22 @@
-import { CurrencyDollarIcon } from '@heroicons/react/outline'
+// import { CurrencyDollarIcon } from '@heroicons/react/outline'
 
 type Props = {
-  id: number
-  name: string
-  price: string
-  type: string
+  id: string
+  tokenId: number
+  tokenUri: string
   image: string
+  name: string
+  typology?: string
   owner: string
   avatar: string
 }
 
-const AssetCard = ({ id, name, price, image, type, owner, avatar }: Props) => {
+const AssetCard = ({ id, image, owner, avatar, typology, name }: Props) => {
+  let type = ''
+  if (typology) {
+    type = typology.charAt(0) + typology.toLocaleLowerCase().slice(1)
+  }
+
   return (
     <div
       key={id}
@@ -31,12 +37,12 @@ const AssetCard = ({ id, name, price, image, type, owner, avatar }: Props) => {
       {/* Card body */}
       <div className='flex justify-between py-1 px-2'>
         <p className={`px-2 rounded-md flex ${type}`}>{type}</p>
-        {price && (
+        {/* {price && (
           <div className='flex justify-between'>
             <CurrencyDollarIcon className='h-5 w-5 text-gray-400 mr-1' />
             <span className='font-medium'>{price} $VHC</span>
           </div>
-        )}
+        )} */}
       </div>
       {/* Card footer */}
       <footer className='flex items-center justify-between leading-none my-2 flex-row px-2'>

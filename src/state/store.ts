@@ -1,12 +1,24 @@
-import { configureStore } from '@reduxjs/toolkit'
-import { landingReducer } from './landingSlice'
+import {
+  combineReducers,
+  configureStore,
+  PreloadedState
+} from '@reduxjs/toolkit'
+import { baseAPI } from '../services/api'
 
-const store = configureStore({
-  reducer: { landing: landingReducer }
+const rootReducer = combineReducers({
+  [baseAPI.reducerPath]: baseAPI.reducer
 })
 
-export default store
+export const setupStore = (preloadedState?: PreloadedState<RootState>) =>
+  configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({ serializableCheck: false }).concat(
+        baseAPI.middleware
+      ),
+    preloadedState
+  })
 
-export type RootState = ReturnType<typeof store.getState>
-
-export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof rootReducer>
+export type AppStore = ReturnType<typeof setupStore>
+export type AppDispatch = AppStore['dispatch']
