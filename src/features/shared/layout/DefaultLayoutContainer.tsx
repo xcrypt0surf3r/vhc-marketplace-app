@@ -1,3 +1,5 @@
+import Widgets from '../../partials/Widgets'
+
 const DefaultLayoutContainer = ({
   children
 }: {
@@ -5,6 +7,7 @@ const DefaultLayoutContainer = ({
 }) => {
   return (
     <main>
+      <Widgets />
       <div>{children}</div>
     </main>
   )

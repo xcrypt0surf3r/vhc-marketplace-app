@@ -3,9 +3,12 @@ import {
   configureStore,
   PreloadedState
 } from '@reduxjs/toolkit'
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { baseAPI } from '../services/api'
+import { widgetReducer } from './widget.slice'
 
 const rootReducer = combineReducers({
+  widget: widgetReducer,
   [baseAPI.reducerPath]: baseAPI.reducer
 })
 
@@ -22,3 +25,5 @@ export const setupStore = (preloadedState?: PreloadedState<RootState>) =>
 export type RootState = ReturnType<typeof rootReducer>
 export type AppStore = ReturnType<typeof setupStore>
 export type AppDispatch = AppStore['dispatch']
+export const useAppDispatch = () => useDispatch<AppDispatch>()
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector

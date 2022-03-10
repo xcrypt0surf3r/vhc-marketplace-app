@@ -1,10 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline'
-import { Asset, Vland } from '../../../types'
-import AssetCard from '../../elements/AssetCard'
-import {
-  AssetCardSkeleton,
-  CardSkeleton
-} from '../../elements/AssetCardSkeleton'
+import { Asset, Vland } from '../../types'
+import AssetCard from '../elements/AssetCard'
+import { AssetCardSkeleton, CardSkeleton } from '../elements/AssetCardSkeleton'
 
 const AssetsListing = ({
   title,
