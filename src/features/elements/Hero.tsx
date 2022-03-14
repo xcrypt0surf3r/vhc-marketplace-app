@@ -1,6 +1,3 @@
-import { SearchIcon } from '@heroicons/react/outline'
-import SearchBar from '../shared/header/SearchBar'
-
 const Hero = () => {
   return (
     <div className='bg-white flex flex-col justify-center'>
@@ -16,12 +13,12 @@ const Hero = () => {
             "Welcome to the Vault Hill City's one-stop-shop for your land assets"
           }
         </p>
-        <div className='md:w-[35rem] sm:w-[25rem] xs:w-[20rem] w-[15rem] mx-auto mb-7 lg:mb-0 relative'>
+        {/* <div className='md:w-[35rem] sm:w-[25rem] xs:w-[20rem] w-[15rem] mx-auto mb-7 lg:mb-0 relative'>
           <SearchBar />
           <div className='absolute right-3 md:right-4 top-4 ml-4 flex items-center pointer-events-none'>
             <SearchIcon className='h-5 w-5 text-gray-400' aria-hidden='true' />
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   )
