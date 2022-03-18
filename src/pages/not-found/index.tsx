@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
-import logo from '../../assets/images/logos/vaulthill-logo.png'
+import logo from '../../assets/images/logos/vaulthill-logo-short.svg'
 
 const PageNoFound = () => {
   return (

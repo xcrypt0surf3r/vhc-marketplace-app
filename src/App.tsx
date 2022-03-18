@@ -5,7 +5,7 @@ import {
   RouteProps,
   Routes
 } from 'react-router-dom'
-import logoShort from './assets/images/logos/vaulthill-logo2.png'
+import logoShort from './assets/images/logos/vaulthill-logo-short.svg'
 import { routes } from './routes'
 
 const Loading = () => (

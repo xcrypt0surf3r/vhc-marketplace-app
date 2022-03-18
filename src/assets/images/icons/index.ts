@@ -1,3 +1,7 @@
 export * from './instagram'
 export * from './telegram'
 export * from './twitter'
+export * from './paperclip'
+export * from './globe'
+export * from './wallet-connect'
+export * from './lock'

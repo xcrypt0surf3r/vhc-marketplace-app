@@ -1,3 +1,5 @@
+import Popups from '../../partials/Popups'
+
 const DefaultLayoutContainer = ({
   children
 }: {
@@ -5,6 +7,7 @@ const DefaultLayoutContainer = ({
 }) => {
   return (
     <main>
+      <Popups />
       <div>{children}</div>
     </main>
   )

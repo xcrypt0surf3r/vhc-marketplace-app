@@ -1,7 +1,10 @@
 import { Disclosure } from '@headlessui/react'
 import { DotsVerticalIcon } from '@heroicons/react/outline'
 import { useState } from 'react'
-import NavigationDefault from '../navigation/NavigationDefault'
+import { openPopup, Popup } from '../../../state/popup.slice'
+import { useAppDispatch } from '../../../state/store'
+import { classNames } from '../../../utils'
+import { Button, ButtonColors, ButtonSizes } from '../Form'
 import { navList } from '../navigation/navList'
 import Hamburger from './Hamburger'
 import Logo from './Logo'
@@ -9,10 +12,18 @@ import Logo from './Logo'
 const Header = () => {
   const activeLink = navList[0].text
   const [isClicked, setIsClicked] = useState(activeLink)
+  const [connected] = useState(false) // temporary state management for when wallet is connected and when it's not
 
   const handleClick = (text: string) => {
     setIsClicked(text)
   }
+
+  const dispatch = useAppDispatch()
+
+  const handleConnectWallet = () => {
+    dispatch(openPopup(Popup.CONNECT_WALLET))
+  }
+
   return (
     <Disclosure as='nav' className='bg-white mb-8'>
       {({ open }) => (
@@ -21,28 +32,51 @@ const Header = () => {
             <div className='flex justify-between h-16'>
               <div className='flex'>
                 <Logo />
-                <NavigationDefault />
               </div>
               <div className='flex justify-between'>
-                <div className='hidden sm:ml-6 sm:flex sm:items-center gap-3'>
+                <div className='hidden sm:ml-6 sm:flex sm:items-center gap-4'>
                   <a
                     href='#'
-                    className='magnify flex items-center justify-center p-3 border rounded-3xl text-black bg-[#E4ECF7] md:px-4'
+                    className='hidden lg:flex items-center justify-center p-3  text-black md:px-4'
+                  >
+                    Explore map
+                  </a>
+                  <a
+                    href='#'
+                    className='hidden xl:flex items-center justify-center p-3  text-black md:px-4'
                   >
                     VHC Token
                   </a>
-                  <a
-                    href='#'
-                    className='magnify hidden lg:flex items-center justify-center p-3 rounded-3xl text-white bg-[#4D46BA] md:px-4'
-                  >
-                    Buy VLAND
-                  </a>
-                  <a
-                    href='#'
-                    className='magnify hidden xl:flex items-center justify-center p-3 rounded-3xl text-white bg-gradient-to-r from-orange-400 via-purple-500 to-blue-500 md:px-4'
-                  >
-                    Create your avatar
-                  </a>
+                  <div className='flex space-x-3'>
+                    {connected ? (
+                      <Button
+                        className='rounded-3xl cursor-default'
+                        sizer={ButtonSizes.MEDIUM}
+                        color={ButtonColors.CONNECT}
+                      >
+                        0x0fdfbq...5sFvw4
+                      </Button>
+                    ) : (
+                      <Button
+                        className='magnify rounded-3xl'
+                        sizer={ButtonSizes.MEDIUM}
+                        color={ButtonColors.CONNECT}
+                        onClick={handleConnectWallet}
+                      >
+                        Connect Wallet
+                      </Button>
+                    )}
+                    {connected && (
+                      <div
+                        className={classNames(
+                          'text-white rounded-full h-12 w-12 flex items-center justify-center',
+                          ButtonColors.PRIMARY
+                        )}
+                      >
+                        {'OZ'}
+                      </div>
+                    )}
+                  </div>
                   <DotsVerticalIcon className='hidden xl:hidden sm:flex pt-2 h-10 w-8' />
                 </div>
               </div>
@@ -78,14 +112,11 @@ const Header = () => {
                   href='#'
                   className='magnify w-3/4 py-2 mx-auto sm:rounded-xl text-center text-white bg-[#4D46BA] lg:px-4'
                 >
-                  Buy VLAND
+                  Explore map
                 </a>
-                <a
-                  href='#'
-                  className='magnify w-3/4 py-2 mx-auto sm:rounded-xl text-center text-white bg-gradient-to-r from-orange-400 via-purple-500 to-blue-500 lg:px-4'
-                >
-                  Create your avatar
-                </a>
+                <div className='magnify w-3/4 py-2 mx-auto sm:rounded-xl text-center text-white bg-gradient-to-r from-orange-400 via-purple-500 to-blue-500 lg:px-4 cursor-pointer'>
+                  Connect Wallet
+                </div>
               </div>
             </div>
           </Disclosure.Panel>
