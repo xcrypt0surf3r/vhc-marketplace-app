@@ -1,14 +1,14 @@
-import { Widget } from '../../shared/Widget'
 import Qrcode from '../../../assets/images/Qrcode.png'
+import { Modal } from '../../shared/Modal'
 
 const ConnectWalletScan = () => {
   return (
-    <Widget
+    <Modal
       heading='Connect wallet'
       description='Scan the barcode with your phone to connect your wallet'
     >
       <img src={Qrcode} />
-    </Widget>
+    </Modal>
   )
 }
 

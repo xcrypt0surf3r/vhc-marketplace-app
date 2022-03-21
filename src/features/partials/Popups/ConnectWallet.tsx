@@ -1,11 +1,11 @@
 import { ChevronRightIcon } from '@heroicons/react/outline'
 import { WalletConnectIcon } from '../../../assets/images/icons/wallet-connect'
 import metamask from '../../../assets/images/logos/metamask.png'
-import { Widget } from '../../shared/Widget'
+import { Modal } from '../../shared/Modal'
 
 const ConnectWallet = () => {
   return (
-    <Widget
+    <Modal
       heading='Connect your wallet'
       description='Choose one of available wallet providers or create a new wallet'
     >
@@ -43,7 +43,7 @@ const ConnectWallet = () => {
           <ChevronRightIcon className='h-7 w-7 ml-2 text-gray-700' />
         </div>
       </>
-    </Widget>
+    </Modal>
   )
 }
 

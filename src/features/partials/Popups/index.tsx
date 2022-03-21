@@ -1,30 +1,46 @@
-import { useAppSelector } from '../../../state/store'
 import { getPopup, Popup } from '../../../state/popup.slice'
+import { useAppSelector } from '../../../state/store'
+import BuyNow from './BuyNow'
+import Checkout from './Checkout'
 import ConnectWallet from './ConnectWallet'
 import ConnectWalletScan from './ConnectWalletScan'
 import InstallWallet from './InstallWallet'
+import OrderComplete from './OrderComplete'
+import Payment from './Payment'
 import WrongNetwork from './WrongNetwork'
 
 const Popups = () => {
-  let popup: any
+  let modal: any
   const popups = useAppSelector(getPopup)
-  switch (popups.open) {
+  switch (popups.modal) {
     case Popup.CONNECT_WALLET:
-      popup = <ConnectWallet />
+      modal = <ConnectWallet />
       break
     case Popup.CONNECT_WALLET_SCAN:
-      popup = <ConnectWalletScan />
+      modal = <ConnectWalletScan />
       break
     case Popup.INSTALL_WALLET:
-      popup = <InstallWallet />
+      modal = <InstallWallet />
       break
     case Popup.WRONG_NETWORK:
-      popup = <WrongNetwork />
+      modal = <WrongNetwork />
+      break
+    case Popup.BUY_NOW:
+      modal = <BuyNow />
+      break
+    case Popup.CHECKOUT:
+      modal = <Checkout />
+      break
+    case Popup.PAYMENT:
+      modal = <Payment />
+      break
+    case Popup.ORDER_COMPLETE:
+      modal = <OrderComplete />
       break
     default:
       break
   }
-  return <>{popup}</>
+  return <>{modal}</>
 }
 
 export default Popups

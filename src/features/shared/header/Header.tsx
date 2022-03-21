@@ -1,7 +1,7 @@
 import { Disclosure } from '@headlessui/react'
 import { DotsVerticalIcon } from '@heroicons/react/outline'
 import { useState } from 'react'
-import { openPopup, Popup } from '../../../state/popup.slice'
+import { openModal, Popup } from '../../../state/popup.slice'
 import { useAppDispatch } from '../../../state/store'
 import { classNames } from '../../../utils'
 import { Button, ButtonColors, ButtonSizes } from '../Form'
@@ -21,14 +21,14 @@ const Header = () => {
   const dispatch = useAppDispatch()
 
   const handleConnectWallet = () => {
-    dispatch(openPopup(Popup.CONNECT_WALLET))
+    dispatch(openModal(Popup.CONNECT_WALLET))
   }
 
   return (
     <Disclosure as='nav' className='bg-white mb-8'>
       {({ open }) => (
         <>
-          <div className='mx-2 px-4 sm:px-6 lg:px-8'>
+          <div className='mx-2 px-4 sm:px-6 py-5 lg:px-8'>
             <div className='flex justify-between h-16'>
               <div className='flex'>
                 <Logo />
@@ -52,7 +52,7 @@ const Header = () => {
                       <Button
                         className='rounded-3xl cursor-default'
                         sizer={ButtonSizes.MEDIUM}
-                        color={ButtonColors.CONNECT}
+                        color={ButtonColors.GRADIENT}
                       >
                         0x0fdfbq...5sFvw4
                       </Button>
@@ -60,7 +60,7 @@ const Header = () => {
                       <Button
                         className='magnify rounded-3xl'
                         sizer={ButtonSizes.MEDIUM}
-                        color={ButtonColors.CONNECT}
+                        color={ButtonColors.GRADIENT}
                         onClick={handleConnectWallet}
                       >
                         Connect Wallet

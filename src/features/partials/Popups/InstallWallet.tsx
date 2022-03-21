@@ -1,12 +1,12 @@
 import React from 'react'
-import { Widget } from '../../shared/Widget'
-import { Button, ButtonSizes } from '../../shared/Form'
 import {
-  PaperclipIcon,
   GlobeIcon,
-  LockIcon
+  LockIcon,
+  PaperclipIcon
 } from '../../../assets/images/icons'
 import { classNames } from '../../../utils'
+import { Button, ButtonSizes } from '../../shared/Form'
+import { Modal } from '../../shared/Modal'
 
 const InstallWallet = () => {
   const IconWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -18,11 +18,8 @@ const InstallWallet = () => {
   }
   const styles = 'flex space-x-4 items-center'
   return (
-    <Widget heading='Install Wallet Extension on your browser'>
-      <Button
-        sizer={ButtonSizes.LARGE}
-        className='w-full rounded-xl mt-8 mb-12'
-      >
+    <Modal heading='Install Wallet Extension on your browser'>
+      <Button sizer={ButtonSizes.FULL} className='rounded-xl mt-8 mb-12'>
         Install extension
       </Button>
       <div className='flex flex-col space-y-4 justify-start'>
@@ -49,7 +46,7 @@ const InstallWallet = () => {
           <span className='text-[14px]'>Compatible with all crypto apps</span>
         </div>
       </div>
-    </Widget>
+    </Modal>
   )
 }
 

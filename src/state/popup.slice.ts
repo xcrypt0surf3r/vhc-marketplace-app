@@ -5,26 +5,30 @@ export enum Popup {
   CONNECT_WALLET = 'connectWallet',
   CONNECT_WALLET_SCAN = 'connectWalletScan',
   INSTALL_WALLET = 'installWallet',
-  WRONG_NETWORK = 'wrongNetwork'
+  WRONG_NETWORK = 'wrongNetwork',
+  BUY_NOW = 'buyNow',
+  CHECKOUT = 'checkout',
+  PAYMENT = 'payment',
+  ORDER_COMPLETE = 'orderComplete'
 }
 
 const popSlice = createSlice({
   name: 'popup',
   initialState: {
-    open: ''
+    modal: ''
   },
   reducers: {
-    openPopup: (state, { payload }) => {
-      state.open = payload
+    openModal: (state, { payload }) => {
+      state.modal = payload
     },
-    closePopup: (state) => {
-      state.open = ''
+    closeModal: (state) => {
+      state.modal = ''
     }
   }
 })
 
 export const getPopup = (state: RootState) => state.popup
 
-export const { openPopup, closePopup } = popSlice.actions
+export const { openModal, closeModal } = popSlice.actions
 
 export const popupReducer = popSlice.reducer
