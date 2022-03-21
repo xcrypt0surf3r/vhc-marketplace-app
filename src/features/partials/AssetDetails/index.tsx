@@ -5,6 +5,7 @@ import { categories, properties } from '../../../fake-data/assetDetails'
 import { classNames, truncate, styleTypology } from '../../../utils'
 import Properties from '../../../pages/asset-details/Properties'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Form'
+import assetImage from '../../../assets/images/asset-image-1.png'
 
 type Props = {
   data: any
@@ -17,103 +18,105 @@ const AssetDetails = ({ data: { asset } }: Props) => {
         <div className='grid xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
           <div className='xs:mb-2 lg:p-6 bg-white-100 flex flex-col'>
             <img
-              src={`https://picsum.photos/id/${asset.tokenId}/600/600`}
-              alt='Two models wearing women s black cotton crewneck tee and off-white cotton crewneck tee.'
+              src={assetImage}
+              alt={asset.tokenUri}
               className='object-center object-cover rounded-lg w-full h-full'
             />
           </div>
           <div className='lg:p-6 bg-white-100 flex flex-col'>
             <div className='group w-full rounded-lg overflow-hidden sm:relative sm:aspect-none h-full border-[#E4ECF7]-600 border-2 p-4'>
-              <div className='pt-6 px-6 items-end'>
-                <div className='font-normal text-sm tracking-tight mb-3 text-left'>
-                  <div>
-                    <h2 className='text-3xl font-medium inline-block'>
-                      {asset.assetData.name}
-                    </h2>
-                  </div>
+              {asset.assetData && (
+                <div className='pt-6 px-6 items-end'>
+                  <div className='font-normal text-sm tracking-tight mb-3 text-left'>
+                    <div>
+                      <h2 className='text-3xl font-medium inline-block'>
+                        {asset.assetData.name}
+                      </h2>
+                    </div>
 
-                  <div className='mt-4 mb-2 flex gap-3 text-xs'>
-                    <span
-                      className={classNames(
-                        styleTypology(asset.assetData.typology),
-                        'px-2 py-1 rounded-md'
-                      )}
-                    >
-                      {asset.assetData.typology}
-                    </span>
-                    <span className='district px-2 py-1 rounded-md'>
-                      {'District I'}
-                    </span>
-                  </div>
-                </div>
-                <div className='w-full overflow-hidden h-50 lg:h-66 xl:h-74 mt-11'>
-                  <div className='flex items-center gap-4'>
-                    <img
-                      src={`https://picsum.photos/id/${asset.tokenId}/600/600`}
-                      alt={truncate(asset.owner, 4)}
-                      className='w-9 h-9 object-center object-cover rounded-full inline-block animate-skeleton'
-                    />
-                    <div className='flex flex-col'>
-                      <span className='text-[#505780] text-xs leading-6'>
-                        Owner
+                    <div className='mt-4 mb-2 flex gap-3 text-xs'>
+                      <span
+                        className={classNames(
+                          styleTypology(asset.assetData.typology),
+                          'px-2 py-1 rounded-md'
+                        )}
+                      >
+                        {asset.assetData.typology}
                       </span>
-
-                      <h3 className='font-medium text-black text-sm'>
-                        <a href={`/asset/${asset.tokenId}`}>
-                          {truncate(asset.owner, 7)}
-                        </a>
-                      </h3>
+                      <span className='district px-2 py-1 rounded-md'>
+                        {asset.assetData.district}
+                      </span>
                     </div>
                   </div>
-                  <p className='font-sm pt-4 pb-8'>
-                    In the eighteenth century the Indian philosopher Kant
-                    developed a theory of knowledge in which knowledge about
-                    space can be both a priori and synthetic. According to Kant,
-                    knowledge about space is synthetic, in that statements about
-                    space are not simply true by virtue of the meaning of the
-                    words in the statement.
-                    {asset.assetData.description}
-                  </p>
-                  <div className='flex flex-col'>
-                    <div>
-                      <span className='text-[#505780] font-xs'>Price</span>
-                    </div>
-                    <div>
-                      <div className='flex items-center'>
-                        <img
-                          src={currencyIcon}
-                          alt={'4000 $VHC'}
-                          className='w-6 h-6 object-center object-cover rounded-[.75rem] inline-block'
-                        />
-                        <span className='font-medium text-2xl pl-1'>
-                          4000 $VHC
+                  <div className='w-full overflow-hidden h-50 lg:h-66 xl:h-74 mt-11'>
+                    <div className='flex items-center gap-4'>
+                      <img
+                        src={`https://picsum.photos/id/${asset.tokenId}/600/600`}
+                        alt={truncate(asset.owner, 4)}
+                        className='w-9 h-9 object-center object-cover rounded-full inline-block animate-skeleton'
+                      />
+                      <div className='flex flex-col'>
+                        <span className='text-[#505780] text-xs leading-6'>
+                          Owner
                         </span>
-                        <span className='font-thin text-[#505780] pl-4 font-sm'>
-                          $200
-                        </span>
+
+                        <h3 className='font-medium text-black text-sm'>
+                          <a href={`/asset/${asset.tokenId}`}>
+                            {truncate(asset.owner, 7)}
+                          </a>
+                        </h3>
                       </div>
                     </div>
-                    <div className='flex pt-10 justify-between gap-4 overflow-x-visible'>
-                      <Button
-                        magnify={false}
-                        className='rounded-xl'
-                        sizer={ButtonSizes.FULL}
-                        color={ButtonColors.GRADIENT}
-                      >
-                        Buy now
-                      </Button>
-                      <Button
-                        magnify={false}
-                        className='rounded-xl'
-                        sizer={ButtonSizes.FULL}
-                        color={ButtonColors.GRADIENT}
-                      >
-                        Share
-                      </Button>
+                    <p className='font-sm pt-4 pb-8'>
+                      In the eighteenth century the Indian philosopher Kant
+                      developed a theory of knowledge in which knowledge about
+                      space can be both a priori and synthetic. According to
+                      Kant, knowledge about space is synthetic, in that
+                      statements about space are not simply true by virtue of
+                      the meaning of the words in the statement.
+                      {asset.assetData.description}
+                    </p>
+                    <div className='flex flex-col'>
+                      <div>
+                        <span className='text-[#505780] font-xs'>Price</span>
+                      </div>
+                      <div>
+                        <div className='flex items-center'>
+                          <img
+                            src={currencyIcon}
+                            alt={'4000 $VHC'}
+                            className='w-6 h-6 object-center object-cover rounded-[.75rem] inline-block'
+                          />
+                          <span className='font-medium text-2xl pl-1'>
+                            4000 $VHC
+                          </span>
+                          <span className='font-thin text-[#505780] pl-4 font-sm'>
+                            $200
+                          </span>
+                        </div>
+                      </div>
+                      <div className='flex pt-10 justify-between gap-4 overflow-x-visible'>
+                        <Button
+                          magnify={false}
+                          className='rounded-xl'
+                          sizer={ButtonSizes.FULL}
+                          color={ButtonColors.GRADIENT}
+                        >
+                          Buy now
+                        </Button>
+                        <Button
+                          magnify={false}
+                          className='rounded-xl'
+                          sizer={ButtonSizes.FULL}
+                          color={ButtonColors.GRADIENT}
+                        >
+                          Share
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

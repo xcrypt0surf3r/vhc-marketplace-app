@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { Asset, Vland } from '../../../types'
 import AssetCard from '../../elements/AssetCard'
+import assetImage from '../../../assets/images/asset-image-1.png'
+
 import {
   AssetCardSkeleton,
   CardSkeleton
@@ -56,7 +58,7 @@ const AssetsListing = ({
                     name={asset.assetData.name}
                     typology={asset.assetData.typology}
                     avatar={`https://picsum.photos/id/${j}/31/31`}
-                    image={`https://picsum.photos/id/${50 + j}/600/600`}
+                    image={assetImage}
                     onClick={() =>
                       navigate(`/details/${asset.tokenId}`, { replace: true })
                     }

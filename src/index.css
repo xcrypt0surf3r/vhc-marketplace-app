@@ -27,3 +27,9 @@
     @apply hover:shadow-lg hover:scale-105 transition-all;
   }
 }
+
+@font-face {
+  font-family: 'Avenir-Light';
+  src: local('Avenir-Light'),
+    url(/src/assets/fonts/Avenir-Light.woff) format('woff');
+}

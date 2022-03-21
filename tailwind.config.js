@@ -24,6 +24,9 @@ module.exports = {
       animation: {
         skeleton: 'skeleton 1s linear infinite alternate',
         check: 'check 500ms ease-in-out forwards;'
+      },
+      fontFamily: {
+        avenir: ['Avenir-Light', 'ui-sans-serif']
       }
     }
   },
