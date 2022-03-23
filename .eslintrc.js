@@ -37,7 +37,13 @@ module.exports = {
     'react/button-has-type': 0,
     'react/no-unused-prop-types': 0,
     'global-require': 0,
-    'no-nested-ternary': 0
+    'no-nested-ternary': 0,
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto'
+      }
+    ]
   },
   settings: {
     react: {

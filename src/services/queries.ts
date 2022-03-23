@@ -21,3 +21,25 @@ export const GET_ASSETS = gql`
     }
   }
 `
+
+export const GET_ASSET_BY_ID = gql`
+  query getAsset($tokenId: Float!) {
+    asset(tokenId: $tokenId) {
+      assetData {
+        vlandId
+        name
+        x
+        y
+        description
+        typology
+        cluster
+        island
+      }
+      createdAtTimestamp
+      creator
+      owner
+      tokenId
+      tokenUri
+    }
+  }
+`

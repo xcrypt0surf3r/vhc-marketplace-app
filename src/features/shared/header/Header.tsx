@@ -58,7 +58,8 @@ const Header = () => {
                       </Button>
                     ) : (
                       <Button
-                        className='magnify rounded-3xl'
+                        magnify
+                        className='rounded-3xl'
                         sizer={ButtonSizes.MEDIUM}
                         color={ButtonColors.GRADIENT}
                         onClick={handleConnectWallet}

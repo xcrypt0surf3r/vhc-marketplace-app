@@ -2,12 +2,13 @@ import { truncate } from '../../utils'
 
 type Props = {
   tokenId: number
-  tokenUri: string
+  tokenUri?: string
   image: string
   name: string
   typology?: string
   owner: string
   avatar: string
+  onClick: () => void
 }
 
 const AssetCard = ({
@@ -16,7 +17,8 @@ const AssetCard = ({
   owner,
   avatar,
   typology,
-  name
+  name,
+  ...props
 }: Props) => {
   let type = ''
   if (typology) {
@@ -25,8 +27,9 @@ const AssetCard = ({
 
   return (
     <div
+      {...props}
       key={tokenId}
-      className='magnify rounded-[1.25rem] border-[.0938rem] border-gray-200 xl:p-[.75rem] lg:p-[.5rem] p-[0.25rem]'
+      className='magnify rounded-[1.25rem] border-[.0938rem] border-gray-200 xl:p-[.75rem] lg:p-[.5rem] p-[0.25rem] cursor-pointer'
     >
       {/* Card image */}
       <div className='w-full overflow-hidden h-50 lg:h-66 xl:h-74'>

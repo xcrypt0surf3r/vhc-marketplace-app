@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { Asset, Vland } from '../../../types'
 import AssetCard from '../../elements/AssetCard'
 import {
@@ -6,17 +7,21 @@ import {
 } from '../../elements/AssetCardSkeleton'
 
 const AssetsListing = ({
+  skeleton,
   title,
   assets
 }: {
+  skeleton: number
   title: string
   assets: Asset<Vland>[]
 }) => {
+  const navigate = useNavigate()
+
   return (
     <div className='bg-white'>
       <div className='mx-auto pt-10 pb-24 lg:pt-0 px-3 xs:px-6 lg:px-0'>
         <div className='md:flex md:items-center md:justify-between'>
-          <h2 className='text-2xl font-semibold tracking-tight text-gray-900 w-44'>
+          <h2 className='text-2xl font-semibold tracking-tight text-gray-900 w-100'>
             {title}
           </h2>
           {/* <div className='hidden md:flex items-center justify-between w-5/6'>
@@ -39,7 +44,9 @@ const AssetsListing = ({
 
         <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6 lg:gap-x-8'>
           {assets.length < 1
-            ? AssetCardSkeleton(15).map((x, i) => <CardSkeleton key={i} />)
+            ? AssetCardSkeleton(skeleton).map((x, i) => (
+                <CardSkeleton key={i} />
+              ))
             : assets.map((asset: Asset<Vland>, j) => {
                 return (
                   <AssetCard
@@ -49,8 +56,10 @@ const AssetsListing = ({
                     name={asset.assetData.name}
                     typology={asset.assetData.typology}
                     avatar={`https://picsum.photos/id/${j}/31/31`}
-                    tokenUri={asset.tokenUri}
                     image={`https://picsum.photos/id/${50 + j}/600/600`}
+                    onClick={() =>
+                      navigate(`/details/${asset.tokenId}`, { replace: true })
+                    }
                   />
                 )
               })}

@@ -44,6 +44,7 @@ const BuyNow = () => {
         </span>
       </div>
       <Button
+        magnify
         color={ButtonColors.GRADIENT}
         disabled={accept !== true}
         isDisabled={accept !== true}

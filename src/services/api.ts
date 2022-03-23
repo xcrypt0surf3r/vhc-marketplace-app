@@ -7,10 +7,11 @@ const apolloClient = setupApollo()
 
 const graphqlBaseQuery =
   () =>
-  async ({ body }: { body: DocumentNode }) => {
+  async ({ body, variables }: { body: DocumentNode; variables?: any }) => {
     try {
       const result = await apolloClient.query({
-        query: body
+        query: body,
+        variables
       })
       return { data: result.data }
     } catch (error) {

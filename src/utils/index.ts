@@ -8,3 +8,7 @@ export const truncate = (address: string, n: number) => {
 
 export const classNames = (...classes: string[]) =>
   classes.filter(Boolean).join(' ')
+
+export const styleTypology = (typology: string) => {
+  return typology.charAt(0) + typology.slice(1).toLowerCase()
+}

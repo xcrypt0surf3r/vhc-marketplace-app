@@ -1,6 +1,6 @@
 import { Asset, Vland } from '../types'
 import { baseAPI } from './api'
-import { GET_ASSETS } from './queries'
+import { GET_ASSETS, GET_ASSET_BY_ID } from './queries'
 import { ASSETS_TAG } from './tags'
 
 export const assetApi = baseAPI.injectEndpoints({
@@ -23,8 +23,14 @@ export const assetApi = baseAPI.injectEndpoints({
       transformResponse: (result) => {
         return result.assets
       }
+    }),
+    getAssetByTokenId: builder.query<Asset<Vland | any>, number>({
+      query: (tokenId) => ({
+        body: GET_ASSET_BY_ID,
+        variables: { tokenId }
+      })
     })
   })
 })
 
-export const { useGetAssetsQuery } = assetApi
+export const { useGetAssetsQuery, useGetAssetByTokenIdQuery } = assetApi

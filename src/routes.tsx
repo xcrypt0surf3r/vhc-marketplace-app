@@ -4,6 +4,7 @@ import DefaultLayout from './features/shared/layout/Default'
 
 const Landing = lazy(() => import('./pages/landing'))
 const PageNotFound = lazy(() => import('./pages/not-found'))
+const AssetDetails = lazy(() => import('./pages/asset-details'))
 
 export enum LayoutTemplate {
   DEFAULT
@@ -38,6 +39,14 @@ export const routes: RouteProps[] = [
     element: (
       <RenderRoute layout={LayoutTemplate.DEFAULT}>
         <Landing />
+      </RenderRoute>
+    )
+  },
+  {
+    path: '/details/:tokenId',
+    element: (
+      <RenderRoute layout={LayoutTemplate.DEFAULT}>
+        <AssetDetails />
       </RenderRoute>
     )
   },
