@@ -1,18 +1,24 @@
+import { SignedNftOrderV4 } from '@traderxyz/nft-swap-sdk'
 import { Asset, Vland } from '../types'
 import { baseAPI } from './api'
-import { GET_ASSETS, GET_ASSET_BY_ID } from './queries'
+import { CREATE_BUY_NOW } from './mutations'
+import { GET_ASSETS } from './queries'
 import { ASSETS_TAG } from './tags'
+
+export type GetAssetsResponse = {
+  assets: Asset[]
+}
 
 export const assetApi = baseAPI.injectEndpoints({
   endpoints: (builder) => ({
     getAssets: builder.query<Asset<Vland | any>[], void>({
       query: () => ({
-        body: GET_ASSETS
+        document: GET_ASSETS
       }),
-      providesTags: (result) => {
-        return result
+      providesTags: (response) => {
+        return response
           ? [
-              ...result.map(({ tokenId }) => ({
+              ...response.map(({ tokenId }) => ({
                 type: 'ASSETS' as const,
                 tokenId
               })),
@@ -20,17 +26,19 @@ export const assetApi = baseAPI.injectEndpoints({
             ]
           : [{ type: ASSETS_TAG, id: 'LIST' }]
       },
-      transformResponse: (result) => {
-        return result.assets
+      transformResponse: (response: GetAssetsResponse) => {
+        return response.assets
       }
     }),
-    getAssetByTokenId: builder.query<Asset<Vland | any>, number>({
-      query: (tokenId) => ({
-        body: GET_ASSET_BY_ID,
-        variables: { tokenId }
+    createBuyNow: builder.mutation<SignedNftOrderV4, SignedNftOrderV4>({
+      query: (data: SignedNftOrderV4) => ({
+        document: CREATE_BUY_NOW,
+        variables: {
+          data
+        }
       })
     })
   })
 })
 
-export const { useGetAssetsQuery, useGetAssetByTokenIdQuery } = assetApi
+export const { useGetAssetsQuery, useCreateBuyNowMutation } = assetApi

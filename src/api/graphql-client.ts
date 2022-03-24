@@ -2,7 +2,7 @@ import { ApolloClient, InMemoryCache } from '@apollo/client'
 
 const setupApollo = () => {
   const client = new ApolloClient({
-    uri: 'https://mkt-server-staging.vaulthill.io//graphql',
+    uri: process.env.REACT_APP_API_URL!,
     cache: new InMemoryCache()
   })
 
