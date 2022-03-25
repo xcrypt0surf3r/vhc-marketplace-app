@@ -1,19 +1,33 @@
-import { SignedNftOrderV4 } from '@traderxyz/nft-swap-sdk'
+import { ModelType } from 'graphql-ts-client-api'
 import { Asset, Vland } from '../types'
+import { mutation$, query$ } from '../__generated/fetchers'
 import { baseAPI } from './api'
-import { CREATE_BUY_NOW } from './mutations'
-import { GET_ASSETS } from './queries'
+import { ASSET_FETCHER, ASSET_LIST_FETCHER, LISTING_FETCHER } from './queries'
 import { ASSETS_TAG } from './tags'
 
 export type GetAssetsResponse = {
   assets: Asset[]
 }
 
+export type BuyNowInputType = {
+  order: string
+  assetId: string
+  assetAddress: string
+}
+
+export type AssetIdInputType = {
+  tokenId: number
+}
+
+export type AssetType = ModelType<typeof ASSET_FETCHER>
+
+export type ListType = ModelType<typeof LISTING_FETCHER>
+
 export const assetApi = baseAPI.injectEndpoints({
   endpoints: (builder) => ({
     getAssets: builder.query<Asset<Vland | any>[], void>({
       query: () => ({
-        document: GET_ASSETS
+        fetcher: ASSET_LIST_FETCHER
       }),
       providesTags: (response) => {
         return response
@@ -30,15 +44,33 @@ export const assetApi = baseAPI.injectEndpoints({
         return response.assets
       }
     }),
-    createBuyNow: builder.mutation<SignedNftOrderV4, SignedNftOrderV4>({
-      query: (data: SignedNftOrderV4) => ({
-        document: CREATE_BUY_NOW,
-        variables: {
-          data
+    getAssetByTokenId: builder.query<AssetType, AssetIdInputType>({
+      query: ({ tokenId }) => ({
+        fetcher: query$.asset(ASSET_FETCHER),
+        options: {
+          variables: {
+            tokenId
+          }
+        }
+      })
+    }),
+    createBuyNow: builder.mutation<ListType, BuyNowInputType>({
+      query: ({ order, assetId, assetAddress }) => ({
+        fetcher: mutation$.createBuyNowListing(LISTING_FETCHER),
+        options: {
+          variables: {
+            order,
+            assetId,
+            assetAddress
+          }
         }
       })
     })
   })
 })
 
-export const { useGetAssetsQuery, useCreateBuyNowMutation } = assetApi
+export const {
+  useGetAssetsQuery,
+  useGetAssetByTokenIdQuery,
+  useCreateBuyNowMutation
+} = assetApi

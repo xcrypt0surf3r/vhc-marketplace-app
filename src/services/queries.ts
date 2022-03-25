@@ -1,45 +1,32 @@
-import { gql } from '@apollo/client'
+import {
+  asset$,
+  asset$$,
+  listing$$,
+  query$,
+  vland$
+} from '../__generated/fetchers'
 
-export const GET_ASSETS = gql`
-  {
-    assets {
-      tokenId
-      tokenUri
-      creator
-      owner
-      assetData {
-        vlandId
-        name
-        description
-        typology
-        district
-        island
-        x
-        y
-        cluster
-      }
-    }
-  }
-`
+// prettier-ignore
+export const ASSET_LIST_FETCHER = query$.assets(
+  asset$
+   .tokenId
+   .tokenUri
+   .creator
+   .owner
+   .assetData(
+    vland$
+      .vlandId
+      .name
+      .description
+      .typology
+      .district
+      .island
+      .x
+      .y
+      .cluster
+  )
+)
 
-export const GET_ASSET_BY_ID = gql`
-  query getAsset($tokenId: Float!) {
-    asset(tokenId: $tokenId) {
-      assetData {
-        vlandId
-        name
-        x
-        y
-        description
-        typology
-        cluster
-        island
-      }
-      createdAtTimestamp
-      creator
-      owner
-      tokenId
-      tokenUri
-    }
-  }
-`
+export const ASSET_FETCHER = asset$$
+
+export const LISTING_FETCHER = listing$$

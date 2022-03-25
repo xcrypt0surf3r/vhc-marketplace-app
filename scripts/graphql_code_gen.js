@@ -6,12 +6,9 @@ const path = require('path')
 
 const generator = new AsyncGenerator({
   schemaLoader: async () => {
-    return loadRemoteSchema('https://mp-server-staging.vaulthill.io/graphql')
+    return loadRemoteSchema('http://localhost:3000/graphql')
   },
   targetDir: path.join(__dirname, '../src/__generated'),
   recreateTargetDir: true
-  // defaultFetcherExcludeMap: {
-  //   Department: ['avgSalary']
-  // }
 })
 generator.generate()

@@ -6,7 +6,9 @@ import RecommendedAssets from './RecommendedAssets'
 
 const Details = () => {
   const params: any = useParams()
-  const { data: asset } = useGetAssetByTokenIdQuery(parseFloat(params.tokenId))
+  const { data: asset } = useGetAssetByTokenIdQuery({
+    tokenId: parseFloat(params.tokenId)
+  })
 
   return (
     <DefaultLayoutContainer>

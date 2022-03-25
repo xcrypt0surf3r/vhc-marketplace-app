@@ -55,6 +55,5 @@ export const createBuyNowOrder = async (
     { expiry: expiryDate }
   )
   const signedOrder = await nftSwapSdk.signOrder(order)
-  console.log('signedOrder', signedOrder)
   return signedOrder
 }
