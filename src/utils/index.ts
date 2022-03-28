@@ -1,8 +1,12 @@
 export const isDev = () => process.env.APP_NODE_ENV !== 'production'
 
-export const truncate = (address: string, n: number) => {
-  const left = address.slice(0, n)
-  const right = address.slice(-n)
+export const truncate = (
+  address: string,
+  preEllipsis: number,
+  postEllipsis?: number
+) => {
+  const left = address.slice(0, preEllipsis)
+  const right = address.slice(-(postEllipsis ?? preEllipsis))
   return `${left}...${right}`
 }
 

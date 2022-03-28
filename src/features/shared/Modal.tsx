@@ -1,7 +1,9 @@
 import { ArrowLeftIcon, XIcon } from '@heroicons/react/outline'
-import { useAppDispatch } from '../../state'
-import { closeModal } from '../../state/popup.slice'
+import { useAppDispatch, useAppSelector } from '../../state'
+import { closeModal, getPopup, Popup, prevModal } from '../../state/popup.slice'
 import { classNames } from '../../utils'
+
+const backable = [Popup.CHECKOUT, Popup.PAYMENT] as string[]
 
 export const Modal = ({
   align,
@@ -11,6 +13,7 @@ export const Modal = ({
   children
 }: ModalProps) => {
   let alignment: string
+  const popups = useAppSelector(getPopup)
   const dispatch = useAppDispatch()
   switch (align) {
     case 'center':
@@ -19,6 +22,10 @@ export const Modal = ({
     default:
       alignment = 'text-left'
       break
+  }
+
+  const handleBack = () => {
+    dispatch(prevModal())
   }
   return (
     <div className='w-full h-full top-0 left-0 flex bg-black bg-opacity-70 fixed z-50 px-3'>
@@ -29,7 +36,13 @@ export const Modal = ({
         )}
       >
         <div className='flex justify-between items-center md:mb-8 mb-6'>
-          <ArrowLeftIcon className='md:h-7 md:w-7 h-6 w-6 invisible' />
+          <ArrowLeftIcon
+            onClick={handleBack}
+            className={classNames(
+              'md:h-7 md:w-7 h-6 w-6 cursor-pointer hover:text-blue-600',
+              backable.includes(popups.modal.at(-1) ?? '') ? '' : 'invisible'
+            )}
+          />
           <XIcon
             onClick={() => dispatch(closeModal())}
             className='md:h-8 md:w-8 h-6 w-6 cursor-pointer hover:text-rose-600'

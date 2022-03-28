@@ -9,26 +9,32 @@ export enum Popup {
   BUY_NOW = 'buyNow',
   CHECKOUT = 'checkout',
   PAYMENT = 'payment',
-  ORDER_COMPLETE = 'orderComplete'
+  ORDER_CONFIRMED = 'orderConfirmed',
+  BID_SUBMITTED = 'bidSubmitted',
+  PLACE_BID = 'placeBid',
+  BUY_BID_ERROR = 'buyBidError'
 }
 
 const popSlice = createSlice({
   name: 'popup',
   initialState: {
-    modal: ''
+    modal: [] as string[]
   },
   reducers: {
-    openModal: (state, { payload }) => {
-      state.modal = payload
+    openModal: (state, { payload }: { payload: string }) => {
+      state.modal.push(payload)
+    },
+    prevModal: (state) => {
+      state.modal.pop()
     },
     closeModal: (state) => {
-      state.modal = ''
+      state.modal = []
     }
   }
 })
 
 export const getPopup = (state: RootState) => state.popup
 
-export const { openModal, closeModal } = popSlice.actions
+export const { openModal, closeModal, prevModal } = popSlice.actions
 
 export const popupReducer = popSlice.reducer

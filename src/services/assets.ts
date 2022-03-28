@@ -1,6 +1,6 @@
 import { ModelType } from 'graphql-ts-client-api'
 import { Asset, Vland } from '../types'
-import { mutation$, query$ } from '../__generated/fetchers'
+import { mutation$ } from '../__generated/fetchers'
 import { CreateBuyNowInput, FillBuyNowInput } from '../__generated/inputs'
 import { baseAPI } from './api'
 import { ASSET_FETCHER, ASSET_LIST_FETCHER, LISTING_FETCHER } from './queries'
@@ -41,7 +41,7 @@ export const assetApi = baseAPI.injectEndpoints({
     }),
     getAssetByTokenId: builder.query<AssetType, AssetIdInputType>({
       query: ({ tokenId }) => ({
-        fetcher: query$.asset(ASSET_FETCHER),
+        fetcher: ASSET_FETCHER,
         options: {
           variables: {
             tokenId

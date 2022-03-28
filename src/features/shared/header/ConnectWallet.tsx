@@ -9,6 +9,7 @@ import {
   connectWalletAtom,
   disconnectWalletAtom
 } from '../../../state/atoms/wallet.atoms'
+import { truncate } from '../../../utils'
 
 declare let window: any
 
@@ -22,7 +23,7 @@ const ConnectWallet = () => {
   } = useWeb3React()
 
   const [connectWallet, setConnectWallet] = useAtom(connectWalletAtom)
-  const [diconnected, setDisconnected] = useAtom(disconnectWalletAtom)
+  const [disconnected, setDisconnected] = useAtom(disconnectWalletAtom)
   const dispatch = useAppDispatch()
 
   const initialize = useCallback(async () => {
@@ -62,12 +63,12 @@ const ConnectWallet = () => {
   ])
 
   useEffect(() => {
-    // user has explicited disconnected, so don't initialized unless
-    // they inititate connection again
-    if (!diconnected) {
+    // user has explicitly disconnected, so don't initialize unless
+    // they initiate connection again
+    if (!disconnected) {
       initialize()
     }
-  })
+  }, [disconnected, initialize])
 
   useEffect(() => {
     if (window.ethereum) {
@@ -93,18 +94,17 @@ const ConnectWallet = () => {
         <Button
           className='rounded-3xl cursor-pointer'
           sizer={ButtonSizes.MEDIUM}
-          color={ButtonColors.GRADIENT}
+          color={ButtonColors.PRIMARY}
           onClick={disconnect}
         >
-          {account?.slice(0, 8).toLowerCase()}...
-          {account?.slice(-6).toLowerCase()}
+          {truncate(account, 8)}
         </Button>
       ) : (
         <Button
           magnify
           className='rounded-3xl cursor-pointer'
           sizer={ButtonSizes.MEDIUM}
-          color={ButtonColors.GRADIENT}
+          color={ButtonColors.PRIMARY}
           onClick={handleConnectWallet}
         >
           Connect Wallet

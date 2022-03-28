@@ -5,15 +5,17 @@ import DefaultLayoutContainer from '../../features/shared/layout/DefaultLayoutCo
 import { useGetAssetsQuery } from '../../services/assets'
 
 const Landing = () => {
-  const { data: assets } = useGetAssetsQuery()
-
+  const { data, isLoading, isFetching, isSuccess } = useGetAssetsQuery()
   return (
     <DefaultLayoutContainer>
       <Hero />
       <AssetsListing
-        skeleton={14}
+        data={data?.slice(0, 12)}
+        skeletons={8}
         title='Newest Assets'
-        assets={assets || []}
+        loading={isLoading}
+        fetching={isFetching}
+        success={isSuccess}
       />
       <Promotion />
     </DefaultLayoutContainer>

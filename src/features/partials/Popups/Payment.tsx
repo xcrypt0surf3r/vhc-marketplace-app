@@ -1,11 +1,32 @@
 import { CheckCircleIcon } from '@heroicons/react/solid'
 import { useState } from 'react'
+import { useAppDispatch, useAppSelector } from '../../../state'
+import { getPopup, openModal, Popup } from '../../../state/popup.slice'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Form'
 import { Modal } from '../../shared/Modal'
 
 const Payment = () => {
   const [approve, setApprove] = useState(false)
   const [sign, setSign] = useState(false)
+
+  const dispatch = useAppDispatch()
+  const popups = useAppSelector(getPopup)
+
+  /**
+   * There is only one payment modal for BUY_NOW flow and AUCTION flow,
+   * this function help to determine which one it is then show the appropriate
+   * confirmation modal which is either ORDER_CONFIRMED or BID_SUBMITTED.
+   * ORDER_CONFIRMED is the default nextModal
+   */
+  const handleSubmit = () => {
+    let nextModal = Popup.ORDER_CONFIRMED
+
+    if (popups.modal.at(-2) === Popup.PLACE_BID) {
+      nextModal = Popup.BID_SUBMITTED
+    }
+
+    dispatch(openModal(nextModal))
+  }
 
   return (
     <Modal heading='Payment' align='center' className='max-w-[32rem]'>
@@ -27,7 +48,7 @@ const Payment = () => {
             {!approve && (
               <Button
                 sizer={ButtonSizes.SMALL}
-                color={ButtonColors.GRADIENT}
+                color={ButtonColors.PRIMARY}
                 className='rounded-xl'
                 onClick={() => setApprove(true)}
               >
@@ -52,7 +73,7 @@ const Payment = () => {
             {approve && !sign && (
               <Button
                 sizer={ButtonSizes.SMALL}
-                color={ButtonColors.GRADIENT}
+                color={ButtonColors.PRIMARY}
                 className='rounded-xl'
                 onClick={() => setSign(true)}
               >
@@ -64,9 +85,10 @@ const Payment = () => {
         {approve && sign && (
           <div className='pt-5'>
             <Button
-              color={ButtonColors.GRADIENT}
+              color={ButtonColors.PRIMARY}
               sizer={ButtonSizes.FULL}
               className='rounded-xl'
+              onClick={handleSubmit}
             >
               Finish
             </Button>

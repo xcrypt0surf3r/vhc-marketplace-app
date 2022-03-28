@@ -26,7 +26,8 @@ module.exports = {
         check: 'check 500ms ease-in-out forwards;'
       },
       fontFamily: {
-        avenir: ['Avenir-Light', 'ui-sans-serif']
+        avenir: ['Avenir-Light', 'ui-sans-serif'],
+        prototype: ['Prototype']
       }
     }
   },

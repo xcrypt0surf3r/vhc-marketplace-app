@@ -1,18 +1,20 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 import { Disclosure } from '@headlessui/react'
 import { DotsVerticalIcon } from '@heroicons/react/outline'
-import { navList } from '../navigation/navList'
+// import { navList } from '../navigation/navList'
 import Hamburger from './Hamburger'
 import Logo from './Logo'
 import ConnectWallet from './ConnectWallet'
+// import { Button, ButtonColors, ButtonSizes } from '../Form'
+// import { classNames } from '../../../utils'
 
 const Header = () => {
-  const activeLink = navList[0].text
-  const [isClicked, setIsClicked] = useState(activeLink)
+  // const activeLink = navList[0].text
+  // const [isClicked, setIsClicked] = useState(activeLink)
 
-  const handleClick = (text: string) => {
-    setIsClicked(text)
-  }
+  // const handleClick = (text: string) => {
+  //   setIsClicked(text)
+  // }
 
   return (
     <Disclosure as='nav' className='bg-white mb-8'>
@@ -48,7 +50,7 @@ const Header = () => {
               </div>
             </div>
 
-            <Disclosure.Panel className='sm:hidden'>
+            {/* <Disclosure.Panel className='sm:hidden'>
               <div className='pt-2 pb-10 flex flex-col items-center space-y-1'>
                 {navList.map((route) => (
                   <Disclosure.Button
@@ -72,18 +74,40 @@ const Header = () => {
                   >
                     VHC Token
                   </a>
-                  <a
-                    href='#'
-                    className='magnify w-3/4 py-2 mx-auto sm:rounded-xl text-center text-white bg-[#4D46BA] lg:px-4'
-                  >
-                    Explore map
-                  </a>
-                  <div className='magnify w-3/4 py-2 mx-auto sm:rounded-xl text-center text-white bg-gradient-to-r from-orange-400 via-purple-500 to-blue-500 lg:px-4 cursor-pointer'>
-                    Connect Wallet
+                  <div className='flex space-x-3'>
+                    {connected ? (
+                      <Button
+                        className='rounded-3xl cursor-default'
+                        sizer={ButtonSizes.MEDIUM}
+                        color={ButtonColors.PRIMARY}
+                      >
+                        0x0fdfbq...5sFvw4
+                      </Button>
+                    ) : (
+                      <Button
+                        magnify
+                        className='rounded-3xl'
+                        sizer={ButtonSizes.MEDIUM}
+                        color={ButtonColors.PRIMARY}
+                        onClick={handleConnectWallet}
+                      >
+                        Connect Wallet
+                      </Button>
+                    )}
+                    {connected && (
+                      <div
+                        className={classNames(
+                          'text-white rounded-full h-12 w-12 flex items-center justify-center',
+                          ButtonColors.SECONDARY
+                        )}
+                      >
+                        {'OZ'}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
-            </Disclosure.Panel>
+            </Disclosure.Panel> */}
           </>
         )
       }}

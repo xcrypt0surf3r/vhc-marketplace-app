@@ -249,5 +249,12 @@ export const asset$: AssetFetcher<{}, {}> = createFetcher(
   undefined
 )
 
+// prettier-ignore
 export const asset$$ =
-  asset$.tokenId.tokenAddress.tokenUri.createdAtTimestamp.creator.owner
+asset$
+  .tokenId
+  .tokenAddress
+  .tokenUri
+  .createdAtTimestamp
+  .creator
+  .owner

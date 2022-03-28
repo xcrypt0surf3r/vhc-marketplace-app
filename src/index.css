@@ -33,3 +33,7 @@
   src: local('Avenir-Light'),
     url(/src/assets/fonts/Avenir-Light.woff) format('woff');
 }
+@font-face {
+  font-family: 'Prototype';
+  src: local('Prototype'), url(/src/assets/fonts/Prototype.woff) format('woff');
+}

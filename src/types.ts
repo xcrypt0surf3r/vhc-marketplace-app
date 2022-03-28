@@ -1,3 +1,5 @@
+import { District, Island, Typology } from './__generated/enums'
+
 export interface Asset<Token = any> {
   tokenId: number
   tokenUri: string
@@ -6,7 +8,6 @@ export interface Asset<Token = any> {
   creator: string
   owner: string
 }
-
 export interface Vland {
   vlandId: string
   name: string
@@ -19,23 +20,7 @@ export interface Vland {
   cluster: number
 }
 
-export enum Typology {
-  STANDARD = 'Standard',
-  PREMIUM = 'Premium',
-  DELUXE = 'Deluxe',
-  EXCLUSIVE = 'Exclusive'
-}
-
-export enum District {
-  ALPHA = 'Alpha',
-  BETA = 'Beta',
-  OMEGA = 'Omega',
-  KAPPA = 'Kappa',
-  PI = 'Pi',
-  DELTA = 'Delta',
-  SIGMA = 'Sigma'
-}
-
-export enum Island {
-  ONE = 'One'
+export enum ListingType {
+  AUCTION = 'AUCTION',
+  BUY_NOW = 'BUY_NOW'
 }

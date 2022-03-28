@@ -259,4 +259,11 @@ export const listing$: ListingFetcher<{}, {}> = createFetcher(
   undefined
 )
 
-export const listing$$ = listing$.assetId.assetAddress.type.status.order.receipt
+// prettier-ignore
+export const listing$$ = 
+  listing$
+    .assetId
+    .assetAddress
+    .type
+    .status
+    .order

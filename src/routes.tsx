@@ -43,7 +43,7 @@ export const routes: RouteProps[] = [
     )
   },
   {
-    path: '/details/:tokenId',
+    path: '/asset-details/:tokenId',
     element: (
       <RenderRoute layout={LayoutTemplate.DEFAULT}>
         <AssetDetails />

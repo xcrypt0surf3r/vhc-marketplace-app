@@ -1,11 +1,8 @@
 import { Disclosure } from '@headlessui/react'
 import { ChevronUpIcon } from '@heroicons/react/solid'
+import { properties } from '../../../fake-data/assetDetails'
 
-type Props = {
-  properties: any
-}
-
-const Properties = ({ properties }: Props) => {
+const Properties = () => {
   return (
     <div className='w-full pt-2'>
       <div className='w-full bg-white rounded-lg border-[#E4ECF7]-600 border-2'>

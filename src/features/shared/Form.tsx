@@ -1,8 +1,9 @@
 import { classNames } from '../../utils'
 
 export enum ButtonColors {
-  PRIMARY = 'text-white bg-purple-600',
-  GRADIENT = 'text-white bg-gradient-to-r from-pink-400 via-purple-500 to-blue-500'
+  SECONDARY = 'text-white bg-blue-400',
+  PRIMARY = 'text-white bg-gradient-to-r from-pink-400 via-purple-500 to-blue-500',
+  OUTLINE = 'text-gray-500 border bg-white border-gray-500'
 }
 
 export enum ButtonSizes {
@@ -14,7 +15,7 @@ export enum ButtonSizes {
 
 export const Button = ({
   sizer = ButtonSizes.MEDIUM,
-  color = ButtonColors.PRIMARY,
+  color = ButtonColors.SECONDARY,
   isDisabled,
   magnify,
   className = '',

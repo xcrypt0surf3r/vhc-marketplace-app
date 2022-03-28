@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Asset, Vland } from '../../../types'
 import AssetCard from '../../elements/AssetCard'
@@ -9,15 +10,29 @@ import {
 } from '../../elements/AssetCardSkeleton'
 
 const AssetsListing = ({
-  skeleton,
+  skeletons,
   title,
-  assets
+  data,
+  loading,
+  fetching,
+  success
 }: {
-  skeleton: number
+  skeletons: number
   title: string
-  assets: Asset<Vland>[]
+  data: any
+  loading: boolean
+  fetching: boolean
+  success: boolean
 }) => {
   const navigate = useNavigate()
+
+  const [assets, setAssets] = useState<any[]>([])
+
+  useEffect(() => {
+    setAssets(data)
+  }, [data, success])
+
+  const fetchingAssets = fetching || loading
 
   return (
     <div className='bg-white'>
@@ -44,12 +59,16 @@ const AssetsListing = ({
           </div> */}
         </div>
 
-        <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6 lg:gap-x-8'>
-          {assets.length < 1
-            ? AssetCardSkeleton(skeleton).map((x, i) => (
-                <CardSkeleton key={i} />
-              ))
-            : assets.map((asset: Asset<Vland>, j) => {
+        {fetchingAssets ? (
+          <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6 lg:gap-x-8'>
+            {AssetCardSkeleton(skeletons).map((x, i) => (
+              <CardSkeleton key={i} />
+            ))}
+          </div>
+        ) : (
+          <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6 lg:gap-x-8'>
+            {assets &&
+              assets.map((asset: Asset<Vland>, j) => {
                 return (
                   <AssetCard
                     key={asset.tokenId}
@@ -60,17 +79,19 @@ const AssetsListing = ({
                     avatar={`https://picsum.photos/id/${j}/31/31`}
                     image={assetImage}
                     onClick={() =>
-                      navigate(`/details/${asset.tokenId}`, { replace: true })
+                      navigate(`/asset-details/${asset.tokenId}`, {
+                        replace: true
+                      })
                     }
                   />
                 )
               })}
-        </div>
+          </div>
+        )}
 
         {/* <div className='mt-8 text-sm md:hidden'>
           <a
             href='#'
-            className='font-medium text-indigo-600 hover:text-indigo-500'
           >
             View more<span aria-hidden='true'> &rarr;</span>
           </a>

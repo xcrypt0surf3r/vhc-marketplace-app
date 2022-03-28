@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { buyNow, IBuyNow } from '../../../fake-data/buy-now'
+import { useAppDispatch } from '../../../state'
+import { openModal, Popup } from '../../../state/popup.slice'
 import { classNames, truncate } from '../../../utils'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Form'
 import { Modal } from '../../shared/Modal'
@@ -10,6 +12,12 @@ const BuyNow = () => {
     ...buyNow,
     'Contract address': truncate(buyNow['Contract address'] as string, 8)
   } as IBuyNow
+
+  const dispatch = useAppDispatch()
+
+  const handleSubmit = () => {
+    dispatch(openModal(Popup.CHECKOUT))
+  }
   return (
     <Modal heading='Buy now' align='center' className='max-w-[34rem]'>
       <table className='table-fixed'>
@@ -45,10 +53,11 @@ const BuyNow = () => {
       </div>
       <Button
         magnify
-        color={ButtonColors.GRADIENT}
+        color={ButtonColors.PRIMARY}
         disabled={accept !== true}
         isDisabled={accept !== true}
         sizer={ButtonSizes.FULL}
+        onClick={handleSubmit}
         className='rounded-xl disabled:opacity-50 disabled:cursor-not-allowed'
       >
         Continue

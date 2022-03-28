@@ -34,13 +34,15 @@ const AssetCard = ({
       {/* Card image */}
       <div className='w-full overflow-hidden h-50 lg:h-66 xl:h-74'>
         <img
+          height={256}
+          width={276}
           src={image}
           alt={name}
-          className='w-full h-[16.5625rem] object-center object-cover animate-skeleton rounded-[.75rem]'
+          className='w-full object-center object-cover rounded-[.75rem]'
         />
       </div>
       {/* Card title */}
-      <h3 className='p-2 font-medium text-black border-b-[.0938rem] border-gray-200 text-left'>
+      <h3 className='p-2 font-medium text-black border-b-[.0938rem] border-gray-200 text-left font-prototype'>
         <a href={`/asset/${tokenId}`}>{name}</a>
       </h3>
       {/* Card body */}
@@ -57,7 +59,7 @@ const AssetCard = ({
       <footer className='flex items-center justify-between leading-none my-2 flex-row px-2'>
         <span className='flex items-center no-underline hover:underline text-black'>
           <img
-            alt={owner}
+            alt={truncate(owner, 4)}
             className='animate-skeleton rounded-full h-[2rem] w-[2rem] flex'
             src={avatar}
           />

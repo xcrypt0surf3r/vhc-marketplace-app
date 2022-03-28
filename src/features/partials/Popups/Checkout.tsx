@@ -1,8 +1,16 @@
 import { checkout } from '../../../fake-data/buy-now'
+import { useAppDispatch } from '../../../state'
+import { openModal, Popup } from '../../../state/popup.slice'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Form'
 import { Modal } from '../../shared/Modal'
 
 const Checkout = () => {
+  const dispatch = useAppDispatch()
+
+  const handleSubmit = () => {
+    dispatch(openModal(Popup.PAYMENT))
+  }
+
   return (
     <Modal heading='Checkout' align='center' className='max-w-[34rem]'>
       <div className='grid grid-cols-1 divide-y'>
@@ -40,9 +48,10 @@ const Checkout = () => {
         </div>
         <div className='pt-5'>
           <Button
-            color={ButtonColors.GRADIENT}
+            color={ButtonColors.PRIMARY}
             sizer={ButtonSizes.FULL}
             className='rounded-xl'
+            onClick={handleSubmit}
           >
             Confirm checkout
           </Button>

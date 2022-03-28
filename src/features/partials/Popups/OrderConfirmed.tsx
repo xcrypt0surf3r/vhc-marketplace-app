@@ -1,7 +1,7 @@
 import { CheckIcon } from '@heroicons/react/outline'
 import { Modal } from '../../shared/Modal'
 
-const OrderComplete = () => {
+const OrderConfirmed = () => {
   return (
     <Modal>
       <div className='flex flex-col justify-center items-center'>
@@ -18,4 +18,4 @@ const OrderComplete = () => {
   )
 }
 
-export default OrderComplete
+export default OrderConfirmed
