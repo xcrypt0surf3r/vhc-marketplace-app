@@ -13,16 +13,16 @@ type Props = {
 const AssetDetails = ({ data: { asset } }: Props) => {
   return (
     <div className='bg-white flex flex-col justify-center md:flex'>
-      <div className='mx-auto pt-10 pb-24 lg:pt-0 px-3 xs:px-6 lg:px-0'>
-        <div className='grid grid-cols-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2'>
-          <div className='p-6 bg-white-100 flex flex-col'>
+      <div className='mx-auto pt-10 pb-24 lg:pt-0 md:px-3 md:px-6 lg:px-0'>
+        <div className='grid xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
+          <div className='xs:mb-2 lg:p-6 bg-white-100 flex flex-col'>
             <img
               src={`https://picsum.photos/id/${asset.tokenId}/600/600`}
               alt='Two models wearing women s black cotton crewneck tee and off-white cotton crewneck tee.'
               className='object-center object-cover rounded-lg w-full h-full'
             />
           </div>
-          <div className='p-6 bg-white-100 flex flex-col'>
+          <div className='lg:p-6 bg-white-100 flex flex-col'>
             <div className='group w-full rounded-lg overflow-hidden sm:relative sm:aspect-none h-full border-[#E4ECF7]-600 border-2 p-4'>
               <div className='pt-6 px-6 items-end'>
                 <div className='font-normal text-sm tracking-tight mb-3 text-left'>
@@ -66,12 +66,12 @@ const AssetDetails = ({ data: { asset } }: Props) => {
                     </div>
                   </div>
                   <p className='font-sm pt-4 pb-8'>
-                    In the eighteenth century the Indian philosopher Chandni
-                    Kant developed a theory of knowledge in which knowledge
-                    about space can be both a priori and synthetic. According to
-                    Kant, knowledge about space is synthetic, in that statements
-                    about space are not simply true by virtue of the meaning of
-                    the words in the statement.
+                    In the eighteenth century the Indian philosopher Kant
+                    developed a theory of knowledge in which knowledge about
+                    space can be both a priori and synthetic. According to Kant,
+                    knowledge about space is synthetic, in that statements about
+                    space are not simply true by virtue of the meaning of the
+                    words in the statement.
                     {asset.assetData.description}
                   </p>
                   <div className='flex flex-col'>
@@ -117,14 +117,14 @@ const AssetDetails = ({ data: { asset } }: Props) => {
             </div>
           </div>
         </div>
-        <div className='grid grid-cols-2 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
-          <div className='p-6 bg-white-100 flex flex-col'>
+        <div className='grid xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
+          <div className='lg:p-6 bg-white-100 flex flex-col'>
             <div className='flex flex-row'>
               <Properties properties={properties} />
             </div>
           </div>
 
-          <div className='p-6 bg-white-100 flex flex-col'>
+          <div className='lg:p-6 bg-white-100 flex flex-col'>
             <Tab.Group>
               <Tab.List className='flex space-x-1 bg-white border-[#E4ECF7] border-b-2'>
                 {Object.keys(categories).map((category) => (
