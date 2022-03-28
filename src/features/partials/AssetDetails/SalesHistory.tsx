@@ -1,29 +1,24 @@
 import { Tab } from '@headlessui/react'
-import _ from 'lodash'
 import bulkCoinIcon from '../../../assets/images/icons/bulk-coin.svg'
 import currencyIcon from '../../../assets/images/icons/currency.svg'
 import { classNames } from '../../../utils'
 
-const SalesHistory = ({
-  panels
-}: {
-  panels: { [key: string]: (string | number)[] }
-}) => {
+const SalesHistory = ({ panels }: { panels: any }) => {
   return (
     <div className='lg:p-6'>
       <Tab.Group>
-        <Tab.List className='flex gap-10 border-gray-200 border-b'>
+        <Tab.List className='flex space-x-1 bg-white border-blue-500 border-b-3'>
           {Object.keys(panels).map((panel) => (
             <Tab
               key={panel}
               className={({ selected }) =>
                 classNames(
-                  'py-2.5 text-sm font-semibold',
-                  selected ? 'border-[#8A22F2] border-b' : ''
+                  'px-8 py-2.5 text-sm leading-5 font-medium text-black-700',
+                  selected ? 'border-[#8A22F2] border-b' : 'bg-white'
                 )
               }
             >
-              {_.capitalize(panel)}
+              {panel}
             </Tab>
           ))}
         </Tab.List>
@@ -39,7 +34,9 @@ const SalesHistory = ({
                 <div className='bg-slate-100 m-2 flex flex-col items-center justify-center h-80'>
                   <img src={bulkCoinIcon} alt={keyName} className='pt-8 px-8' />
                   <span className='pb-8 font-sm text-[#718096]'>
-                    No {keyName} for this asset
+                    No active
+                    {keyName.replace(/([A-Z]+)*([A-Z][a-z])/g, '$1 $2')}
+                    &nbsp;for this asset
                   </span>
                 </div>
               ) : (

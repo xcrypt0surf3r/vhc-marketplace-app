@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* body {
+  font-family: AVENIR NXT LT PRO
+}
+
+h1, h2, h3, h4 {
+  font-family: PROTOTYPE
+} */
+
 @layer components {
   .Deluxe {
     @apply bg-purple-100 text-purple-700;

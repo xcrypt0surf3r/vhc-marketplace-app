@@ -150,7 +150,7 @@ const AssetDetails = ({
             <Properties />
             <SalesHistory
               panels={{
-                bids: asset?.listing?.auction?.bids ?? [],
+                bids: asset.listing.auction.bids,
                 orders: [],
                 owners: []
               }}

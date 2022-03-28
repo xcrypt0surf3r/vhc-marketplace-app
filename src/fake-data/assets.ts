@@ -14,9 +14,9 @@ export const assets = [
       knowledge about space is synthetic, in that statements about
       space are not simply true by virtue of the meaning of the
       words in the statement.`,
-      typology: 'Exclusive',
-      district: '',
-      island: '',
+      typology: 'EXCLUSIVE',
+      district: 'ALPHA',
+      island: 'ONE',
       x: 1234,
       y: 5678,
       cluster: 10001
