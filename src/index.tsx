@@ -2,6 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { Provider } from 'react-redux'
+import { Web3ReactProvider } from '@web3-react/core'
+import { Web3Provider } from '@ethersproject/providers'
 import App from './App'
 import './index.css'
 import { setupStore } from './state'
@@ -27,12 +29,18 @@ w.vh = {
   ...(isDev() ? dev : prod)
 }
 
+function getLibrary(provider?: any) {
+  return new Web3Provider(provider)
+}
+
 ReactDOM.render(
   <React.StrictMode>
     <HelmetProvider>
-      <Provider store={setupStore()}>
-        <App />
-      </Provider>
+      <Web3ReactProvider getLibrary={getLibrary}>
+        <Provider store={setupStore()}>
+          <App />
+        </Provider>
+      </Web3ReactProvider>
     </HelmetProvider>
   </React.StrictMode>,
   document.getElementById('root')

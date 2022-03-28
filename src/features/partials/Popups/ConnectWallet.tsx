@@ -1,9 +1,14 @@
 import { ChevronRightIcon } from '@heroicons/react/outline'
+import { useAtom } from 'jotai'
 import { WalletConnectIcon } from '../../../assets/images/icons/wallet-connect'
 import metamask from '../../../assets/images/logos/metamask.png'
 import { Modal } from '../../shared/Modal'
 
+import { connectWalletAtom } from '../../../state/atoms/wallet.atoms'
+
 const ConnectWallet = () => {
+  const [, setConnectWallet] = useAtom(connectWalletAtom)
+
   return (
     <Modal
       heading='Connect your wallet'
@@ -25,7 +30,10 @@ const ConnectWallet = () => {
           <ChevronRightIcon className='h-7 w-7 ml-2 text-gray-700' />
         </div>
         <div className='flex items-center cursor-pointer hover:border-orange-600 p-2 border border-transparent rounded-lg'>
-          <div className='w-full flex md:gap-6 gap-4'>
+          <div
+            className='w-full flex md:gap-6 gap-4'
+            onClick={() => setConnectWallet(true)}
+          >
             <div className='w-[3.125rem] h-[3.125rem]'>
               <img
                 src={metamask}

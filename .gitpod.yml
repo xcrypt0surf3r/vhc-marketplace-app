@@ -21,7 +21,6 @@ ports:
     onOpen: ignore
     visibility: public
 
-    
 vscode:
   extensions:
     - dbaeumer.vscode-eslint

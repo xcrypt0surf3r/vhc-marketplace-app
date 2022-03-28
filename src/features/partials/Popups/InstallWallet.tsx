@@ -19,9 +19,15 @@ const InstallWallet = () => {
   const styles = 'flex space-x-4 items-center'
   return (
     <Modal heading='Install Wallet Extension on your browser'>
-      <Button sizer={ButtonSizes.FULL} className='rounded-xl mt-8 mb-12'>
-        Install extension
-      </Button>
+      <a
+        href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en'
+        target='_blank'
+        rel='noreferrer'
+      >
+        <Button sizer={ButtonSizes.FULL} className='rounded-xl mt-8 mb-12'>
+          Install extension
+        </Button>
+      </a>
       <div className='flex flex-col space-y-4 justify-start'>
         <div className={classNames(styles)}>
           <IconWrapper>
