@@ -37,7 +37,7 @@ const graphqlTSBaseQuery = ({ baseUrl }: { baseUrl: string }) => {
 export const baseAPI = createApi({
   reducerPath: 'api',
   baseQuery: graphqlTSBaseQuery({
-    baseUrl: process.env.REACT_APP_API_URL!
+    baseUrl: process.env.REACT_APP_SERVER_API!
   }),
   tagTypes: [ASSETS_TAG],
   endpoints: () => ({})

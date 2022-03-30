@@ -10,6 +10,7 @@ env:
   EBS_APP_NAME: vh-market-staging
   EBS_ENVIRONMENT_NAME: vh-market-staging-env
   S3_BUCKET: vh-market-staging
+  REACT_APP_SERVER_API: https://mp-server-staging.vaulthill.io/graphql
 
 on:
   workflow_dispatch:
@@ -37,6 +38,7 @@ jobs:
           echo "REACT_APP_BRANCH=${{ env.APP_BRANCH }}" >> .env
           echo "REACT_APP_COMMIT=${{ env.APP_COMMIT }}" >> .env
           echo "REACT_APP_NODE_ENV=${{ env.NODE_ENV }}" >> .env
+          echo "REACT_APP_SERVER_API=${{ env.REACT_APP_SERVER_API }}" >> .env
           yarn install
           yarn build
           zip -r ${{ env.EBS_APP_NAME }}-${{ env.DEPLOY_ID }}-${{ steps.current-time.outputs.time }}.zip build Dockerfile
