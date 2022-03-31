@@ -5,7 +5,7 @@ import {
   createFetchableType
 } from 'graphql-ts-client-api'
 import type { WithTypeName, ImplementationType } from '../CommonTypes'
-import { District, Typology, Island } from '../enums'
+import { District, Island, Typology } from '../enums'
 
 /*
  * Any instance of this interface is immutable,

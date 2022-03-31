@@ -1,52 +1,62 @@
 import { Web3Provider } from '@ethersproject/providers'
 import {
   NftSwapV4,
-  SignedNftOrderV4,
-  SwappableAssetV4
+  SignedERC721OrderStruct,
+  SwappableAssetV4,
+  UserFacingERC20AssetDataSerializedV4,
+  UserFacingERC721AssetDataSerializedV4
 } from '@traderxyz/nft-swap-sdk'
 
-export const createBuyNowOrder = async (
-  provider: Web3Provider,
-  makerAddress: string,
-  makerTokenAddress: string,
-  makerTokenId: string,
-  takerTokenAddress: string,
-  takerTokenAmount: string,
-  expiryDate: Date
-): Promise<SignedNftOrderV4> => {
+export const initSwapSdk = (provider: Web3Provider): NftSwapV4 => {
   const signer = provider.getSigner()
   const chainId: number = +process.env.REACT_APP_CHAIN_ID!
   const nftSwapSdk = new NftSwapV4(provider, signer, chainId)
+  return nftSwapSdk
+}
 
-  const makerSwapAssets: SwappableAssetV4 = {
-    tokenAddress: makerTokenAddress,
-    tokenId: makerTokenId,
-    type: 'ERC721'
-  }
+export const approveAssetsForSwap = async (
+  provider: Web3Provider,
+  walletAddress: string,
+  swapAssets: SwappableAssetV4
+): Promise<{ approved: boolean }> => {
+  try {
+    const nftSwapSdk = initSwapSdk(provider)
 
-  // Check if maker has approved assets to be swapped
-  const makerApprovalStatus = await nftSwapSdk.loadApprovalStatus(
-    makerSwapAssets,
-    makerAddress
-  )
-  // Initiate maker asset approval for swap if necessary
-  if (!makerApprovalStatus.contractApproved) {
-    const approvalTx = await nftSwapSdk.approveTokenOrNftByAsset(
-      makerSwapAssets,
-      makerAddress
+    const approvalStatus = await nftSwapSdk.loadApprovalStatus(
+      swapAssets,
+      walletAddress
     )
-    const approvalTxReceipt = approvalTx.wait()
+
+    // Initiate asset approval for swap if necessary
+    if (!approvalStatus.contractApproved) {
+      // This will throw an error if the user rejects the approval - handle accordingly.
+      const approvalTx = await nftSwapSdk.approveTokenOrNftByAsset(
+        swapAssets,
+        walletAddress
+      )
+      const approvalTxReceipt = approvalTx.wait()
+      // eslint-disable-next-line no-console
+      console.info(
+        `Approved ${swapAssets.tokenAddress} contract to swap with 0x - txHash: ${approvalTxReceipt}`
+      )
+    }
+    return { approved: true }
+  } catch (error) {
     // eslint-disable-next-line no-console
-    console.info(
-      `Approved ${makerSwapAssets.tokenAddress} contract to swap with 0x - txHash: ${approvalTxReceipt}`
-    )
+    console.error(error)
+    return { approved: false }
   }
+}
 
-  const takerSwapAssets: SwappableAssetV4 = {
-    tokenAddress: takerTokenAddress,
-    amount: takerTokenAmount,
-    type: 'ERC20'
-  }
+// This function should be called following `approveAssetsForSwap` for the makers assets
+export const createBuyNowOrder = async (
+  provider: Web3Provider,
+  makerAddress: string,
+  makerSwapAssets: UserFacingERC721AssetDataSerializedV4,
+  takerSwapAssets: UserFacingERC20AssetDataSerializedV4,
+  expiryDate: Date
+): Promise<SignedERC721OrderStruct> => {
+  const nftSwapSdk = initSwapSdk(provider)
 
   const order = nftSwapSdk.buildOrder(
     makerSwapAssets,
@@ -55,5 +65,18 @@ export const createBuyNowOrder = async (
     { expiry: expiryDate }
   )
   const signedOrder = await nftSwapSdk.signOrder(order)
-  return signedOrder
+  return signedOrder as SignedERC721OrderStruct
+}
+
+// This function should be called following `approveAssetsForSwap` for the takers assets
+export const fillBuyNowOrder = async (
+  provider: Web3Provider,
+  order: SignedERC721OrderStruct
+) => {
+  const nftSwapSdk = initSwapSdk(provider)
+  const fillTransaction = await nftSwapSdk.fillSignedOrder(order)
+  const fillReceipt = await nftSwapSdk.awaitTransactionHash(
+    fillTransaction.hash
+  )
+  return fillReceipt
 }

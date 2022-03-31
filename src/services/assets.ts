@@ -1,18 +1,13 @@
 import { ModelType } from 'graphql-ts-client-api'
 import { Asset, Vland } from '../types'
 import { mutation$, query$ } from '../__generated/fetchers'
+import { CreateBuyNowInput, FillBuyNowInput } from '../__generated/inputs'
 import { baseAPI } from './api'
 import { ASSET_FETCHER, ASSET_LIST_FETCHER, LISTING_FETCHER } from './queries'
 import { ASSETS_TAG } from './tags'
 
 export type GetAssetsResponse = {
   assets: Asset[]
-}
-
-export type BuyNowInputType = {
-  order: string
-  assetId: string
-  assetAddress: string
 }
 
 export type AssetIdInputType = {
@@ -54,14 +49,22 @@ export const assetApi = baseAPI.injectEndpoints({
         }
       })
     }),
-    createBuyNow: builder.mutation<ListType, BuyNowInputType>({
-      query: ({ order, assetId, assetAddress }) => ({
+    createBuyNow: builder.mutation<ListType, CreateBuyNowInput>({
+      query: (data: CreateBuyNowInput) => ({
         fetcher: mutation$.createBuyNowListing(LISTING_FETCHER),
         options: {
           variables: {
-            order,
-            assetId,
-            assetAddress
+            data
+          }
+        }
+      })
+    }),
+    fillBuyNow: builder.mutation<ListType, FillBuyNowInput>({
+      query: (data: FillBuyNowInput) => ({
+        fetcher: mutation$.fillBuyNowListing(LISTING_FETCHER),
+        options: {
+          variables: {
+            data
           }
         }
       })
@@ -72,5 +75,6 @@ export const assetApi = baseAPI.injectEndpoints({
 export const {
   useGetAssetsQuery,
   useGetAssetByTokenIdQuery,
-  useCreateBuyNowMutation
+  useCreateBuyNowMutation,
+  useFillBuyNowMutation
 } = assetApi
