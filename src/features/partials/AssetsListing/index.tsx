@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Asset, Vland } from '../../../types'
+import { Asset } from '../../../services/queries'
 import AssetCard from '../../elements/AssetCard'
-import assetImage from '../../../assets/images/asset-image-1.png'
 
 import {
   AssetCardSkeleton,
@@ -12,27 +10,15 @@ import {
 const AssetsListing = ({
   skeletons,
   title,
-  data,
-  loading,
-  fetching,
-  success
+  assets,
+  isLoading
 }: {
   skeletons: number
   title: string
-  data: any
-  loading: boolean
-  fetching: boolean
-  success: boolean
+  assets: Asset[]
+  isLoading: boolean
 }) => {
   const navigate = useNavigate()
-
-  const [assets, setAssets] = useState<any[]>([])
-
-  useEffect(() => {
-    setAssets(data)
-  }, [data, success])
-
-  const fetchingAssets = fetching || loading
 
   return (
     <div className='bg-white'>
@@ -59,7 +45,7 @@ const AssetsListing = ({
           </div> */}
         </div>
 
-        {fetchingAssets ? (
+        {isLoading ? (
           <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6 lg:gap-x-8'>
             {AssetCardSkeleton(skeletons).map((x, i) => (
               <CardSkeleton key={i} />
@@ -67,25 +53,24 @@ const AssetsListing = ({
           </div>
         ) : (
           <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6 lg:gap-x-8'>
-            {assets &&
-              assets.map((asset: Asset<Vland>, j) => {
-                return (
-                  <AssetCard
-                    key={asset.tokenId}
-                    tokenId={asset.tokenId}
-                    owner={asset.owner}
-                    name={asset.assetData.name}
-                    typology={asset.assetData.typology}
-                    avatar={`https://picsum.photos/id/${j}/31/31`}
-                    image={assetImage}
-                    onClick={() =>
-                      navigate(`/asset-details/${asset.tokenId}`, {
-                        replace: true
-                      })
-                    }
-                  />
-                )
-              })}
+            {assets.map((asset: Asset, j) => {
+              return (
+                <AssetCard
+                  key={asset.tokenId}
+                  tokenId={asset.tokenId}
+                  owner={asset.owner}
+                  name={asset.assetData.name}
+                  typology={asset.assetData.typology}
+                  avatar={`https://picsum.photos/id/${j}/31/31`}
+                  image={`https://picsum.photos/id/${50 + j}/600/600`}
+                  onClick={() =>
+                    navigate(`/asset-details/${asset.tokenId}`, {
+                      replace: true
+                    })
+                  }
+                />
+              )
+            })}
           </div>
         )}
 

@@ -1,12 +1,14 @@
+import { useAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 import currencyIcon from '../../../assets/images/icons/currency.svg'
 import BidCountDownTimer from '../../../pages/asset-details/BidCountdownTimer'
+import { AssetWithListing } from '../../../services/queries'
 import { useAppDispatch } from '../../../state'
+import { listingAtom } from '../../../state/atoms/listing.atoms'
 import { openModal, Popup } from '../../../state/popup.slice'
-import { ListingType } from '../../../types'
 import { classNames, styleTypology, truncate } from '../../../utils'
 import { AssetDetailSkeleton } from '../../elements/AssetDetailSkeleton'
-import { Button, ButtonColors, ButtonSizes } from '../../shared/Form'
+import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import Properties from './Properties'
 import SalesHistory from './SalesHistory'
 
@@ -22,20 +24,70 @@ const AssetDetails = ({
   success: boolean
 }) => {
   const dispatch = useAppDispatch()
-  const [asset, setAsset] = useState<any>()
+  const [asset, setAsset] = useState<AssetWithListing>()
+  const [, setListing] = useAtom(listingAtom)
 
   useEffect(() => {
     setAsset(data?.asset)
   }, [data, loading, fetching, success])
 
   const handleClick = () => {
-    if (asset?.listing?.type === ListingType.BUY_NOW) {
+    setListing(asset?.listing)
+    if (asset?.listing?.type === 'BUY_NOW') {
       dispatch(openModal(Popup.BUY_NOW))
     }
-    if (asset?.listing?.type === ListingType.AUCTION) {
+    if (asset?.listing?.type === 'AUCTION') {
       dispatch(openModal(Popup.PLACE_BID))
     }
   }
+
+  const renderBuyNowPrice = () => (
+    <div className='flex flex-col'>
+      <span className='text-[#505780] font-xs'>Price</span>
+      <div className='flex items-center gap-3'>
+        <img
+          src={currencyIcon}
+          className='w-6 h-6 object-center object-cover rounded-[.75rem] inline-block'
+        />
+        {asset?.listing?.buyNow && (
+          <span className='font-medium text-2xl'>
+            {asset.listing.buyNow.price.value} $
+            {asset.listing.buyNow.price.currency}
+          </span>
+        )}
+      </div>
+    </div>
+  )
+
+  const renderAuctionPrice = () => (
+    <div className='flex flex-col'>
+      <span className='text-[#505780] font-xs'>Price</span>
+      <div className='flex items-center gap-3'>
+        <img
+          src={currencyIcon}
+          alt={'4000 $VHC'}
+          className='w-6 h-6 object-center object-cover rounded-[.75rem] inline-block'
+        />
+        <span className='font-medium text-2xl'>4000 $VHC</span>
+        <span className='font-thin text-[#505780]font-sm border-l border-l-gray-300 pl-3'>
+          $200
+        </span>
+      </div>
+    </div>
+  )
+
+  const renderPrice = () => {
+    if (!asset?.listing) return null
+
+    if (asset.listing?.type === 'BUY_NOW') {
+      return renderBuyNowPrice()
+    }
+    if (asset?.listing?.type === 'AUCTION') {
+      return renderAuctionPrice()
+    }
+    return null
+  }
+
   return (
     <div className='bg-white flex flex-col justify-center md:flex'>
       {asset?.assetData ? (
@@ -94,28 +146,16 @@ const AssetDetails = ({
                     <p className='font-sm mt-4 mb-6'>
                       {asset.assetData.description}
                     </p>
-                    {asset?.listing?.type === ListingType.AUCTION && (
-                      <BidCountDownTimer
-                        startDate={asset?.listing?.auction.startDate}
-                        endDate={asset?.listing?.auction.endDate}
-                      />
-                    )}
-                    <div className='flex flex-col'>
-                      <span className='text-[#505780] font-xs'>Price</span>
-                      <div className='flex items-center gap-3'>
-                        <img
-                          src={currencyIcon}
-                          alt={'4000 $VHC'}
-                          className='w-6 h-6 object-center object-cover rounded-[.75rem] inline-block'
+                    {asset?.listing?.type === 'AUCTION' &&
+                      asset.listing.auction && (
+                        <BidCountDownTimer
+                          startDate={new Date(asset.listing.auction.startDate)}
+                          endDate={new Date(asset.listing.auction.endDate)}
                         />
-                        <span className='font-medium text-2xl font-prototype'>
-                          4000 $VHC
-                        </span>
-                        <span className='font-thin text-[#505780]font-sm border-l border-l-gray-300 pl-3'>
-                          $200
-                        </span>
-                      </div>
-                    </div>
+                      )}
+
+                    {renderPrice()}
+
                     {asset?.listing && (
                       <div className='flex pt-10 justify-between gap-4 overflow-x-visible'>
                         <Button
@@ -125,9 +165,9 @@ const AssetDetails = ({
                           color={ButtonColors.PRIMARY}
                           onClick={handleClick}
                         >
-                          {asset?.listing?.type === ListingType.BUY_NOW
+                          {asset?.listing?.type === 'BUY_NOW'
                             ? 'Buy now'
-                            : asset?.listing?.type === ListingType.AUCTION
+                            : asset?.listing?.type === 'AUCTION'
                             ? 'Place a bid'
                             : ''}
                         </Button>
@@ -150,7 +190,7 @@ const AssetDetails = ({
             <Properties />
             <SalesHistory
               panels={{
-                bids: asset.listing.auction.bids,
+                bids: asset.listing?.auction?.bids ?? [],
                 orders: [],
                 owners: []
               }}

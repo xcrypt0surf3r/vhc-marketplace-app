@@ -8,7 +8,7 @@ import { Fragment, useState } from 'react'
 import { useAppDispatch } from '../../../state'
 import { openModal, Popup } from '../../../state/popup.slice'
 import { classNames } from '../../../utils'
-import { Button, ButtonColors, ButtonSizes } from '../../shared/Form'
+import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import { Modal } from '../../shared/Modal'
 
 const currencyOptions = ['$VHC', '$USD']

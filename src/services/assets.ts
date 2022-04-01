@@ -1,47 +1,41 @@
 import { ModelType } from 'graphql-ts-client-api'
-import { Asset, Vland } from '../types'
 import { mutation$ } from '../__generated/fetchers'
 import { CreateBuyNowInput, FillBuyNowInput } from '../__generated/inputs'
 import { baseAPI } from './api'
-import { ASSET_FETCHER, ASSET_LIST_FETCHER, LISTING_FETCHER } from './queries'
-import { ASSETS_TAG } from './tags'
-
-export type GetAssetsResponse = {
-  assets: Asset[]
-}
-
-export type AssetIdInputType = {
-  tokenId: number
-}
-
-export type AssetType = ModelType<typeof ASSET_FETCHER>
-
-export type ListType = ModelType<typeof LISTING_FETCHER>
+import {
+  Asset,
+  ASSETS_QUERY,
+  Listing,
+  LISTING_FETCHER,
+  ASSET_LISTING_QUERY,
+  AssetWithListing
+} from './queries'
+import { ASSET_TAG } from './tags'
 
 export const assetApi = baseAPI.injectEndpoints({
   endpoints: (builder) => ({
-    getAssets: builder.query<Asset<Vland | any>[], void>({
+    getAssets: builder.query<Asset[], void>({
       query: () => ({
-        fetcher: ASSET_LIST_FETCHER
+        fetcher: ASSETS_QUERY
       }),
       providesTags: (response) => {
         return response
           ? [
               ...response.map(({ tokenId }) => ({
-                type: 'ASSETS' as const,
+                type: 'ASSET' as const,
                 tokenId
               })),
-              { type: ASSETS_TAG, id: 'LIST' }
+              { type: ASSET_TAG, id: 'LIST' }
             ]
-          : [{ type: ASSETS_TAG, id: 'LIST' }]
+          : [{ type: ASSET_TAG, id: 'LIST' }]
       },
-      transformResponse: (response: GetAssetsResponse) => {
-        return response.assets
+      transformResponse: (response: ModelType<typeof ASSETS_QUERY>) => {
+        return response.assets as Asset[]
       }
     }),
-    getAssetByTokenId: builder.query<AssetType, AssetIdInputType>({
+    getAssetByTokenId: builder.query<AssetWithListing, { tokenId: number }>({
       query: ({ tokenId }) => ({
-        fetcher: ASSET_FETCHER,
+        fetcher: ASSET_LISTING_QUERY,
         options: {
           variables: {
             tokenId
@@ -49,7 +43,7 @@ export const assetApi = baseAPI.injectEndpoints({
         }
       })
     }),
-    createBuyNow: builder.mutation<ListType, CreateBuyNowInput>({
+    createBuyNow: builder.mutation<Listing, CreateBuyNowInput>({
       query: (data: CreateBuyNowInput) => ({
         fetcher: mutation$.createBuyNowListing(LISTING_FETCHER),
         options: {
@@ -59,7 +53,7 @@ export const assetApi = baseAPI.injectEndpoints({
         }
       })
     }),
-    fillBuyNow: builder.mutation<ListType, FillBuyNowInput>({
+    fillBuyNow: builder.mutation<Listing, FillBuyNowInput>({
       query: (data: FillBuyNowInput) => ({
         fetcher: mutation$.fillBuyNowListing(LISTING_FETCHER),
         options: {

@@ -30,7 +30,7 @@ const SalesHistory = ({ panels }: { panels: any }) => {
                 'bg-white rounded-lg border-[#E4ECF7]-600 border-2'
               )}
             >
-              {panels[keyName].length === 0 ? (
+              {panels[keyName]?.length === 0 ? (
                 <div className='bg-slate-100 m-2 flex flex-col items-center justify-center h-80'>
                   <img src={bulkCoinIcon} alt={keyName} className='pt-8 px-8' />
                   <span className='pb-8 font-sm text-[#718096]'>

@@ -1,10 +1,14 @@
+import { useAtom } from 'jotai'
 import { checkout } from '../../../fake-data/buy-now'
 import { useAppDispatch } from '../../../state'
+import { listingAtom } from '../../../state/atoms/listing.atoms'
 import { openModal, Popup } from '../../../state/popup.slice'
-import { Button, ButtonColors, ButtonSizes } from '../../shared/Form'
+import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import { Modal } from '../../shared/Modal'
 
 const Checkout = () => {
+  const [listing] = useAtom(listingAtom)
+
   const dispatch = useAppDispatch()
 
   const handleSubmit = () => {
@@ -32,17 +36,16 @@ const Checkout = () => {
           </div>
           <div className='flex flex-col items-end'>
             <span className='text-gray-500'>Price</span>
-            <span className='text-lg'>$VHC {checkout.priceVHC}</span>
+            <span className='text-lg'>
+              ${listing?.buyNow?.price.currency} {listing?.buyNow?.price.value}
+            </span>
           </div>
         </div>
         <div className='flex justify-between py-5'>
           <span className='font-medium'>Total</span>
           <div className='flex flex-col items-end'>
             <span className='text-lg'>
-              $VHC {checkout.priceVHC * checkout.quantity}
-            </span>
-            <span className='text-gray-500'>
-              &#36;{checkout.priceUSD * checkout.quantity}
+              ${listing?.buyNow?.price.currency} {listing?.buyNow?.price.value}
             </span>
           </div>
         </div>

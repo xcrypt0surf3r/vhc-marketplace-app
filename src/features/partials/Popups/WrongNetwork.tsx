@@ -1,4 +1,4 @@
-import { Button, ButtonSizes } from '../../shared/Form'
+import { Button, ButtonSizes } from '../../shared/Button'
 import { Modal } from '../../shared/Modal'
 
 const WrongNetwork = () => {

@@ -1,13 +1,36 @@
 import { CheckCircleIcon } from '@heroicons/react/solid'
+import { UserFacingERC20AssetDataSerializedV4 } from '@traderxyz/nft-swap-sdk'
+import { useWeb3React } from '@web3-react/core'
+import { ethers } from 'ethers'
+import { useAtom } from 'jotai'
 import { useState } from 'react'
+import { useFillBuyNowMutation } from '../../../services/assets'
+import { approveAssetsForSwap, fillBuyNowOrder } from '../../../services/order'
 import { useAppDispatch, useAppSelector } from '../../../state'
+import { listingAtom } from '../../../state/atoms/listing.atoms'
 import { getPopup, openModal, Popup } from '../../../state/popup.slice'
-import { Button, ButtonColors, ButtonSizes } from '../../shared/Form'
+import { getERC20TokenAddress } from '../../../utils'
+import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import { Modal } from '../../shared/Modal'
 
 const Payment = () => {
-  const [approve, setApprove] = useState(false)
-  const [sign, setSign] = useState(false)
+  const { account, connector } = useWeb3React()
+  const [listing] = useAtom(listingAtom)
+
+  const [isApproved, setIsApproved] = useState(false)
+  const [isConfirming, setIsConfirming] = useState(true)
+  const [isSigned, setIsSigned] = useState(false)
+
+  const [fillBuyNowMutation, { isLoading, isError, isSuccess }] =
+    useFillBuyNowMutation()
+
+  console.log(
+    'isLoading, isError, isSuccess',
+    isLoading,
+    isError,
+    isSuccess,
+    isConfirming
+  )
 
   const dispatch = useAppDispatch()
   const popups = useAppSelector(getPopup)
@@ -28,11 +51,58 @@ const Payment = () => {
     dispatch(openModal(nextModal))
   }
 
+  const handleUnlock = async () => {
+    const provider = new ethers.providers.Web3Provider(
+      await connector?.getProvider()
+    )
+    if (!listing?.buyNow || !account) return
+
+    const currencyAddress = getERC20TokenAddress(listing.buyNow.price.currency)
+    if (!currencyAddress) return
+
+    const swapAssets: UserFacingERC20AssetDataSerializedV4 = {
+      type: 'ERC20',
+      tokenAddress: currencyAddress,
+      amount: listing.buyNow.price.value.toString()
+    }
+    const { approved } = await approveAssetsForSwap(
+      provider,
+      account,
+      swapAssets
+    )
+    setIsApproved(approved)
+  }
+
+  const handleConfirmBuyNow = async () => {
+    // TODO add check here so that cannot execute func if has already been called.
+    const provider = new ethers.providers.Web3Provider(
+      await connector?.getProvider()
+    )
+    if (!account) return
+
+    if (listing?.buyNow?.order) {
+      const order = JSON.parse(listing?.buyNow?.order)
+      setIsConfirming(true)
+      const txReceipt = await fillBuyNowOrder(provider, order)
+
+      await fillBuyNowMutation({
+        assetAddress: listing.assetAddress,
+        assetId: listing.assetId,
+        txReceipt: JSON.stringify(txReceipt),
+        txHash: txReceipt.transactionHash,
+        makerAddress: listing.makerAddress,
+        takerAddress: account
+      })
+      setIsConfirming(false)
+      setIsSigned(true)
+    }
+  }
+
   return (
     <Modal heading='Payment' align='center' className='max-w-[32rem]'>
       <div className='grid grid-cols-1 divide-y gap-6'>
         <div className='flex gap-x-6'>
-          {!approve ? (
+          {!isApproved ? (
             <span className='text-xs bg-slate-200 text-indigo-300 rounded-full h-6 w-6 shrink-0 flex items-center justify-center'>
               1
             </span>
@@ -45,12 +115,12 @@ const Payment = () => {
               Submit a transaction with your wallet to trade with this currency.
               This only needs to be done once.
             </span>
-            {!approve && (
+            {!isApproved && (
               <Button
                 sizer={ButtonSizes.SMALL}
                 color={ButtonColors.PRIMARY}
                 className='rounded-xl'
-                onClick={() => setApprove(true)}
+                onClick={handleUnlock}
               >
                 Unlock
               </Button>
@@ -58,7 +128,7 @@ const Payment = () => {
           </div>
         </div>
         <div className='flex gap-x-6 pt-6'>
-          {!sign ? (
+          {!isSigned ? (
             <span className='text-xs bg-slate-200 text-indigo-300 rounded-full h-6 w-6 shrink-0 flex items-center justify-center'>
               2
             </span>
@@ -70,19 +140,20 @@ const Payment = () => {
             <span className='text-sm text-gray-600'>
               Sign a message using your wallet to continue
             </span>
-            {approve && !sign && (
+            {isApproved && !isSigned && (
               <Button
                 sizer={ButtonSizes.SMALL}
                 color={ButtonColors.PRIMARY}
                 className='rounded-xl'
-                onClick={() => setSign(true)}
+                onClick={handleConfirmBuyNow}
+                isLoading={isConfirming}
               >
                 Sign
               </Button>
             )}
           </div>
         </div>
-        {approve && sign && (
+        {isApproved && isSigned && (
           <div className='pt-5'>
             <Button
               color={ButtonColors.PRIMARY}

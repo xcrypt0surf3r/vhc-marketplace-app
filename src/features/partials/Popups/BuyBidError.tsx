@@ -1,5 +1,5 @@
 import { ExclamationCircleIcon } from '@heroicons/react/outline'
-import { Button, ButtonColors, ButtonSizes } from '../../shared/Form'
+import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import { Modal } from '../../shared/Modal'
 
 const BuyBidError = () => {

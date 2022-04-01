@@ -3,7 +3,7 @@ import { buyNow, IBuyNow } from '../../../fake-data/buy-now'
 import { useAppDispatch } from '../../../state'
 import { openModal, Popup } from '../../../state/popup.slice'
 import { classNames, truncate } from '../../../utils'
-import { Button, ButtonColors, ButtonSizes } from '../../shared/Form'
+import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import { Modal } from '../../shared/Modal'
 
 const BuyNow = () => {
@@ -31,8 +31,6 @@ const BuyNow = () => {
                 )}
               >
                 {data[key]}
-                {key === 'Total sales' && ' sales'}
-                {key === 'Total assets' && ' assets'}
               </td>
             </tr>
           ))}

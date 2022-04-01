@@ -2,7 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { Fetcher } from 'graphql-ts-client-api'
 import { execute, setGraphQLExecutor } from '../__generated'
-import { ASSETS_TAG } from './tags'
+import { ASSET_TAG } from './tags'
 
 const graphqlTSBaseQuery = ({ baseUrl }: { baseUrl: string }) => {
   setGraphQLExecutor(async (request, variables) => {
@@ -39,6 +39,6 @@ export const baseAPI = createApi({
   baseQuery: graphqlTSBaseQuery({
     baseUrl: process.env.REACT_APP_SERVER_API!
   }),
-  tagTypes: [ASSETS_TAG],
+  tagTypes: [ASSET_TAG],
   endpoints: () => ({})
 })

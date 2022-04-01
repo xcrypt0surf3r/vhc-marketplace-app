@@ -1,5 +1,3 @@
-import { ListingType } from '../types'
-
 export const assets = [
   {
     tokenId: 1,
@@ -27,7 +25,7 @@ export const assets = [
     price: '2,000',
     createdAtTimestamp: new Date(),
     listing: {
-      type: ListingType.BUY_NOW
+      type: 'BUY_NOW'
     }
   }
 ]

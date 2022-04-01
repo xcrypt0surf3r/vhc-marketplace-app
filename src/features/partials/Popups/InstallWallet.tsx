@@ -5,7 +5,7 @@ import {
   PaperclipIcon
 } from '../../../assets/images/icons'
 import { classNames } from '../../../utils'
-import { Button, ButtonSizes } from '../../shared/Form'
+import { Button, ButtonSizes } from '../../shared/Button'
 import { Modal } from '../../shared/Modal'
 
 const InstallWallet = () => {

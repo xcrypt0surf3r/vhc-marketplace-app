@@ -2,7 +2,7 @@ import { Disclosure } from '@headlessui/react'
 import Hamburger from './Hamburger'
 import Logo from './Logo'
 import ConnectWallet from './ConnectWallet'
-import { Button, ButtonColors, ButtonSizes } from '../Form'
+import { Button, ButtonColors, ButtonSizes } from '../Button'
 
 const Header = () => {
   return (

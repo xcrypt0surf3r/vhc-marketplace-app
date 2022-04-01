@@ -1,1 +1,1 @@
-export const ASSETS_TAG = 'ASSETS'
+export const ASSET_TAG = 'ASSET'

@@ -97,30 +97,30 @@ export interface FillDetailsFetcher<T extends object, TVariables extends object>
     TVariables
   >
 
-  takerAddress<X extends object, XVariables extends object>(
-    child: ObjectFetcher<'Price', X, XVariables>
-  ): FillDetailsFetcher<
-    T & { readonly takerAddress: X },
-    TVariables & XVariables
+  readonly takerAddress: FillDetailsFetcher<
+    T & { readonly takerAddress: string },
+    TVariables
   >
 
-  takerAddress<
-    X extends object,
-    XVariables extends object,
+  'takerAddress+'<
     XAlias extends string = 'takerAddress',
     XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
     XDirectiveVariables extends object = {}
   >(
-    child: ObjectFetcher<'Price', X, XVariables>,
     optionsConfigurer: (
       options: FieldOptions<'takerAddress', {}, {}>
     ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
   ): FillDetailsFetcher<
     T &
       (XDirectives extends { readonly include: any } | { readonly skip: any }
-        ? { readonly [key in XAlias]?: X }
-        : { readonly [key in XAlias]: X }),
-    TVariables & XVariables & XDirectiveVariables
+        ? { readonly [key in XAlias]?: string }
+        : { readonly [key in XAlias]: string }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~takerAddress': FillDetailsFetcher<
+    Omit<T, 'takerAddress'>,
+    TVariables
   >
 
   price<X extends object, XVariables extends object>(
@@ -201,11 +201,7 @@ export const fillDetails$: FillDetailsFetcher<{}, {}> = createFetcher(
     [
       'fillDate',
       'makerAddress',
-      {
-        category: 'SCALAR',
-        name: 'takerAddress',
-        targetTypeName: 'Price'
-      },
+      'takerAddress',
       {
         category: 'SCALAR',
         name: 'price',
@@ -218,4 +214,5 @@ export const fillDetails$: FillDetailsFetcher<{}, {}> = createFetcher(
   undefined
 )
 
-export const fillDetails$$ = fillDetails$.fillDate.makerAddress.txHash.txReceipt
+export const fillDetails$$ =
+  fillDetails$.fillDate.makerAddress.takerAddress.txHash.txReceipt

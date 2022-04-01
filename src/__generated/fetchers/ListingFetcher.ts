@@ -46,6 +46,29 @@ export interface ListingFetcher<T extends object, TVariables extends object>
     TVariables
   >
 
+  readonly makerAddress: ListingFetcher<
+    T & { readonly makerAddress: string },
+    TVariables
+  >
+
+  'makerAddress+'<
+    XAlias extends string = 'makerAddress',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'makerAddress', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): ListingFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: string }
+        : { readonly [key in XAlias]: string }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~makerAddress': ListingFetcher<Omit<T, 'makerAddress'>, TVariables>
+
   readonly assetId: ListingFetcher<T & { readonly assetId: string }, TVariables>
 
   'assetId+'<
@@ -132,25 +155,28 @@ export interface ListingFetcher<T extends object, TVariables extends object>
 
   readonly '~status': ListingFetcher<Omit<T, 'status'>, TVariables>
 
-  readonly order: ListingFetcher<T & { readonly order?: string }, TVariables>
+  buyNow<X extends object, XVariables extends object>(
+    child: ObjectFetcher<'BuyNow', X, XVariables>
+  ): ListingFetcher<T & { readonly buyNow?: X }, TVariables & XVariables>
 
-  'order+'<
-    XAlias extends string = 'order',
+  buyNow<
+    X extends object,
+    XVariables extends object,
+    XAlias extends string = 'buyNow',
     XDirectiveVariables extends object = {}
   >(
+    child: ObjectFetcher<'BuyNow', X, XVariables>,
     optionsConfigurer: (
-      options: FieldOptions<'order', {}, {}>
+      options: FieldOptions<'buyNow', {}, {}>
     ) => FieldOptions<
       XAlias,
       { readonly [key: string]: DirectiveArgs },
       XDirectiveVariables
     >
   ): ListingFetcher<
-    T & { readonly [key in XAlias]?: string },
-    TVariables & XDirectiveVariables
+    T & { readonly [key in XAlias]?: X },
+    TVariables & XVariables & XDirectiveVariables
   >
-
-  readonly '~order': ListingFetcher<Omit<T, 'order'>, TVariables>
 
   auction<X extends object, XVariables extends object>(
     child: ObjectFetcher<'Auction', X, XVariables>
@@ -197,29 +223,6 @@ export interface ListingFetcher<T extends object, TVariables extends object>
     T & { readonly [key in XAlias]?: X },
     TVariables & XVariables & XDirectiveVariables
   >
-
-  readonly receipt: ListingFetcher<
-    T & { readonly receipt?: string },
-    TVariables
-  >
-
-  'receipt+'<
-    XAlias extends string = 'receipt',
-    XDirectiveVariables extends object = {}
-  >(
-    optionsConfigurer: (
-      options: FieldOptions<'receipt', {}, {}>
-    ) => FieldOptions<
-      XAlias,
-      { readonly [key: string]: DirectiveArgs },
-      XDirectiveVariables
-    >
-  ): ListingFetcher<
-    T & { readonly [key in XAlias]?: string },
-    TVariables & XDirectiveVariables
-  >
-
-  readonly '~receipt': ListingFetcher<Omit<T, 'receipt'>, TVariables>
 }
 
 export const listing$: ListingFetcher<{}, {}> = createFetcher(
@@ -228,13 +231,15 @@ export const listing$: ListingFetcher<{}, {}> = createFetcher(
     'EMBEDDED',
     [],
     [
+      'makerAddress',
       'assetId',
       'assetAddress',
       'type',
       'status',
       {
         category: 'SCALAR',
-        name: 'order',
+        name: 'buyNow',
+        targetTypeName: 'BuyNow',
         undefinable: true
       },
       {
@@ -248,15 +253,10 @@ export const listing$: ListingFetcher<{}, {}> = createFetcher(
         name: 'fillDetails',
         targetTypeName: 'FillDetails',
         undefinable: true
-      },
-      {
-        category: 'SCALAR',
-        name: 'receipt',
-        undefinable: true
       }
     ]
   ),
   undefined
 )
 
-export const listing$$ = listing$.assetId.assetAddress.type.status.order
+export const listing$$ = listing$.makerAddress.assetId.assetAddress.type.status

@@ -1,3 +1,4 @@
+import { ClipLoader } from 'react-spinners'
 import { classNames } from '../../utils'
 
 export enum ButtonColors {
@@ -17,6 +18,7 @@ export const Button = ({
   sizer = ButtonSizes.MEDIUM,
   color = ButtonColors.SECONDARY,
   isDisabled,
+  isLoading,
   magnify,
   className = '',
   children,
@@ -33,14 +35,21 @@ export const Button = ({
       )}
       {...props}
     >
-      <span className='sr-only'>{children}</span>
-      {children}
+      {isLoading ? (
+        <ClipLoader size={20} color='white' />
+      ) : (
+        <>
+          <span className='sr-only'>{children}</span>
+          {children}
+        </>
+      )}
     </button>
   )
 }
 
 type ButtonProps = {
   isDisabled?: boolean
+  isLoading?: boolean
   className?: string
   color?: string
   sizer?: string

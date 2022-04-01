@@ -3,7 +3,7 @@ import { Contract, ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { useAtom } from 'jotai'
 import { closeModal, openModal, Popup } from '../../../state/popup.slice'
-import { Button, ButtonSizes, ButtonColors } from '../Form'
+import { Button, ButtonSizes, ButtonColors } from '../Button'
 import { injected } from '../../../web3/connectors'
 import { useAppDispatch } from '../../../state'
 import {
