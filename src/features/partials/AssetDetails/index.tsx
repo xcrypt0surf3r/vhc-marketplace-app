@@ -5,6 +5,7 @@ import { useAppDispatch } from '../../../state'
 import { openModal, Popup } from '../../../state/popup.slice'
 import { ListingType } from '../../../types'
 import { classNames, styleTypology, truncate } from '../../../utils'
+import { AssetDetailSkeleton } from '../../elements/AssetDetailSkeleton'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Form'
 import Properties from './Properties'
 import SalesHistory from './SalesHistory'
@@ -157,7 +158,7 @@ const AssetDetails = ({
           </div>
         </div>
       ) : (
-        <p>Loading...</p>
+        <AssetDetailSkeleton />
       )}
     </div>
   )
