@@ -39,6 +39,7 @@ const ConnectWallet = () => {
         await activate(injected)
         dispatch(closeModal())
         setConnectWallet(false)
+        setDisconnected(false)
       } catch (ex) {
         window.console.log('connect error', ex)
       }
@@ -50,7 +51,15 @@ const ConnectWallet = () => {
         dispatch(openModal(Popup.INSTALL_WALLET))
       }
     }
-  }, [account, activate, connectWallet, dispatch, initialize, setConnectWallet])
+  }, [
+    account,
+    activate,
+    connectWallet,
+    dispatch,
+    initialize,
+    setDisconnected,
+    setConnectWallet
+  ])
 
   useEffect(() => {
     // user has explicited disconnected, so don't initialized unless
@@ -58,7 +67,7 @@ const ConnectWallet = () => {
     if (!diconnected) {
       initialize()
     }
-  }, [diconnected, initialize])
+  })
 
   useEffect(() => {
     if (window.ethereum) {
