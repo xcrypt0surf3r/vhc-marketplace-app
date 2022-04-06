@@ -1,11 +1,11 @@
 import { Menu } from '@headlessui/react'
+import { useAtom } from 'jotai'
+import { walletBalanceAtom } from '../../../state/atoms/wallet.atoms'
 import { truncate } from '../../../utils'
 
 type Props = {
   account: string
   subMenuItems: MenuItems[]
-  balance: number
-  balanceInDollar: number
 }
 
 export interface MenuItems {
@@ -14,12 +14,9 @@ export interface MenuItems {
   onClick?: Function
 }
 
-const ProfileMenu = ({
-  account,
-  subMenuItems,
-  balance,
-  balanceInDollar
-}: Props) => {
+const ProfileMenu = ({ account, subMenuItems }: Props) => {
+  const [walletBalance] = useAtom(walletBalanceAtom)
+
   return (
     <Menu as='div' className='relative inline-block'>
       <div className='ml-2'>
@@ -38,9 +35,13 @@ const ProfileMenu = ({
           <div className='text-white bg-purple-600 w-full py-2 rounded-md pl-4'>
             <span>Wallet balance</span>
             <div className='text-lg pt-2'>
-              <span>{balance} ETH</span>
+              <span>
+                {walletBalance?.amount} {walletBalance?.currency}
+              </span>
               <span className='px-2 text-[#9490D5]'>|</span>
-              <span className='text-[#9490D5]'>$ {balanceInDollar}</span>
+              <span className='text-[#9490D5]'>
+                ${walletBalance?.usdAmount.toFixed(2)}
+              </span>
             </div>
           </div>
         </Menu.Item>

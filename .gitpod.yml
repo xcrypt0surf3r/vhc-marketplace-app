@@ -13,6 +13,7 @@ tasks:
       echo "NODE_ENV=development" > .env
       echo "PORT=3000" >> .env
       echo "REACT_APP_SERVER_API=https://mp-server-staging.vaulthill.io/graphql" >> .env
+      echo "REACT_APP_VHC_CONTRACT_ADDRESS=0xe29Ae1FAa69D22dF8D5866B1b3a750740a9f7893" >> .env
       npm install && npm run build
       command: npm run start
 

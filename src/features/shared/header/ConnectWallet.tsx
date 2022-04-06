@@ -1,5 +1,6 @@
 import { useWeb3React } from '@web3-react/core'
-import { useCallback, useEffect, useState } from 'react'
+import { Contract, ethers } from 'ethers'
+import { useCallback, useEffect } from 'react'
 import { useAtom } from 'jotai'
 import { closeModal, openModal, Popup } from '../../../state/popup.slice'
 import { Button, ButtonSizes, ButtonColors } from '../Form'
@@ -7,16 +8,19 @@ import { injected } from '../../../web3/connectors'
 import { useAppDispatch } from '../../../state'
 import {
   connectWalletAtom,
-  disconnectWalletAtom
+  disconnectWalletAtom,
+  walletBalanceAtom
 } from '../../../state/atoms/wallet.atoms'
 import { MenuItems, ProfileMenu } from './ProfileMenu'
-import { convertHexToEthNumber, truncate } from '../../../utils'
+import { truncate } from '../../../utils'
+import vhcabi from '../../../web3/abis/vhc.abi.json'
 
 declare let window: any
 
 const ConnectWallet = () => {
   const {
     account,
+    library,
     deactivate,
     activate,
     active: networkActive,
@@ -25,8 +29,7 @@ const ConnectWallet = () => {
 
   const [connectWallet, setConnectWallet] = useAtom(connectWalletAtom)
   const [disconnected, setDisconnected] = useAtom(disconnectWalletAtom)
-  const [balance, setBalance] = useState(0)
-  const [balanceInDollar, setBalanceInDollar] = useState(0)
+  const [, setWalletBalance] = useAtom(walletBalanceAtom)
 
   const dispatch = useAppDispatch()
 
@@ -39,38 +42,11 @@ const ConnectWallet = () => {
   }, [activate, networkActive, networkError, setDisconnected])
 
   useEffect(() => {
-    const handleWalletBalance = async () => {
-      const { ethereum } = window
-      if (ethereum) {
-        ethereum.sendAsync(
-          {
-            method: 'eth_getBalance',
-            params: [ethereum.selectedAddress, 'latest']
-          },
-          (err: string, response: any) => {
-            if (!err) {
-              const etherValue = convertHexToEthNumber(response.result)
-              setBalance(etherValue)
-
-              fetch('https://api.coinbase.com/v2/prices/ETH-USD/buy')
-                .then((responseData) => responseData.json())
-                .then((responseValue: any) => {
-                  debugger // eslint-disable-line no-debugger
-                  const usdPrice = etherValue * responseValue.data.amount
-                  setBalanceInDollar(usdPrice)
-                })
-            }
-          }
-        )
-      }
-    }
-
     const connect = async () => {
       try {
         await activate(injected)
         dispatch(closeModal())
         setConnectWallet(false)
-        handleWalletBalance()
       } catch (ex) {
         window.console.log('connect error', ex)
       }
@@ -82,15 +58,7 @@ const ConnectWallet = () => {
         dispatch(openModal(Popup.INSTALL_WALLET))
       }
     }
-  }, [
-    account,
-    activate,
-    connectWallet,
-    dispatch,
-    initialize,
-    setConnectWallet,
-    balance
-  ])
+  }, [account, activate, connectWallet, dispatch, setConnectWallet])
 
   useEffect(() => {
     // user has explicitly disconnected, so don't initialize unless
@@ -107,6 +75,28 @@ const ConnectWallet = () => {
       })
     }
   }, [initialize])
+
+  useEffect(() => {
+    const getVhcBalance = async () => {
+      const contract = new Contract(
+        process.env.REACT_APP_VHC_ADDRESS!,
+        vhcabi,
+        library
+      )
+      const vhcBalanceBN = await contract.balanceOf(account)
+      // Convert from BigNumber to string for UI
+      const vhcBalance = +ethers.utils.formatEther(vhcBalanceBN)
+
+      // Get current value of VHC in $ from coingecko
+      const response = await fetch(
+        'https://api.coingecko.com/api/v3/simple/price?include_last_updated_at=true&ids=vault-hill-city&vs_currencies=usd'
+      )
+      const jsonResponse = await response.json()
+      const usdAmount = vhcBalance * jsonResponse['vault-hill-city'].usd
+      setWalletBalance({ currency: 'VHC', amount: vhcBalance, usdAmount })
+    }
+    if (account) getVhcBalance()
+  }, [account, library, setWalletBalance])
 
   const handleConnectWallet = () => {
     dispatch(openModal(Popup.CONNECT_WALLET))
@@ -147,12 +137,7 @@ const ConnectWallet = () => {
           >
             {truncate(account, 6)}
           </Button>
-          <ProfileMenu
-            subMenuItems={subMenuItems}
-            account={account}
-            balance={balance}
-            balanceInDollar={balanceInDollar}
-          />
+          <ProfileMenu subMenuItems={subMenuItems} account={account} />
         </div>
       ) : (
         <Button
