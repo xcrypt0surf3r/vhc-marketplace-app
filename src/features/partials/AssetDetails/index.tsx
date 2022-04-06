@@ -1,5 +1,4 @@
 import { useAtom } from 'jotai'
-import { useEffect, useState } from 'react'
 import currencyIcon from '../../../assets/images/icons/currency.svg'
 import BidCountDownTimer from '../../../pages/asset-details/BidCountdownTimer'
 import { AssetWithListing } from '../../../services/queries'
@@ -12,24 +11,9 @@ import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import Properties from './Properties'
 import SalesHistory from './SalesHistory'
 
-const AssetDetails = ({
-  data,
-  fetching,
-  success,
-  loading
-}: {
-  data: any
-  loading: boolean
-  fetching: boolean
-  success: boolean
-}) => {
+const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   const dispatch = useAppDispatch()
-  const [asset, setAsset] = useState<AssetWithListing>()
   const [, setListing] = useAtom(listingAtom)
-
-  useEffect(() => {
-    setAsset(data?.asset)
-  }, [data, loading, fetching, success])
 
   const handleClick = () => {
     setListing(asset?.listing)
@@ -90,7 +74,7 @@ const AssetDetails = ({
 
   return (
     <div className='bg-white flex flex-col justify-center md:flex'>
-      {asset?.assetData ? (
+      {asset ? (
         <div className='mx-auto pt-10 pb-24 lg:pt-0 md:px-6 lg:px-0'>
           <div className='grid xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
             <div className='xs:mb-2 lg:p-6 bg-white-100 flex flex-col'>
@@ -156,7 +140,7 @@ const AssetDetails = ({
 
                     {renderPrice()}
 
-                    {asset?.listing && (
+                    {asset?.listing && asset.listing.status === 'ACTIVE' && (
                       <div className='flex pt-10 justify-between gap-4 overflow-x-visible'>
                         <Button
                           magnify={false}

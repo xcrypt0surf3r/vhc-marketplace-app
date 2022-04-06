@@ -6,18 +6,13 @@ import RecommendedAssets from './RecommendedAssets'
 
 const Details = () => {
   const params: any = useParams()
-  const { data, isLoading, isFetching, isSuccess } = useGetAssetByTokenIdQuery({
+  const { data: asset } = useGetAssetByTokenIdQuery({
     tokenId: parseFloat(params.tokenId)
   })
 
   return (
     <DefaultLayoutContainer>
-      <AssetDetails
-        data={data}
-        loading={isLoading}
-        fetching={isFetching}
-        success={isSuccess}
-      />
+      <AssetDetails asset={asset} />
       <RecommendedAssets />
     </DefaultLayoutContainer>
   )

@@ -18,19 +18,10 @@ const Payment = () => {
   const [listing] = useAtom(listingAtom)
 
   const [isApproved, setIsApproved] = useState(false)
-  const [isConfirming, setIsConfirming] = useState(true)
+  const [isConfirming, setIsConfirming] = useState(false)
   const [isSigned, setIsSigned] = useState(false)
 
-  const [fillBuyNowMutation, { isLoading, isError, isSuccess }] =
-    useFillBuyNowMutation()
-
-  console.log(
-    'isLoading, isError, isSuccess',
-    isLoading,
-    isError,
-    isSuccess,
-    isConfirming
-  )
+  const [fillBuyNowMutation] = useFillBuyNowMutation()
 
   const dispatch = useAppDispatch()
   const popups = useAppSelector(getPopup)
@@ -47,7 +38,6 @@ const Payment = () => {
     if (popups.modal.at(-2) === Popup.PLACE_BID) {
       nextModal = Popup.BID_SUBMITTED
     }
-
     dispatch(openModal(nextModal))
   }
 
@@ -74,7 +64,9 @@ const Payment = () => {
   }
 
   const handleConfirmBuyNow = async () => {
-    // TODO add check here so that cannot execute func if has already been called.
+    // Do not allow to reconfirm when tx is confirming.
+    if (isConfirming) return
+
     const provider = new ethers.providers.Web3Provider(
       await connector?.getProvider()
     )

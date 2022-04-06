@@ -1,17 +1,27 @@
+import { useAtom } from 'jotai'
 import { useState } from 'react'
-import { buyNow, IBuyNow } from '../../../fake-data/buy-now'
 import { useAppDispatch } from '../../../state'
+import { listingAtom } from '../../../state/atoms/listing.atoms'
 import { openModal, Popup } from '../../../state/popup.slice'
 import { classNames, truncate } from '../../../utils'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import { Modal } from '../../shared/Modal'
 
+export interface IBuyNow {
+  [key: string]: string | number
+}
+
 const BuyNow = () => {
   const [accept, setAccept] = useState(false)
-  const data = {
-    ...buyNow,
-    'Contract address': truncate(buyNow['Contract address'] as string, 8)
-  } as IBuyNow
+  const [listing] = useAtom(listingAtom)
+
+  const data: IBuyNow = {
+    'Collection name': 'VLAND', // TODO Get collection name once server updates made.
+    'Contract address': truncate(listing?.assetAddress ?? '', 8) ?? '-',
+    'Date created': listing?.buyNow?.startDate
+      ? new Date(listing?.buyNow?.startDate).toDateString()
+      : '-'
+  }
 
   const dispatch = useAppDispatch()
 

@@ -10,7 +10,7 @@ import {
   ASSET_LISTING_QUERY,
   AssetWithListing
 } from './queries'
-import { ASSET_TAG } from './tags'
+import { ASSET_LIST_TAG, ASSET_TAG } from './tags'
 
 export const assetApi = baseAPI.injectEndpoints({
   endpoints: (builder) => ({
@@ -21,13 +21,13 @@ export const assetApi = baseAPI.injectEndpoints({
       providesTags: (response) => {
         return response
           ? [
-              ...response.map(({ tokenId }) => ({
-                type: 'ASSET' as const,
-                tokenId
+              ...response.map(({ tokenId, tokenAddress }) => ({
+                type: 'ASSET_LIST' as const,
+                id: `${tokenId}_${tokenAddress}`
               })),
-              { type: ASSET_TAG, id: 'LIST' }
+              { type: ASSET_LIST_TAG, id: 'LIST' }
             ]
-          : [{ type: ASSET_TAG, id: 'LIST' }]
+          : [{ type: ASSET_LIST_TAG, id: 'LIST' }]
       },
       transformResponse: (response: ModelType<typeof ASSETS_QUERY>) => {
         return response.assets as Asset[]
@@ -41,7 +41,12 @@ export const assetApi = baseAPI.injectEndpoints({
             tokenId
           }
         }
-      })
+      }),
+      providesTags: (res) => {
+        return res
+          ? [{ type: ASSET_TAG, id: `${res.tokenId}_${res.tokenAddress}` }]
+          : []
+      }
     }),
     createBuyNow: builder.mutation<Listing, CreateBuyNowInput>({
       query: (data: CreateBuyNowInput) => ({
@@ -51,7 +56,10 @@ export const assetApi = baseAPI.injectEndpoints({
             data
           }
         }
-      })
+      }),
+      invalidatesTags: (_, __, { assetAddress, assetId }) => {
+        return [{ type: ASSET_TAG, id: `${assetId}_${assetAddress}` }]
+      }
     }),
     fillBuyNow: builder.mutation<Listing, FillBuyNowInput>({
       query: (data: FillBuyNowInput) => ({
@@ -61,7 +69,10 @@ export const assetApi = baseAPI.injectEndpoints({
             data
           }
         }
-      })
+      }),
+      invalidatesTags: (_, __, { assetAddress, assetId }) => {
+        return [{ type: ASSET_TAG, id: `${assetId}_${assetAddress}` }]
+      }
     })
   })
 })
