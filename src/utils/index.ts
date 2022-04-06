@@ -16,3 +16,9 @@ export const classNames = (...classes: string[]) =>
 export const styleTypology = (typology: string) => {
   return typology.charAt(0) + typology.slice(1).toLowerCase()
 }
+
+export const convertHexToEthNumber = (value: string): number => {
+  const wei = parseInt(value, 16)
+  const eth = wei / 10 ** 18 // parse to Eth
+  return eth
+}

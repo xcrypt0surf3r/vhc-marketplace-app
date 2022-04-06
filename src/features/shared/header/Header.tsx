@@ -1,21 +1,10 @@
-// import { useState } from 'react'
 import { Disclosure } from '@headlessui/react'
-import { DotsVerticalIcon } from '@heroicons/react/outline'
-// import { navList } from '../navigation/navList'
 import Hamburger from './Hamburger'
 import Logo from './Logo'
 import ConnectWallet from './ConnectWallet'
-// import { Button, ButtonColors, ButtonSizes } from '../Form'
-// import { classNames } from '../../../utils'
+import { Button, ButtonColors, ButtonSizes } from '../Form'
 
 const Header = () => {
-  // const activeLink = navList[0].text
-  // const [isClicked, setIsClicked] = useState(activeLink)
-
-  // const handleClick = (text: string) => {
-  //   setIsClicked(text)
-  // }
-
   return (
     <Disclosure as='nav' className='bg-white mb-8'>
       {({ open }) => {
@@ -43,71 +32,33 @@ const Header = () => {
                     <div className='flex space-x-3'>
                       <ConnectWallet />
                     </div>
-                    <DotsVerticalIcon className='hidden xl:hidden sm:flex pt-2 h-10 w-8' />
                   </div>
                 </div>
                 <Hamburger open={open} />
               </div>
             </div>
 
-            {/* <Disclosure.Panel className='sm:hidden'>
-              <div className='pt-2 pb-10 flex flex-col items-center space-y-1'>
-                {navList.map((route) => (
-                  <Disclosure.Button
-                    as='a'
-                    key={route.text}
-                    href={route.url}
-                    className={`pl-3 pr-4 py-2 border-x-4 text-base font-medium w-full flex justify-center ${
-                      isClicked === route.text
-                        ? 'bg-indigo-50 border-indigo-500 text-indigo-700 block'
-                        : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block '
-                    }`}
-                    onClick={() => handleClick(route.text)}
-                  >
-                    {route.text}
-                  </Disclosure.Button>
-                ))}
-                <div className='flex flex-col sm:flex-row gap-2 w-full xs:px-4'>
-                  <a
-                    href='#'
-                    className='magnify w-3/4 py-2 mx-auto border sm:rounded-xl text-center text-black bg-[#E4ECF7] lg:px-4'
-                  >
-                    VHC Token
-                  </a>
-                  <div className='flex space-x-3'>
-                    {connected ? (
-                      <Button
-                        className='rounded-3xl cursor-default'
-                        sizer={ButtonSizes.MEDIUM}
-                        color={ButtonColors.PRIMARY}
-                      >
-                        0x0fdfbq...5sFvw4
-                      </Button>
-                    ) : (
-                      <Button
-                        magnify
-                        className='rounded-3xl'
-                        sizer={ButtonSizes.MEDIUM}
-                        color={ButtonColors.PRIMARY}
-                        onClick={handleConnectWallet}
-                      >
-                        Connect Wallet
-                      </Button>
-                    )}
-                    {connected && (
-                      <div
-                        className={classNames(
-                          'text-white rounded-full h-12 w-12 flex items-center justify-center',
-                          ButtonColors.SECONDARY
-                        )}
-                      >
-                        {'OZ'}
-                      </div>
-                    )}
-                  </div>
-                </div>
+            <Disclosure.Panel className='sm:hidden'>
+              <div className='flex flex-col sm:flex-row gap-5 w-full xs:px-4 items-center border-b border-gray-300 py-20'>
+                <Button
+                  magnify={false}
+                  className='rounded-3xl'
+                  sizer={ButtonSizes.MEDIUM}
+                  color={ButtonColors.SECONDARY}
+                >
+                  VHC Token
+                </Button>
+                <Button
+                  magnify={false}
+                  className='rounded-3xl'
+                  sizer={ButtonSizes.MEDIUM}
+                  color={ButtonColors.OUTLINE}
+                >
+                  Explore map
+                </Button>
+                <ConnectWallet />
               </div>
-            </Disclosure.Panel> */}
+            </Disclosure.Panel>
           </>
         )
       }}

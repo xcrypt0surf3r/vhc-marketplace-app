@@ -1,5 +1,5 @@
 import { useWeb3React } from '@web3-react/core'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useAtom } from 'jotai'
 import { closeModal, openModal, Popup } from '../../../state/popup.slice'
 import { Button, ButtonSizes, ButtonColors } from '../Form'
@@ -9,7 +9,8 @@ import {
   connectWalletAtom,
   disconnectWalletAtom
 } from '../../../state/atoms/wallet.atoms'
-import { truncate } from '../../../utils'
+import { MenuItems, ProfileMenu } from './ProfileMenu'
+import { convertHexToEthNumber, truncate } from '../../../utils'
 
 declare let window: any
 
@@ -24,6 +25,9 @@ const ConnectWallet = () => {
 
   const [connectWallet, setConnectWallet] = useAtom(connectWalletAtom)
   const [disconnected, setDisconnected] = useAtom(disconnectWalletAtom)
+  const [balance, setBalance] = useState(0)
+  const [balanceInDollar, setBalanceInDollar] = useState(0)
+
   const dispatch = useAppDispatch()
 
   const initialize = useCallback(async () => {
@@ -35,12 +39,38 @@ const ConnectWallet = () => {
   }, [activate, networkActive, networkError, setDisconnected])
 
   useEffect(() => {
+    const handleWalletBalance = async () => {
+      const { ethereum } = window
+      if (ethereum) {
+        ethereum.sendAsync(
+          {
+            method: 'eth_getBalance',
+            params: [ethereum.selectedAddress, 'latest']
+          },
+          (err: string, response: any) => {
+            if (!err) {
+              const etherValue = convertHexToEthNumber(response.result)
+              setBalance(etherValue)
+
+              fetch('https://api.coinbase.com/v2/prices/ETH-USD/buy')
+                .then((responseData) => responseData.json())
+                .then((responseValue: any) => {
+                  debugger // eslint-disable-line no-debugger
+                  const usdPrice = etherValue * responseValue.data.amount
+                  setBalanceInDollar(usdPrice)
+                })
+            }
+          }
+        )
+      }
+    }
+
     const connect = async () => {
       try {
         await activate(injected)
         dispatch(closeModal())
         setConnectWallet(false)
-        setDisconnected(false)
+        handleWalletBalance()
       } catch (ex) {
         window.console.log('connect error', ex)
       }
@@ -58,8 +88,8 @@ const ConnectWallet = () => {
     connectWallet,
     dispatch,
     initialize,
-    setDisconnected,
-    setConnectWallet
+    setConnectWallet,
+    balance
   ])
 
   useEffect(() => {
@@ -88,17 +118,42 @@ const ConnectWallet = () => {
     deactivate()
     setDisconnected(true)
   }
+
+  const subMenuItems: MenuItems[] = [
+    {
+      name: 'My profile',
+      visible: false
+    },
+    {
+      name: 'Edit profile',
+      visible: false
+    },
+    {
+      name: 'Log out',
+      visible: true,
+      onClick: disconnect
+    }
+  ]
+
   return (
     <>
       {account ? (
-        <Button
-          className='rounded-3xl cursor-pointer'
-          sizer={ButtonSizes.MEDIUM}
-          color={ButtonColors.PRIMARY}
-          onClick={disconnect}
-        >
-          {truncate(account, 8)}
-        </Button>
+        <div>
+          <Button
+            className='rounded-3xl cursor-pointer'
+            sizer={ButtonSizes.MEDIUM}
+            color={ButtonColors.PRIMARY}
+            onClick={disconnect}
+          >
+            {truncate(account, 6)}
+          </Button>
+          <ProfileMenu
+            subMenuItems={subMenuItems}
+            account={account}
+            balance={balance}
+            balanceInDollar={balanceInDollar}
+          />
+        </div>
       ) : (
         <Button
           magnify

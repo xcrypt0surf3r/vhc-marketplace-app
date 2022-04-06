@@ -8,7 +8,7 @@ const DefaultLayoutContainer = ({
   return (
     <main>
       <Popups />
-      <div className='font-avenir'>{children}</div>
+      <div>{children}</div>
     </main>
   )
 }
