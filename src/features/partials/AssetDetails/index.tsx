@@ -5,7 +5,12 @@ import { AssetWithListing } from '../../../services/queries'
 import { useAppDispatch } from '../../../state'
 import { listingAtom } from '../../../state/atoms/listing.atoms'
 import { openModal, Popup } from '../../../state/popup.slice'
-import { classNames, styleTypology, truncate } from '../../../utils'
+import {
+  classNames,
+  styleTypology,
+  getAssetImage,
+  truncate
+} from '../../../utils'
 import { AssetDetailSkeleton } from '../../elements/AssetDetailSkeleton'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import Properties from './Properties'
@@ -79,9 +84,9 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
           <div className='grid xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
             <div className='xs:mb-2 lg:p-6 bg-white-100 flex flex-col'>
               <img
-                src={`https://picsum.photos/id/${asset.tokenId}/600/600`}
+                src={getAssetImage(asset)}
                 alt={asset.assetData.name}
-                className='object-center object-cover rounded-lg w-full h-full'
+                className='object-center object-cover rounded-lg w-full h-full border-[#E4ECF7]-600 border-2 min-h-[600px]'
               />
             </div>
             <div className='lg:p-6 bg-white-100 flex flex-col'>
@@ -104,7 +109,10 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                         {asset.assetData.typology}
                       </span>
                       <span className='district px-2 py-1 rounded-md'>
-                        {'District I'}
+                        {asset.assetData.district}
+                      </span>
+                      <span className='district px-2 py-1 rounded-md'>
+                        {asset.assetData.island}
                       </span>
                     </div>
                   </div>
@@ -121,7 +129,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                         </span>
 
                         <h3 className='font-medium text-black text-sm'>
-                          <a href={`/asset/${asset.tokenId}`}>
+                          <a href={`/asset-details/${asset.tokenId}`}>
                             {truncate(asset.owner, 7)}
                           </a>
                         </h3>
@@ -176,10 +184,13 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
             </div>
           </div>
           <div className='grid xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
-            <Properties />
+            <Properties
+              properties={asset.assetData}
+              unlistProps={['name', 'description']}
+            />
             <SalesHistory
               panels={{
-                bids: asset.activeListing?.auction?.bids ?? [],
+                bids: asset?.activeListing?.auction?.bids ?? [],
                 orders: [],
                 owners: []
               }}

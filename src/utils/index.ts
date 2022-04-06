@@ -1,5 +1,6 @@
 import { Currency } from '../__generated/enums'
 
+export * from './imageUtils'
 export const isDev = () => process.env.APP_NODE_ENV !== 'production'
 
 export const truncate = (

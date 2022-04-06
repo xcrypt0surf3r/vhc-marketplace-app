@@ -1,22 +1,32 @@
 export const categories: any = {
-  Bids: [],
+  Bids: [
+    {
+      owner: '0x0t345900...5280',
+      order: 'DeluxeVland#0005',
+      amount: '2,000 $VHC',
+      datePurchased: 'Dec 30, 2019 07:52'
+    },
+    {
+      owner: '0x0t345900...5280',
+      order: 'DeluxeVland#0005',
+      amount: '2,000 $VHC',
+      datePurchased: 'Dec 30, 2019 07:52'
+    }
+  ],
   SalesHistory: [
     {
-      id: 1,
-      name: 'greenkoala518',
+      owner: 'greenkoala518',
       price: '2,000 $VHC',
       datePurchased: 'Dec 30, 2019 07:52'
     }
   ],
   Owners: [
     {
-      id: 1,
-      name: 'greenkoala518 from 0x045ff3...9605',
+      owner: 'greenkoala518 from 0x045ff3...9605',
       datePurchased: 'Dec 30, 2019 07:52'
     },
     {
-      id: 2,
-      name: 'greenkoala518 from 0x045ff3...9605',
+      owner: 'greenkoala518 from 0x045ff3...9605',
       datePurchased: 'Dec 30, 2019 07:52'
     }
   ]

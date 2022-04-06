@@ -13,8 +13,9 @@ export const AssetDetailSkeleton = () => {
           </div>
         </div>
         <div className='grid xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
-          <div></div>
-
+          <div className='p-6 bg-white-100 flex flex-col'>
+            <div className='w-full h-[5rem] animate-skeleton rounded-[.75rem]'></div>
+          </div>
           <div className='p-6 bg-white-100 flex flex-col'>
             <div className='w-full h-[5rem] animate-skeleton rounded-[.75rem]'></div>
           </div>

@@ -24,7 +24,7 @@ const ProfileMenu = ({ account, subMenuItems }: Props) => {
           VH
         </Menu.Button>
       </div>
-      <Menu.Items className='absolute shadow p-4 w-[17rem] mt-2 text-left right-0 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
+      <Menu.Items className='absolute shadow p-4 w-[17rem] mt-2 text-left right-0 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-[40]'>
         <Menu.Item>
           <div className='text-[#16192C] w-full py-2 rounded-md mb-2 bg-white'>
             <a>{truncate(account, 6)}</a>
