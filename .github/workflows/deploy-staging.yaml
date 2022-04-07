@@ -11,7 +11,7 @@ env:
   EBS_ENVIRONMENT_NAME: vh-market-staging-env
   S3_BUCKET: vh-market-staging
   REACT_APP_SERVER_API: https://mp-server-staging.vaulthill.io/graphql
-  REACT_APP_VHC_CONTRACT_ADDRESS: 0xe29Ae1FAa69D22dF8D5866B1b3a750740a9f7893
+  REACT_APP_VHC_ADDRESS: '0xe29Ae1FAa69D22dF8D5866B1b3a750740a9f7893'
 
 on:
   workflow_dispatch:
