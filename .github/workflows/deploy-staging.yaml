@@ -40,7 +40,7 @@ jobs:
           echo "REACT_APP_COMMIT=${{ env.APP_COMMIT }}" >> .env
           echo "REACT_APP_NODE_ENV=${{ env.NODE_ENV }}" >> .env
           echo "REACT_APP_SERVER_API=${{ env.REACT_APP_SERVER_API }}" >> .env
-          echo "VHC_CONTRACT_ADDRESS=${{ env.VHC_CONTRACT_ADDRESS }}" >> .env
+          echo "REACT_APP_VHC_ADDRESS=${{ env.REACT_APP_VHC_ADDRESS }}" >> .env
           yarn install
           yarn build
           zip -r ${{ env.EBS_APP_NAME }}-${{ env.DEPLOY_ID }}-${{ steps.current-time.outputs.time }}.zip build Dockerfile
