@@ -16,11 +16,11 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   const [, setListing] = useAtom(listingAtom)
 
   const handleClick = () => {
-    setListing(asset?.listing)
-    if (asset?.listing?.type === 'BUY_NOW') {
+    setListing(asset?.activeListing)
+    if (asset?.activeListing?.type === 'BUY_NOW') {
       dispatch(openModal(Popup.BUY_NOW))
     }
-    if (asset?.listing?.type === 'AUCTION') {
+    if (asset?.activeListing?.type === 'AUCTION') {
       dispatch(openModal(Popup.PLACE_BID))
     }
   }
@@ -33,10 +33,10 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
           src={currencyIcon}
           className='w-6 h-6 object-center object-cover rounded-[.75rem] inline-block'
         />
-        {asset?.listing?.buyNow && (
+        {asset?.activeListing?.buyNow && (
           <span className='font-medium text-2xl'>
-            {asset.listing.buyNow.price.value} $
-            {asset.listing.buyNow.price.currency}
+            {asset.activeListing.buyNow.price.value} $
+            {asset.activeListing.buyNow.price.currency}
           </span>
         )}
       </div>
@@ -61,12 +61,12 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   )
 
   const renderPrice = () => {
-    if (!asset?.listing) return null
+    if (!asset?.activeListing) return null
 
-    if (asset.listing?.type === 'BUY_NOW') {
+    if (asset.activeListing?.type === 'BUY_NOW') {
       return renderBuyNowPrice()
     }
-    if (asset?.listing?.type === 'AUCTION') {
+    if (asset?.activeListing?.type === 'AUCTION') {
       return renderAuctionPrice()
     }
     return null
@@ -130,41 +130,46 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                     <p className='font-sm mt-4 mb-6'>
                       {asset.assetData.description}
                     </p>
-                    {asset?.listing?.type === 'AUCTION' &&
-                      asset.listing.auction && (
+                    {asset?.activeListing?.type === 'AUCTION' &&
+                      asset.activeListing.auction && (
                         <BidCountDownTimer
-                          startDate={new Date(asset.listing.auction.startDate)}
-                          endDate={new Date(asset.listing.auction.endDate)}
+                          startDate={
+                            new Date(asset.activeListing.auction.startDate)
+                          }
+                          endDate={
+                            new Date(asset.activeListing.auction.endDate)
+                          }
                         />
                       )}
 
                     {renderPrice()}
 
-                    {asset?.listing && asset.listing.status === 'ACTIVE' && (
-                      <div className='flex pt-10 justify-between gap-4 overflow-x-visible'>
-                        <Button
-                          magnify={false}
-                          className='rounded-3xl'
-                          sizer={ButtonSizes.FULL}
-                          color={ButtonColors.PRIMARY}
-                          onClick={handleClick}
-                        >
-                          {asset?.listing?.type === 'BUY_NOW'
-                            ? 'Buy now'
-                            : asset?.listing?.type === 'AUCTION'
-                            ? 'Place a bid'
-                            : ''}
-                        </Button>
-                        <Button
-                          magnify={false}
-                          className='rounded-3xl'
-                          sizer={ButtonSizes.FULL}
-                          color={ButtonColors.OUTLINE}
-                        >
-                          Share
-                        </Button>
-                      </div>
-                    )}
+                    {asset?.activeListing &&
+                      asset.activeListing.status === 'ACTIVE' && (
+                        <div className='flex pt-10 justify-between gap-4 overflow-x-visible'>
+                          <Button
+                            magnify={false}
+                            className='rounded-3xl'
+                            sizer={ButtonSizes.FULL}
+                            color={ButtonColors.PRIMARY}
+                            onClick={handleClick}
+                          >
+                            {asset?.activeListing?.type === 'BUY_NOW'
+                              ? 'Buy now'
+                              : asset?.activeListing?.type === 'AUCTION'
+                              ? 'Place a bid'
+                              : ''}
+                          </Button>
+                          <Button
+                            magnify={false}
+                            className='rounded-3xl'
+                            sizer={ButtonSizes.FULL}
+                            color={ButtonColors.OUTLINE}
+                          >
+                            Share
+                          </Button>
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>
@@ -174,7 +179,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
             <Properties />
             <SalesHistory
               panels={{
-                bids: asset.listing?.auction?.bids ?? [],
+                bids: asset.activeListing?.auction?.bids ?? [],
                 orders: [],
                 owners: []
               }}

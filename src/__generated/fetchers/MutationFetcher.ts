@@ -12,6 +12,7 @@ import {
 import {
   AuctionInput,
   BidInput,
+  CancelBuyNowInput,
   CreateBuyNowInput,
   FillBuyNowInput
 } from '../inputs'
@@ -158,6 +159,73 @@ export interface MutationFetcher<T extends object, TVariables extends object>
     TVariables &
       XVariables &
       UnresolvedVariables<XArgs, MutationArgs['fillBuyNowListing']> &
+      XDirectiveVariables
+  >
+
+  cancelBuyNowListing<X extends object, XVariables extends object>(
+    child: ObjectFetcher<'Listing', X, XVariables>
+  ): MutationFetcher<
+    T & { readonly cancelBuyNowListing: X },
+    TVariables & XVariables & MutationArgs['cancelBuyNowListing']
+  >
+
+  cancelBuyNowListing<
+    XArgs extends AcceptableVariables<MutationArgs['cancelBuyNowListing']>,
+    X extends object,
+    XVariables extends object
+  >(
+    args: XArgs,
+    child: ObjectFetcher<'Listing', X, XVariables>
+  ): MutationFetcher<
+    T & { readonly cancelBuyNowListing: X },
+    TVariables &
+      XVariables &
+      UnresolvedVariables<XArgs, MutationArgs['cancelBuyNowListing']>
+  >
+
+  cancelBuyNowListing<
+    X extends object,
+    XVariables extends object,
+    XAlias extends string = 'cancelBuyNowListing',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    child: ObjectFetcher<'Listing', X, XVariables>,
+    optionsConfigurer: (
+      options: FieldOptions<'cancelBuyNowListing', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): MutationFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: X }
+        : { readonly [key in XAlias]: X }),
+    TVariables &
+      XVariables &
+      MutationArgs['cancelBuyNowListing'] &
+      XDirectiveVariables
+  >
+
+  cancelBuyNowListing<
+    XArgs extends AcceptableVariables<MutationArgs['cancelBuyNowListing']>,
+    X extends object,
+    XVariables extends object,
+    XAlias extends string = 'cancelBuyNowListing',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    args: XArgs,
+    child: ObjectFetcher<'Listing', X, XVariables>,
+    optionsConfigurer: (
+      options: FieldOptions<'cancelBuyNowListing', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): MutationFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: X }
+        : { readonly [key in XAlias]: X }),
+    TVariables &
+      XVariables &
+      UnresolvedVariables<XArgs, MutationArgs['cancelBuyNowListing']> &
       XDirectiveVariables
   >
 
@@ -313,6 +381,12 @@ export const mutation$: MutationFetcher<{}, {}> = createFetcher(
       },
       {
         category: 'SCALAR',
+        name: 'cancelBuyNowListing',
+        argGraphQLTypeMap: { data: 'CancelBuyNowInput!' },
+        targetTypeName: 'Listing'
+      },
+      {
+        category: 'SCALAR',
         name: 'createAuction',
         argGraphQLTypeMap: { data: 'AuctionInput!' },
         targetTypeName: 'Listing'
@@ -335,6 +409,10 @@ export interface MutationArgs {
 
   readonly fillBuyNowListing: {
     readonly data: FillBuyNowInput
+  }
+
+  readonly cancelBuyNowListing: {
+    readonly data: CancelBuyNowInput
   }
 
   readonly createAuction: {

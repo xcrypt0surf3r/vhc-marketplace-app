@@ -42,6 +42,9 @@ export const assetApi = baseAPI.injectEndpoints({
           }
         }
       }),
+      transformResponse: (response: ModelType<typeof ASSET_LISTING_QUERY>) => {
+        return response.asset as Asset
+      },
       providesTags: (res) => {
         return res
           ? [{ type: ASSET_TAG, id: `${res.tokenId}_${res.tokenAddress}` }]

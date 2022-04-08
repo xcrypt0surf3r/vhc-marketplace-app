@@ -197,19 +197,19 @@ export interface AssetFetcher<T extends object, TVariables extends object>
 
   readonly '~owner': AssetFetcher<Omit<T, 'owner'>, TVariables>
 
-  listing<X extends object, XVariables extends object>(
+  activeListing<X extends object, XVariables extends object>(
     child: ObjectFetcher<'Listing', X, XVariables>
-  ): AssetFetcher<T & { readonly listing?: X }, TVariables & XVariables>
+  ): AssetFetcher<T & { readonly activeListing?: X }, TVariables & XVariables>
 
-  listing<
+  activeListing<
     X extends object,
     XVariables extends object,
-    XAlias extends string = 'listing',
+    XAlias extends string = 'activeListing',
     XDirectiveVariables extends object = {}
   >(
     child: ObjectFetcher<'Listing', X, XVariables>,
     optionsConfigurer: (
-      options: FieldOptions<'listing', {}, {}>
+      options: FieldOptions<'activeListing', {}, {}>
     ) => FieldOptions<
       XAlias,
       { readonly [key: string]: DirectiveArgs },
@@ -240,7 +240,7 @@ export const asset$: AssetFetcher<{}, {}> = createFetcher(
       'owner',
       {
         category: 'SCALAR',
-        name: 'listing',
+        name: 'activeListing',
         targetTypeName: 'Listing',
         undefinable: true
       }

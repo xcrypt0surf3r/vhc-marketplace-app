@@ -46,7 +46,7 @@ export const LISTING_FETCHER = listing$$
 
 export const ASSETS_QUERY = query$.assets(ASSET_FETCHER)
 
-export const ASSET_LIST_FETCHER = ASSET_FETCHER.listing(LISTING_FETCHER)
+export const ASSET_LIST_FETCHER = ASSET_FETCHER.activeListing(LISTING_FETCHER)
 
 export const ASSET_LISTING_QUERY = query$.asset(ASSET_LIST_FETCHER)
 
