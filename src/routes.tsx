@@ -7,6 +7,7 @@ const Landing = lazy(() => import('./pages/landing'))
 const PageNotFound = lazy(() => import('./pages/not-found'))
 const AssetDetails = lazy(() => import('./pages/asset-details'))
 const UserProfile = lazy(() => import('./pages/user-profile'))
+const SellAsset = lazy(() => import('./pages/sell-asset'))
 
 export enum LayoutTemplate {
   DEFAULT
@@ -71,6 +72,14 @@ export const routes: RouteProps[] = [
       <ProtectedRoute layout={LayoutTemplate.DEFAULT}>
         <UserProfile />
       </ProtectedRoute>
+    )
+  },
+  {
+    path: '/sell-asset/:tokenId',
+    element: (
+      <RenderRoute layout={LayoutTemplate.DEFAULT}>
+        <SellAsset />
+      </RenderRoute>
     )
   },
   {

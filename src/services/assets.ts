@@ -1,6 +1,11 @@
 import { ModelType } from 'graphql-ts-client-api'
 import { mutation$ } from '../__generated/fetchers'
-import { CreateBuyNowInput, FillBuyNowInput } from '../__generated/inputs'
+import {
+  AuctionInput,
+  CancelBuyNowInput,
+  CreateBuyNowInput,
+  FillBuyNowInput
+} from '../__generated/inputs'
 import { baseAPI } from './api'
 import {
   Asset,
@@ -64,6 +69,32 @@ export const assetApi = baseAPI.injectEndpoints({
         return [{ type: ASSET_TAG, id: `${assetId}_${assetAddress}` }]
       }
     }),
+    createAuction: builder.mutation<Listing, AuctionInput>({
+      query: (data: AuctionInput) => ({
+        fetcher: mutation$.createAuction(LISTING_FETCHER),
+        options: {
+          variables: {
+            data
+          }
+        }
+      }),
+      invalidatesTags: (_, __, { assetAddress, assetId }) => {
+        return [{ type: ASSET_TAG, id: `${assetId}_${assetAddress}` }]
+      }
+    }),
+    cancelBuyNowListing: builder.mutation<Listing, CancelBuyNowInput>({
+      query: (data: AuctionInput) => ({
+        fetcher: mutation$.cancelBuyNowListing(LISTING_FETCHER),
+        options: {
+          variables: {
+            data
+          }
+        }
+      }),
+      invalidatesTags: (_, __, { assetAddress, assetId }) => {
+        return [{ type: ASSET_TAG, id: `${assetId}_${assetAddress}` }]
+      }
+    }),
     fillBuyNow: builder.mutation<Listing, FillBuyNowInput>({
       query: (data: FillBuyNowInput) => ({
         fetcher: mutation$.fillBuyNowListing(LISTING_FETCHER),
@@ -84,5 +115,7 @@ export const {
   useGetAssetsQuery,
   useGetAssetByTokenIdQuery,
   useCreateBuyNowMutation,
-  useFillBuyNowMutation
+  useFillBuyNowMutation,
+  useCreateAuctionMutation,
+  useCancelBuyNowListingMutation
 } = assetApi

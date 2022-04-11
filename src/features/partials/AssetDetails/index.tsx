@@ -1,4 +1,5 @@
 import { useAtom } from 'jotai'
+import { useNavigate } from 'react-router-dom'
 import currencyIcon from '../../../assets/images/icons/currency.svg'
 import BidCountDownTimer from '../../../pages/asset-details/BidCountdownTimer'
 import { AssetWithListing } from '../../../services/queries'
@@ -9,7 +10,8 @@ import {
   classNames,
   styleTypology,
   getAssetImage,
-  truncate
+  truncate,
+  useIsOwner
 } from '../../../utils'
 import { AssetDetailSkeleton } from '../../elements/AssetDetailSkeleton'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
@@ -19,11 +21,27 @@ import SalesHistory from './SalesHistory'
 const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   const dispatch = useAppDispatch()
   const [, setListing] = useAtom(listingAtom)
+  const isOwner = useIsOwner(asset?.owner ?? '')
+  const navigate = useNavigate()
 
   const handleClick = () => {
     setListing(asset?.activeListing)
     if (asset?.activeListing?.type === 'BUY_NOW') {
       dispatch(openModal(Popup.BUY_NOW))
+    }
+    if (asset?.activeListing?.type === 'AUCTION') {
+      dispatch(openModal(Popup.PLACE_BID))
+    }
+  }
+
+  const handleSellClick = () => {
+    setListing(asset?.activeListing)
+    if (asset?.activeListing) {
+      dispatch(openModal(Popup.CANCEL_BUY_NOW))
+    } else {
+      navigate(`/sell-asset/${asset?.tokenId}`, {
+        replace: true
+      })
     }
     if (asset?.activeListing?.type === 'AUCTION') {
       dispatch(openModal(Popup.PLACE_BID))
@@ -152,9 +170,22 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
 
                     {renderPrice()}
 
-                    {asset?.activeListing &&
-                      asset.activeListing.status === 'ACTIVE' && (
-                        <div className='flex pt-10 justify-between gap-4 overflow-x-visible'>
+                    <div className='flex pt-10 justify-between gap-4 overflow-x-visible'>
+                      {isOwner ? (
+                        <Button
+                          magnify={false}
+                          className='rounded-3xl'
+                          sizer={ButtonSizes.FULL}
+                          color={ButtonColors.PRIMARY}
+                          onClick={handleSellClick}
+                        >
+                          {asset?.activeListing !== undefined
+                            ? 'Unlist'
+                            : 'Sell'}
+                        </Button>
+                      ) : (
+                        asset?.activeListing &&
+                        asset.activeListing.status === 'ACTIVE' && (
                           <Button
                             magnify={false}
                             className='rounded-3xl'
@@ -168,16 +199,17 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                               ? 'Place a bid'
                               : ''}
                           </Button>
-                          <Button
-                            magnify={false}
-                            className='rounded-3xl'
-                            sizer={ButtonSizes.FULL}
-                            color={ButtonColors.OUTLINE}
-                          >
-                            Share
-                          </Button>
-                        </div>
+                        )
                       )}
+                      <Button
+                        magnify={false}
+                        className='rounded-3xl'
+                        sizer={ButtonSizes.FULL}
+                        color={ButtonColors.OUTLINE}
+                      >
+                        Share
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>

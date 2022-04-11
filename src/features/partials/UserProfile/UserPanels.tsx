@@ -4,6 +4,7 @@ import BidsPanel from './BidPanel'
 import PanelPlaceHolder from './PanelPlaceHolder'
 import { Asset, Bid } from '../../../services/queries'
 import { classNames } from '../../../utils'
+import { AssetsListing } from '../AssetsListing'
 
 export type Panels = {
   assets: readonly Asset[]
@@ -13,7 +14,13 @@ export type Panels = {
   bids: readonly Bid[]
 }
 
-const UserPanels = ({ panels }: { panels: Panels; loading?: boolean }) => {
+const UserPanels = ({
+  panels,
+  loading
+}: {
+  panels: Panels
+  loading?: boolean
+}) => {
   return (
     <div className='lg:p-6'>
       <Tab.Group>
@@ -42,6 +49,15 @@ const UserPanels = ({ panels }: { panels: Panels; loading?: boolean }) => {
             >
               {panels[panelName as keyof Panels]!.length < 1 ? (
                 <PanelPlaceHolder panelName={panelName} />
+              ) : panelName === 'assets' ? (
+                <div className='p-8'>
+                  <AssetsListing
+                    assets={(panels.assets as Asset[]) ?? []}
+                    skeletons={8}
+                    title=''
+                    isLoading={loading ?? true}
+                  />
+                </div>
               ) : panelName === 'bids' ? (
                 <BidsPanel data={panels.bids as Bid[]} />
               ) : (

@@ -5,13 +5,16 @@ import BuyBidError from './BuyBidError'
 import BuyNow from './BuyNow'
 import CancelBid from './CancelBid'
 import Checkout from './Checkout'
+import ConfirmSell from './ConfirmSell'
 import ConnectWallet from './ConnectWallet'
 import ConnectWalletScan from './ConnectWalletScan'
 import InstallWallet from './InstallWallet'
 import OrderConfirmed from './OrderConfirmed'
 import Payment from './Payment'
 import PlaceBid from './PlaceBid'
+import SellAssetSubmitted from './SellAssetSubmitted'
 import WrongNetwork from './WrongNetwork'
+import CancelBuyNow from './CancelBuyNow'
 
 const Popups = () => {
   let modal: any
@@ -52,6 +55,15 @@ const Popups = () => {
       break
     case Popup.CANCEL_BID:
       modal = <CancelBid />
+      break
+    case Popup.CONFIRM_SELL:
+      modal = <ConfirmSell />
+      break
+    case Popup.SELL_ASSET_SUBMITTED:
+      modal = <SellAssetSubmitted />
+      break
+    case Popup.CANCEL_BUY_NOW:
+      modal = <CancelBuyNow />
       break
     default:
       break
