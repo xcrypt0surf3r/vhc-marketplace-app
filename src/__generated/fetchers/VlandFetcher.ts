@@ -5,6 +5,7 @@ import {
   createFetchableType
 } from 'graphql-ts-client-api'
 import type { WithTypeName, ImplementationType } from '../CommonTypes'
+import { baseEntity$ } from './BaseEntityFetcher'
 import { District, Island, Typology } from '../enums'
 
 /*
@@ -45,6 +46,26 @@ export interface VlandFetcher<T extends object, TVariables extends object>
     T & { __typename: ImplementationType<'Vland'> },
     TVariables
   >
+
+  readonly id: VlandFetcher<T & { readonly id: string }, TVariables>
+
+  'id+'<
+    XAlias extends string = 'id',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'id', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): VlandFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: string }
+        : { readonly [key in XAlias]: string }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~id': VlandFetcher<Omit<T, 'id'>, TVariables>
 
   readonly vlandId: VlandFetcher<T & { readonly vlandId: string }, TVariables>
 
@@ -239,8 +260,8 @@ export interface VlandFetcher<T extends object, TVariables extends object>
 export const vland$: VlandFetcher<{}, {}> = createFetcher(
   createFetchableType(
     'Vland',
-    'EMBEDDED',
-    [],
+    'OBJECT',
+    [baseEntity$.fetchableType],
     [
       'vlandId',
       'name',
@@ -261,4 +282,4 @@ export const vland$: VlandFetcher<{}, {}> = createFetcher(
 )
 
 export const vland$$ =
-  vland$.vlandId.name.description.typology.district.island.x.y.cluster
+  vland$.id.vlandId.name.description.typology.district.island.x.y.cluster

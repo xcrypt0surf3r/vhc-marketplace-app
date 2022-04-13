@@ -5,6 +5,7 @@ import {
   createFetchableType
 } from 'graphql-ts-client-api'
 import type { WithTypeName, ImplementationType } from '../CommonTypes'
+import { BidStatus } from '../enums'
 
 /*
  * Any instance of this interface is immutable,
@@ -44,6 +45,26 @@ export interface BidFetcher<T extends object, TVariables extends object>
     T & { __typename: ImplementationType<'Bid'> },
     TVariables
   >
+
+  readonly id: BidFetcher<T & { readonly id: string }, TVariables>
+
+  'id+'<
+    XAlias extends string = 'id',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'id', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): BidFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: string }
+        : { readonly [key in XAlias]: string }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~id': BidFetcher<Omit<T, 'id'>, TVariables>
 
   readonly owner: BidFetcher<T & { readonly owner: string }, TVariables>
 
@@ -108,6 +129,26 @@ export interface BidFetcher<T extends object, TVariables extends object>
     TVariables & XVariables & XDirectiveVariables
   >
 
+  readonly status: BidFetcher<T & { readonly status: BidStatus }, TVariables>
+
+  'status+'<
+    XAlias extends string = 'status',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'status', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): BidFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: BidStatus }
+        : { readonly [key in XAlias]: BidStatus }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~status': BidFetcher<Omit<T, 'status'>, TVariables>
+
   readonly createdAt: BidFetcher<T & { readonly createdAt: string }, TVariables>
 
   'createdAt+'<
@@ -127,14 +168,61 @@ export interface BidFetcher<T extends object, TVariables extends object>
   >
 
   readonly '~createdAt': BidFetcher<Omit<T, 'createdAt'>, TVariables>
+
+  readonly assetName: BidFetcher<T & { readonly assetName: string }, TVariables>
+
+  'assetName+'<
+    XAlias extends string = 'assetName',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'assetName', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): BidFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: string }
+        : { readonly [key in XAlias]: string }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~assetName': BidFetcher<Omit<T, 'assetName'>, TVariables>
+
+  readonly activeUntil: BidFetcher<
+    T & { readonly activeUntil: string },
+    TVariables
+  >
+
+  'activeUntil+'<
+    XAlias extends string = 'activeUntil',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'activeUntil', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): BidFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: string }
+        : { readonly [key in XAlias]: string }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~activeUntil': BidFetcher<Omit<T, 'activeUntil'>, TVariables>
 }
 
 export const bid$: BidFetcher<{}, {}> = createFetcher(
   createFetchableType(
     'Bid',
-    'EMBEDDED',
+    'OBJECT',
     [],
     [
+      {
+        category: 'ID',
+        name: 'id'
+      },
       'owner',
       'order',
       {
@@ -142,10 +230,13 @@ export const bid$: BidFetcher<{}, {}> = createFetcher(
         name: 'amount',
         targetTypeName: 'Price'
       },
-      'createdAt'
+      'status',
+      'createdAt',
+      'assetName',
+      'activeUntil'
     ]
   ),
   undefined
 )
 
-export const bid$$ = bid$.owner.order.createdAt
+export const bid$$ = bid$.id.owner.order.status.createdAt.assetName.activeUntil

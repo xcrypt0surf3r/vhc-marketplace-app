@@ -5,7 +5,8 @@ import {
   createFetchableType
 } from 'graphql-ts-client-api'
 import type { WithTypeName, ImplementationType } from '../CommonTypes'
-import { ListingStatus, ListingType } from '../enums'
+import { baseEntity$ } from './BaseEntityFetcher'
+import { ListingType, ListingStatus } from '../enums'
 
 /*
  * Any instance of this interface is immutable,
@@ -45,6 +46,26 @@ export interface ListingFetcher<T extends object, TVariables extends object>
     T & { __typename: ImplementationType<'Listing'> },
     TVariables
   >
+
+  readonly id: ListingFetcher<T & { readonly id: string }, TVariables>
+
+  'id+'<
+    XAlias extends string = 'id',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'id', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): ListingFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: string }
+        : { readonly [key in XAlias]: string }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~id': ListingFetcher<Omit<T, 'id'>, TVariables>
 
   readonly makerAddress: ListingFetcher<
     T & { readonly makerAddress: string },
@@ -228,8 +249,8 @@ export interface ListingFetcher<T extends object, TVariables extends object>
 export const listing$: ListingFetcher<{}, {}> = createFetcher(
   createFetchableType(
     'Listing',
-    'EMBEDDED',
-    [],
+    'OBJECT',
+    [baseEntity$.fetchableType],
     [
       'makerAddress',
       'assetId',
@@ -259,11 +280,5 @@ export const listing$: ListingFetcher<{}, {}> = createFetcher(
   undefined
 )
 
-// prettier-ignore
-export const listing$$ = 
-  listing$
-    .makerAddress
-    .assetId
-    .assetAddress
-    .type
-    .status
+export const listing$$ =
+  listing$.id.makerAddress.assetId.assetAddress.type.status

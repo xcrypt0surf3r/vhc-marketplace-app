@@ -5,6 +5,7 @@ import {
   createFetchableType
 } from 'graphql-ts-client-api'
 import type { WithTypeName, ImplementationType } from '../CommonTypes'
+import { baseEntity$ } from './BaseEntityFetcher'
 
 /*
  * Any instance of this interface is immutable,
@@ -44,6 +45,26 @@ export interface AssetFetcher<T extends object, TVariables extends object>
     T & { __typename: ImplementationType<'Asset'> },
     TVariables
   >
+
+  readonly id: AssetFetcher<T & { readonly id: string }, TVariables>
+
+  'id+'<
+    XAlias extends string = 'id',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'id', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): AssetFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: string }
+        : { readonly [key in XAlias]: string }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~id': AssetFetcher<Omit<T, 'id'>, TVariables>
 
   readonly tokenId: AssetFetcher<T & { readonly tokenId: number }, TVariables>
 
@@ -219,19 +240,45 @@ export interface AssetFetcher<T extends object, TVariables extends object>
     T & { readonly [key in XAlias]?: X },
     TVariables & XVariables & XDirectiveVariables
   >
+
+  listings<X extends object, XVariables extends object>(
+    child: ObjectFetcher<'Listing', X, XVariables>
+  ): AssetFetcher<
+    T & { readonly listings?: readonly X[] },
+    TVariables & XVariables
+  >
+
+  listings<
+    X extends object,
+    XVariables extends object,
+    XAlias extends string = 'listings',
+    XDirectiveVariables extends object = {}
+  >(
+    child: ObjectFetcher<'Listing', X, XVariables>,
+    optionsConfigurer: (
+      options: FieldOptions<'listings', {}, {}>
+    ) => FieldOptions<
+      XAlias,
+      { readonly [key: string]: DirectiveArgs },
+      XDirectiveVariables
+    >
+  ): AssetFetcher<
+    T & { readonly [key in XAlias]?: readonly X[] },
+    TVariables & XVariables & XDirectiveVariables
+  >
 }
 
 export const asset$: AssetFetcher<{}, {}> = createFetcher(
   createFetchableType(
     'Asset',
-    'EMBEDDED',
-    [],
+    'OBJECT',
+    [baseEntity$.fetchableType],
     [
       'tokenId',
       'tokenAddress',
       'tokenUri',
       {
-        category: 'SCALAR',
+        category: 'REFERENCE',
         name: 'assetData',
         targetTypeName: 'Vland'
       },
@@ -239,8 +286,14 @@ export const asset$: AssetFetcher<{}, {}> = createFetcher(
       'creator',
       'owner',
       {
-        category: 'SCALAR',
+        category: 'REFERENCE',
         name: 'activeListing',
+        targetTypeName: 'Listing',
+        undefinable: true
+      },
+      {
+        category: 'LIST',
+        name: 'listings',
         targetTypeName: 'Listing',
         undefinable: true
       }
@@ -249,12 +302,5 @@ export const asset$: AssetFetcher<{}, {}> = createFetcher(
   undefined
 )
 
-// prettier-ignore
 export const asset$$ =
-  asset$
-    .tokenId
-    .tokenAddress
-    .tokenUri
-    .createdAtTimestamp
-    .creator
-    .owner
+  asset$.id.tokenId.tokenAddress.tokenUri.createdAtTimestamp.creator.owner

@@ -224,6 +224,68 @@ export interface QueryFetcher<T extends object, TVariables extends object>
         : { readonly [key in XAlias]: readonly X[] }),
     TVariables & XVariables & XDirectiveVariables
   >
+
+  user<X extends object, XVariables extends object>(
+    child: ObjectFetcher<'User', X, XVariables>
+  ): QueryFetcher<
+    T & { readonly user?: X },
+    TVariables & XVariables & QueryArgs['user']
+  >
+
+  user<
+    XArgs extends AcceptableVariables<QueryArgs['user']>,
+    X extends object,
+    XVariables extends object
+  >(
+    args: XArgs,
+    child: ObjectFetcher<'User', X, XVariables>
+  ): QueryFetcher<
+    T & { readonly user?: X },
+    TVariables & XVariables & UnresolvedVariables<XArgs, QueryArgs['user']>
+  >
+
+  user<
+    X extends object,
+    XVariables extends object,
+    XAlias extends string = 'user',
+    XDirectiveVariables extends object = {}
+  >(
+    child: ObjectFetcher<'User', X, XVariables>,
+    optionsConfigurer: (
+      options: FieldOptions<'user', {}, {}>
+    ) => FieldOptions<
+      XAlias,
+      { readonly [key: string]: DirectiveArgs },
+      XDirectiveVariables
+    >
+  ): QueryFetcher<
+    T & { readonly [key in XAlias]?: X },
+    TVariables & XVariables & QueryArgs['user'] & XDirectiveVariables
+  >
+
+  user<
+    XArgs extends AcceptableVariables<QueryArgs['user']>,
+    X extends object,
+    XVariables extends object,
+    XAlias extends string = 'user',
+    XDirectiveVariables extends object = {}
+  >(
+    args: XArgs,
+    child: ObjectFetcher<'User', X, XVariables>,
+    optionsConfigurer: (
+      options: FieldOptions<'user', {}, {}>
+    ) => FieldOptions<
+      XAlias,
+      { readonly [key: string]: DirectiveArgs },
+      XDirectiveVariables
+    >
+  ): QueryFetcher<
+    T & { readonly [key in XAlias]?: X },
+    TVariables &
+      XVariables &
+      UnresolvedVariables<XArgs, QueryArgs['user']> &
+      XDirectiveVariables
+  >
 }
 
 export const query$: QueryFetcher<{}, {}> = createFetcher(
@@ -233,7 +295,7 @@ export const query$: QueryFetcher<{}, {}> = createFetcher(
     [],
     [
       {
-        category: 'SCALAR',
+        category: 'REFERENCE',
         name: 'asset',
         argGraphQLTypeMap: { tokenId: 'Float!' },
         targetTypeName: 'Asset',
@@ -250,7 +312,7 @@ export const query$: QueryFetcher<{}, {}> = createFetcher(
         targetTypeName: 'Collection'
       },
       {
-        category: 'SCALAR',
+        category: 'REFERENCE',
         name: 'collection',
         argGraphQLTypeMap: { address: 'String!' },
         targetTypeName: 'Collection'
@@ -259,6 +321,13 @@ export const query$: QueryFetcher<{}, {}> = createFetcher(
         category: 'LIST',
         name: 'listing',
         targetTypeName: 'Listing'
+      },
+      {
+        category: 'SCALAR',
+        name: 'user',
+        argGraphQLTypeMap: { walletAddress: 'String!' },
+        targetTypeName: 'User',
+        undefinable: true
       }
     ]
   ),
@@ -272,5 +341,9 @@ export interface QueryArgs {
 
   readonly collection: {
     readonly address: string
+  }
+
+  readonly user: {
+    readonly walletAddress: string
   }
 }

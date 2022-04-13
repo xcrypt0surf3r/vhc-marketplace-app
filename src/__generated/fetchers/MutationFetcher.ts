@@ -12,6 +12,7 @@ import {
 import {
   AuctionInput,
   BidInput,
+  CancelBidInput,
   CancelBuyNowInput,
   CreateBuyNowInput,
   FillBuyNowInput
@@ -359,6 +360,70 @@ export interface MutationFetcher<T extends object, TVariables extends object>
       UnresolvedVariables<XArgs, MutationArgs['createBid']> &
       XDirectiveVariables
   >
+
+  cancelBid<X extends object, XVariables extends object>(
+    child: ObjectFetcher<'Listing', X, XVariables>
+  ): MutationFetcher<
+    T & { readonly cancelBid: X },
+    TVariables & XVariables & MutationArgs['cancelBid']
+  >
+
+  cancelBid<
+    XArgs extends AcceptableVariables<MutationArgs['cancelBid']>,
+    X extends object,
+    XVariables extends object
+  >(
+    args: XArgs,
+    child: ObjectFetcher<'Listing', X, XVariables>
+  ): MutationFetcher<
+    T & { readonly cancelBid: X },
+    TVariables &
+      XVariables &
+      UnresolvedVariables<XArgs, MutationArgs['cancelBid']>
+  >
+
+  cancelBid<
+    X extends object,
+    XVariables extends object,
+    XAlias extends string = 'cancelBid',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    child: ObjectFetcher<'Listing', X, XVariables>,
+    optionsConfigurer: (
+      options: FieldOptions<'cancelBid', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): MutationFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: X }
+        : { readonly [key in XAlias]: X }),
+    TVariables & XVariables & MutationArgs['cancelBid'] & XDirectiveVariables
+  >
+
+  cancelBid<
+    XArgs extends AcceptableVariables<MutationArgs['cancelBid']>,
+    X extends object,
+    XVariables extends object,
+    XAlias extends string = 'cancelBid',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    args: XArgs,
+    child: ObjectFetcher<'Listing', X, XVariables>,
+    optionsConfigurer: (
+      options: FieldOptions<'cancelBid', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): MutationFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: X }
+        : { readonly [key in XAlias]: X }),
+    TVariables &
+      XVariables &
+      UnresolvedVariables<XArgs, MutationArgs['cancelBid']> &
+      XDirectiveVariables
+  >
 }
 
 export const mutation$: MutationFetcher<{}, {}> = createFetcher(
@@ -368,33 +433,39 @@ export const mutation$: MutationFetcher<{}, {}> = createFetcher(
     [],
     [
       {
-        category: 'SCALAR',
+        category: 'REFERENCE',
         name: 'createBuyNowListing',
         argGraphQLTypeMap: { data: 'CreateBuyNowInput!' },
         targetTypeName: 'Listing'
       },
       {
-        category: 'SCALAR',
+        category: 'REFERENCE',
         name: 'fillBuyNowListing',
         argGraphQLTypeMap: { data: 'FillBuyNowInput!' },
         targetTypeName: 'Listing'
       },
       {
-        category: 'SCALAR',
+        category: 'REFERENCE',
         name: 'cancelBuyNowListing',
         argGraphQLTypeMap: { data: 'CancelBuyNowInput!' },
         targetTypeName: 'Listing'
       },
       {
-        category: 'SCALAR',
+        category: 'REFERENCE',
         name: 'createAuction',
         argGraphQLTypeMap: { data: 'AuctionInput!' },
         targetTypeName: 'Listing'
       },
       {
-        category: 'SCALAR',
+        category: 'REFERENCE',
         name: 'createBid',
         argGraphQLTypeMap: { data: 'BidInput!' },
+        targetTypeName: 'Listing'
+      },
+      {
+        category: 'REFERENCE',
+        name: 'cancelBid',
+        argGraphQLTypeMap: { data: 'CancelBidInput!' },
         targetTypeName: 'Listing'
       }
     ]
@@ -421,5 +492,9 @@ export interface MutationArgs {
 
   readonly createBid: {
     readonly data: BidInput
+  }
+
+  readonly cancelBid: {
+    readonly data: CancelBidInput
   }
 }

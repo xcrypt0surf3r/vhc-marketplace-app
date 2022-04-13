@@ -5,6 +5,7 @@ import {
   createFetchableType
 } from 'graphql-ts-client-api'
 import type { WithTypeName, ImplementationType } from '../CommonTypes'
+import { baseEntity$ } from './BaseEntityFetcher'
 import { CollectionType } from '../enums'
 
 /*
@@ -48,6 +49,26 @@ export interface CollectionFetcher<T extends object, TVariables extends object>
     T & { __typename: ImplementationType<'Collection'> },
     TVariables
   >
+
+  readonly id: CollectionFetcher<T & { readonly id: string }, TVariables>
+
+  'id+'<
+    XAlias extends string = 'id',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'id', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): CollectionFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: string }
+        : { readonly [key in XAlias]: string }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~id': CollectionFetcher<Omit<T, 'id'>, TVariables>
 
   readonly name: CollectionFetcher<T & { readonly name: string }, TVariables>
 
@@ -174,8 +195,8 @@ export interface CollectionFetcher<T extends object, TVariables extends object>
 export const collection$: CollectionFetcher<{}, {}> = createFetcher(
   createFetchableType(
     'Collection',
-    'EMBEDDED',
-    [],
+    'OBJECT',
+    [baseEntity$.fetchableType],
     [
       'name',
       'type',
@@ -193,4 +214,4 @@ export const collection$: CollectionFetcher<{}, {}> = createFetcher(
 )
 
 export const collection$$ =
-  collection$.name.type.contractAddress.createdAtTimestamp
+  collection$.id.name.type.contractAddress.createdAtTimestamp
