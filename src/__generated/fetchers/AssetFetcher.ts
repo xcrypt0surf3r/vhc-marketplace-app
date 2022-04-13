@@ -5,7 +5,6 @@ import {
   createFetchableType
 } from 'graphql-ts-client-api'
 import type { WithTypeName, ImplementationType } from '../CommonTypes'
-import { baseEntity$ } from './BaseEntityFetcher'
 
 /*
  * Any instance of this interface is immutable,
@@ -45,26 +44,6 @@ export interface AssetFetcher<T extends object, TVariables extends object>
     T & { __typename: ImplementationType<'Asset'> },
     TVariables
   >
-
-  readonly id: AssetFetcher<T & { readonly id: string }, TVariables>
-
-  'id+'<
-    XAlias extends string = 'id',
-    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
-    XDirectiveVariables extends object = {}
-  >(
-    optionsConfigurer: (
-      options: FieldOptions<'id', {}, {}>
-    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
-  ): AssetFetcher<
-    T &
-      (XDirectives extends { readonly include: any } | { readonly skip: any }
-        ? { readonly [key in XAlias]?: string }
-        : { readonly [key in XAlias]: string }),
-    TVariables & XDirectiveVariables
-  >
-
-  readonly '~id': AssetFetcher<Omit<T, 'id'>, TVariables>
 
   readonly tokenId: AssetFetcher<T & { readonly tokenId: number }, TVariables>
 
@@ -271,14 +250,14 @@ export interface AssetFetcher<T extends object, TVariables extends object>
 export const asset$: AssetFetcher<{}, {}> = createFetcher(
   createFetchableType(
     'Asset',
-    'OBJECT',
-    [baseEntity$.fetchableType],
+    'EMBEDDED',
+    [],
     [
       'tokenId',
       'tokenAddress',
       'tokenUri',
       {
-        category: 'REFERENCE',
+        category: 'SCALAR',
         name: 'assetData',
         targetTypeName: 'Vland'
       },
@@ -303,4 +282,4 @@ export const asset$: AssetFetcher<{}, {}> = createFetcher(
 )
 
 export const asset$$ =
-  asset$.id.tokenId.tokenAddress.tokenUri.createdAtTimestamp.creator.owner
+  asset$.tokenId.tokenAddress.tokenUri.createdAtTimestamp.creator.owner

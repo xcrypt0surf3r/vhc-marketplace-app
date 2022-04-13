@@ -295,7 +295,7 @@ export const query$: QueryFetcher<{}, {}> = createFetcher(
     [],
     [
       {
-        category: 'REFERENCE',
+        category: 'SCALAR',
         name: 'asset',
         argGraphQLTypeMap: { tokenId: 'Float!' },
         targetTypeName: 'Asset',
