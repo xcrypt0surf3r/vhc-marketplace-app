@@ -1,5 +1,13 @@
 function upcastTypes0(typeName: string, output: string[]) {
   switch (typeName) {
+    case 'Listing':
+      output.push('Listing')
+      upcastTypes0('BaseEntity', output)
+      break
+    case 'Collection':
+      output.push('Collection')
+      upcastTypes0('BaseEntity', output)
+      break
     default:
       output.push(typeName)
       break
@@ -8,6 +16,11 @@ function upcastTypes0(typeName: string, output: string[]) {
 
 function downcastTypes0(typeName: string, output: string[]) {
   switch (typeName) {
+    case 'BaseEntity':
+      output.push('BaseEntity')
+      downcastTypes0('Listing', output)
+      downcastTypes0('Collection', output)
+      break
     default:
       output.push(typeName)
       break
@@ -42,7 +55,12 @@ function downcastTypes0(typeName: string, output: string[]) {
  *         T
  *     ;
  */
-export type ImplementationType<T> = T
+export type ImplementationType<T> = T extends 'BaseEntity'
+  ?
+      | 'BaseEntity'
+      | ImplementationType<'Listing'>
+      | ImplementationType<'Collection'>
+  : T
 /**
  *
  * This 'upcastTypes' is used for inheritance, let's see an example, if graphql schema is:

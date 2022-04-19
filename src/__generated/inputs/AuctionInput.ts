@@ -6,6 +6,7 @@ import { AuctionType } from '../enums'
  * do not satisfy the constraint 'SerializableParam' of recoil
  */
 export type AuctionInput = {
+  readonly makerAddress: string
   readonly assetId: string
   readonly assetAddress: string
   readonly startDate: string

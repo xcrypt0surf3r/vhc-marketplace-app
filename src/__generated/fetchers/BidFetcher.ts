@@ -66,6 +66,26 @@ export interface BidFetcher<T extends object, TVariables extends object>
 
   readonly '~id': BidFetcher<Omit<T, 'id'>, TVariables>
 
+  readonly listingId: BidFetcher<T & { readonly listingId: string }, TVariables>
+
+  'listingId+'<
+    XAlias extends string = 'listingId',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'listingId', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): BidFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: string }
+        : { readonly [key in XAlias]: string }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~listingId': BidFetcher<Omit<T, 'listingId'>, TVariables>
+
   readonly owner: BidFetcher<T & { readonly owner: string }, TVariables>
 
   'owner+'<
@@ -223,6 +243,7 @@ export const bid$: BidFetcher<{}, {}> = createFetcher(
         category: 'ID',
         name: 'id'
       },
+      'listingId',
       'owner',
       'order',
       {
@@ -239,4 +260,5 @@ export const bid$: BidFetcher<{}, {}> = createFetcher(
   undefined
 )
 
-export const bid$$ = bid$.id.owner.order.status.createdAt.assetName.activeUntil
+export const bid$$ =
+  bid$.id.listingId.owner.order.status.createdAt.assetName.activeUntil
