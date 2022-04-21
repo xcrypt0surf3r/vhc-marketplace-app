@@ -1,10 +1,12 @@
-import { lazy } from 'react'
-import { RouteProps } from 'react-router-dom'
+import { useWeb3React } from '@web3-react/core'
+import React, { lazy } from 'react'
+import { Navigate, RouteProps, useLocation } from 'react-router-dom'
 import DefaultLayout from './features/shared/layout/Default'
 
 const Landing = lazy(() => import('./pages/landing'))
 const PageNotFound = lazy(() => import('./pages/not-found'))
 const AssetDetails = lazy(() => import('./pages/asset-details'))
+const UserProfile = lazy(() => import('./pages/user-profile'))
 
 export enum LayoutTemplate {
   DEFAULT
@@ -33,6 +35,19 @@ const RenderRoute = ({
   return <Layout template={layout}>{children}</Layout>
 }
 
+const ProtectedRoute = ({
+  ...props
+}: {
+  children: React.ReactNode
+  layout: LayoutTemplate
+}) => {
+  const location = useLocation()
+  const { account } = useWeb3React()
+
+  if (!account) return <Navigate to='/' replace state={{ from: location }} />
+  return <RenderRoute {...props} />
+}
+
 export const routes: RouteProps[] = [
   {
     path: '/',
@@ -48,6 +63,14 @@ export const routes: RouteProps[] = [
       <RenderRoute layout={LayoutTemplate.DEFAULT}>
         <AssetDetails />
       </RenderRoute>
+    )
+  },
+  {
+    path: '/profile',
+    element: (
+      <ProtectedRoute layout={LayoutTemplate.DEFAULT}>
+        <UserProfile />
+      </ProtectedRoute>
     )
   },
   {

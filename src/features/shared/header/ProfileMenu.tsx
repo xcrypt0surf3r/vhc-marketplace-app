@@ -1,7 +1,8 @@
 import { Menu } from '@headlessui/react'
 import { useAtom } from 'jotai'
+import { Link } from 'react-router-dom'
 import { walletBalanceAtom } from '../../../state/atoms/wallet.atoms'
-import { truncate } from '../../../utils'
+import { classNames, truncate } from '../../../utils'
 
 type Props = {
   account: string
@@ -10,8 +11,9 @@ type Props = {
 
 export interface MenuItems {
   name: string
+  link?: string
   visible: boolean
-  onClick?: Function
+  onClick?: (() => void) | (() => Promise<void>)
 }
 
 const ProfileMenu = ({ account, subMenuItems }: Props) => {
@@ -24,7 +26,7 @@ const ProfileMenu = ({ account, subMenuItems }: Props) => {
           VH
         </Menu.Button>
       </div>
-      <Menu.Items className='absolute shadow p-4 w-[17rem] mt-2 text-left right-0 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-[40]'>
+      <Menu.Items className='absolute p-4 w-[17rem] mt-2 text-left right-0 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-[40]'>
         <Menu.Item>
           <div className='text-[#16192C] w-full py-2 rounded-md mb-2 bg-white'>
             <a>{truncate(account, 6)}</a>
@@ -45,24 +47,26 @@ const ProfileMenu = ({ account, subMenuItems }: Props) => {
             </div>
           </div>
         </Menu.Item>
-        {subMenuItems.map((item: MenuItems) =>
-          item.visible ? (
-            <Menu.Item
-              key={item.name}
-              onClick={() => (item.onClick ? item.onClick() : undefined)}
-            >
-              {({ active }) => (
-                <div
-                  className={`text-black w-full py-2 rounded-md pl-4 mt-2 ${
-                    active ? 'bg-[#EBF2FA] ' : 'bg-white'
-                  }`}
-                >
-                  <a>{item.name}</a>
-                </div>
-              )}
-            </Menu.Item>
-          ) : null
-        )}
+        <div className='py-2'>
+          {subMenuItems.map((item: MenuItems) =>
+            item.visible ? (
+              <Menu.Item key={item.name}>
+                {({ active }) => (
+                  <Link
+                    to={item.link ?? '#'}
+                    onClick={item.onClick}
+                    className={classNames(
+                      active ? 'bg-slate-100' : 'bg-white',
+                      'block px-4 py-3 text-sm hover:cursor-pointer'
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                )}
+              </Menu.Item>
+            ) : null
+          )}
+        </div>
       </Menu.Items>
     </Menu>
   )

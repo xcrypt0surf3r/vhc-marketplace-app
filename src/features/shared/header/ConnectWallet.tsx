@@ -112,7 +112,8 @@ const ConnectWallet = () => {
   const subMenuItems: MenuItems[] = [
     {
       name: 'My profile',
-      visible: false
+      visible: true,
+      link: '/profile'
     },
     {
       name: 'Edit profile',

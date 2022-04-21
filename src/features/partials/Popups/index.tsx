@@ -3,6 +3,7 @@ import { useAppSelector } from '../../../state/store'
 import BidSubmitted from './BidSubmitted'
 import BuyBidError from './BuyBidError'
 import BuyNow from './BuyNow'
+import CancelBid from './CancelBid'
 import Checkout from './Checkout'
 import ConnectWallet from './ConnectWallet'
 import ConnectWalletScan from './ConnectWalletScan'
@@ -48,6 +49,9 @@ const Popups = () => {
       break
     case Popup.BUY_BID_ERROR:
       modal = <BuyBidError />
+      break
+    case Popup.CANCEL_BID:
+      modal = <CancelBid />
       break
     default:
       break

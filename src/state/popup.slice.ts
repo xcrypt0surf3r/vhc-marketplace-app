@@ -12,7 +12,8 @@ export enum Popup {
   ORDER_CONFIRMED = 'orderConfirmed',
   BID_SUBMITTED = 'bidSubmitted',
   PLACE_BID = 'placeBid',
-  BUY_BID_ERROR = 'buyBidError'
+  BUY_BID_ERROR = 'buyBidError',
+  CANCEL_BID = 'cancelBid'
 }
 
 const popSlice = createSlice({

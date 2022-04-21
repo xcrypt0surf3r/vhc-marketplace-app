@@ -31,6 +31,14 @@ h1, h2, h3, h4 {
     @apply bg-gray-200 text-gray-700;
   }
 
+  .ACTIVE {
+    @apply bg-green-200 text-gray-700 px-2 text-sm rounded-full;
+  }
+
+  .CANCELLED {
+    @apply bg-red-200 text-gray-700 px-2 text-sm rounded-full;
+  }
+
   .magnify {
     @apply hover:shadow-lg hover:scale-105 transition-all;
   }

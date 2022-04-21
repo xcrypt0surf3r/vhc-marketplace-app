@@ -1,3 +1,5 @@
+import { SignedERC721OrderStruct } from '@traderxyz/nft-swap-sdk'
+import { Bid } from '../services/queries'
 import { Currency } from '../__generated/enums'
 
 export * from './imageUtils'
@@ -35,4 +37,8 @@ export const getERC20TokenAddress = (currency: Currency) => {
       break
   }
   throw new Error('Unsupported currency type')
+}
+
+export const getOrder = (bid: Bid) => {
+  return JSON.parse(bid.order) as SignedERC721OrderStruct
 }

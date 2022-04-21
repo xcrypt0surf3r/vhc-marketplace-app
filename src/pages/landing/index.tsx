@@ -1,8 +1,8 @@
-import Hero from './Hero'
-import Promotion from './Promotion'
 import { AssetsListing } from '../../features/partials/AssetsListing'
 import DefaultLayoutContainer from '../../features/shared/layout/DefaultLayoutContainer'
 import { useGetAssetsQuery } from '../../services/assets'
+import Hero from './Hero'
+import Promotion from './Promotion'
 
 const Landing = () => {
   const { data, isLoading, isFetching } = useGetAssetsQuery()
