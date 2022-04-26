@@ -12,6 +12,7 @@ env:
   S3_BUCKET: vh-market-staging
   REACT_APP_SERVER_API: https://mp-server-staging.vaulthill.io/graphql
   REACT_APP_VHC_ADDRESS: '0xe29Ae1FAa69D22dF8D5866B1b3a750740a9f7893'
+  REACT_APP_CHAIN_ID: 3
 
 on:
   workflow_dispatch:
@@ -41,6 +42,7 @@ jobs:
           echo "REACT_APP_NODE_ENV=${{ env.NODE_ENV }}" >> .env
           echo "REACT_APP_SERVER_API=${{ env.REACT_APP_SERVER_API }}" >> .env
           echo "REACT_APP_VHC_ADDRESS=${{ env.REACT_APP_VHC_ADDRESS }}" >> .env
+          echo "REACT_APP_CHAIN_ID=${{ env.REACT_APP_CHAIN_ID }}" >> .env
           npm install
           npm run build
           zip -r ${{ env.EBS_APP_NAME }}-${{ env.DEPLOY_ID }}-${{ steps.current-time.outputs.time }}.zip build Dockerfile
