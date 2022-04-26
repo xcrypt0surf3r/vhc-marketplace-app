@@ -218,7 +218,8 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
           <div className='grid xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
             <Properties
               properties={asset.assetData}
-              unlistProps={['name', 'description']}
+              unlistProps={['name', 'description', 'x', 'y']}
+              mergeProps={['x', 'y']}
             />
             <SalesHistory
               panels={{
