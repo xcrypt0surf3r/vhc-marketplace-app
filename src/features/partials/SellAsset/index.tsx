@@ -7,6 +7,7 @@ import {
 } from '@heroicons/react/outline'
 import { useState } from 'react'
 import { useAtom } from 'jotai'
+import { useWeb3React } from '@web3-react/core'
 import { AssetWithListing } from '../../../services/queries'
 import { classNames, getAssetImage } from '../../../utils'
 import { Button, ButtonSizes, ButtonColors } from '../../shared/Button'
@@ -29,6 +30,7 @@ export enum BuyNowTypeEnum {
 }
 
 const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
+  const { account } = useWeb3React()
   const [, setBuyNow] = useAtom(buyNowAtom)
   const [createAuctionMutation] = useCreateAuctionMutation()
   const [errorMessage, setErrorMessage] = useState(false)
@@ -64,19 +66,15 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
     getValues
   } = useForm()
 
-  const handleAuction = async () => {
-    if (asset) {
+  const handleCreateAuction = async () => {
+    if (asset && account) {
       const data: AuctionInput = {
         assetAddress: asset.tokenAddress,
         assetId: asset.tokenId.toString(),
         startDate: new Date().toUTCString(),
         endDate: selectedDate.toUTCString(),
-        makerAddress: asset.tokenAddress,
+        makerAddress: account,
         startingPrice: {
-          currency: selectedCurrency,
-          value: parseFloat(getValues('amount'))
-        },
-        reservePrice: {
           currency: selectedCurrency,
           value: parseFloat(getValues('amount'))
         },
@@ -118,7 +116,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
           handleSellNow()
           break
         case BuyNowTypeEnum.AUCTION:
-          handleAuction()
+          handleCreateAuction()
           break
         default:
           break
