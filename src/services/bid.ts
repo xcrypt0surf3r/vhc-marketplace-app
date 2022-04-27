@@ -1,7 +1,7 @@
-import { CancelBidInput } from '../__generated/inputs'
+import { CancelBidInput, BidInput } from '../__generated/inputs'
 import { baseAPI } from './api'
-import { CANCEL_BID_MUTATION, Listing } from './queries'
-import { USER_BIDS_TAG } from './tags'
+import { CANCEL_BID_MUTATION, CREATE_BID_MUTATION, Listing } from './queries'
+import { BID_TAG } from './tags'
 
 export const bidApi = baseAPI.injectEndpoints({
   endpoints: (builder) => ({
@@ -17,11 +17,30 @@ export const bidApi = baseAPI.injectEndpoints({
       transformResponse: (response: Listing) => {
         return response as Listing
       },
-      invalidatesTags: (_, __, { bidId }) => {
-        return [{ type: USER_BIDS_TAG, id: bidId }]
+      invalidatesTags: (_, __, { bidId, listingId }) => {
+        return [
+          { type: BID_TAG, id: `${bidId}_${listingId}` },
+          { type: BID_TAG, id: 'LIST' }
+        ]
+      }
+    }),
+    createBid: builder.mutation<Listing, BidInput>({
+      query: (data: BidInput) => ({
+        fetcher: CREATE_BID_MUTATION,
+        options: {
+          variables: {
+            data
+          }
+        }
+      }),
+      transformResponse: (response: Listing) => {
+        return response as Listing
+      },
+      invalidatesTags: () => {
+        return [{ type: BID_TAG, id: 'LIST' }]
       }
     })
   })
 })
 
-export const { useCancelBidMutation } = bidApi
+export const { useCancelBidMutation, useCreateBidMutation } = bidApi

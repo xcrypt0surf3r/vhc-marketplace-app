@@ -92,8 +92,11 @@ const ConnectWallet = () => {
         'https://api.coingecko.com/api/v3/simple/price?include_last_updated_at=true&ids=vault-hill-city&vs_currencies=usd'
       )
       const jsonResponse = await response.json()
-      const usdAmount = vhcBalance * jsonResponse['vault-hill-city'].usd
-      setWalletBalance({ currency: 'VHC', amount: vhcBalance, usdAmount })
+      const usdBalance = vhcBalance * jsonResponse['vault-hill-city'].usd
+      setWalletBalance({
+        USD: { currency: 'USD', value: usdBalance },
+        VHC: { currency: 'VHC', value: vhcBalance }
+      })
     }
     if (account) getVhcBalance()
   }, [account, library, setWalletBalance])

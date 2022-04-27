@@ -6,7 +6,7 @@ import {
   ASSET_LIST_TAG,
   ASSET_TAG,
   USER_ASSETS_TAG,
-  USER_BIDS_TAG,
+  BID_TAG,
   USER_TAG
 } from './tags'
 
@@ -45,12 +45,6 @@ export const baseAPI = createApi({
   baseQuery: graphqlTSBaseQuery({
     baseUrl: process.env.REACT_APP_SERVER_API!
   }),
-  tagTypes: [
-    ASSET_TAG,
-    ASSET_LIST_TAG,
-    USER_TAG,
-    USER_BIDS_TAG,
-    USER_ASSETS_TAG
-  ],
+  tagTypes: [ASSET_TAG, ASSET_LIST_TAG, USER_TAG, BID_TAG, USER_ASSETS_TAG],
   endpoints: () => ({})
 })

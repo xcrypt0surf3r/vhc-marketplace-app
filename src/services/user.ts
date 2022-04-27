@@ -20,10 +20,11 @@ export const userApi = baseAPI.injectEndpoints({
         const bids = res?.user?.bids
         return bids
           ? [
-              ...bids.map(({ id }) => ({
-                type: 'USER_BIDS' as const,
-                id
-              }))
+              ...bids.map(({ id, listingId }) => ({
+                type: 'BID' as const,
+                id: `${id}_${listingId}`
+              })),
+              { type: 'BID', id: 'LIST' }
             ]
           : res
           ? [{ type: USER_TAG, id: res.user?.walletAddress }]

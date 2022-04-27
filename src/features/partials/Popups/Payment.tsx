@@ -1,12 +1,22 @@
 import { CheckCircleIcon } from '@heroicons/react/solid'
-import { UserFacingERC20AssetDataSerializedV4 } from '@traderxyz/nft-swap-sdk'
+import {
+  SwappableAssetV4,
+  UserFacingERC20AssetDataSerializedV4,
+  UserFacingERC721AssetDataSerializedV4
+} from '@traderxyz/nft-swap-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { ethers } from 'ethers'
 import { useAtom } from 'jotai'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useFillBuyNowMutation } from '../../../services/assets'
-import { approveAssetsForSwap, fillBuyNowOrder } from '../../../services/order'
+import { useCreateBidMutation } from '../../../services/bid'
+import {
+  approveAssetsForSwap,
+  createBidOrder,
+  fillBuyNowOrder
+} from '../../../services/order'
 import { useAppDispatch, useAppSelector } from '../../../state'
+import { createBidAtom } from '../../../state/atoms/bid.atom'
 import { listingAtom } from '../../../state/atoms/listing.atoms'
 import { getPopup, openModal, Popup } from '../../../state/popup.slice'
 import { getERC20TokenAddress } from '../../../utils'
@@ -14,15 +24,23 @@ import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import { Modal } from '../../shared/Modal'
 
 const Payment = () => {
+  const [unlocking, setUnlocking] = useState(false)
   const { account, connector } = useWeb3React()
   const [listing] = useAtom(listingAtom)
+  const [bid] = useAtom(createBidAtom)
 
   const [isApproved, setIsApproved] = useState(false)
   const [isConfirming, setIsConfirming] = useState(false)
   const [isSigned, setIsSigned] = useState(false)
+  const [makerSwapAsset, setMakerSwapAsset] = useState<
+    SwappableAssetV4 | UserFacingERC20AssetDataSerializedV4 | undefined
+  >()
+  const [takerSwapAsset, setTakerSwapAsset] = useState<
+    SwappableAssetV4 | UserFacingERC721AssetDataSerializedV4 | undefined
+  >()
 
   const [fillBuyNowMutation] = useFillBuyNowMutation()
-
+  const [createBid, { isSuccess, isError }] = useCreateBidMutation()
   const dispatch = useAppDispatch()
   const popups = useAppSelector(getPopup)
 
@@ -32,35 +50,85 @@ const Payment = () => {
    * confirmation modal which is either ORDER_CONFIRMED or BID_SUBMITTED.
    * ORDER_CONFIRMED is the default nextModal
    */
-  const handleSubmit = () => {
-    let nextModal = Popup.ORDER_CONFIRMED
 
-    if (popups.modal.at(-2) === Popup.PLACE_BID) {
-      nextModal = Popup.BID_SUBMITTED
+  useEffect(() => {
+    if (makerSwapAsset && account) {
+      ;(async () => {
+        const provider = new ethers.providers.Web3Provider(
+          await connector?.getProvider()
+        )
+        const { approved } = await approveAssetsForSwap(
+          provider,
+          account,
+          makerSwapAsset
+        )
+        setIsApproved(approved)
+        setUnlocking(false)
+      })()
     }
-    dispatch(openModal(nextModal))
-  }
+  }, [makerSwapAsset, account, connector])
 
-  const handleUnlock = async () => {
-    const provider = new ethers.providers.Web3Provider(
-      await connector?.getProvider()
-    )
+  useEffect(() => {
+    if (isSigned && isApproved && isSuccess) {
+      setIsConfirming(false)
+      if (popups.modal.at(-2) === Popup.PLACE_BID) {
+        dispatch(openModal(Popup.BID_SUBMITTED))
+      } else {
+        dispatch(openModal(Popup.ORDER_CONFIRMED))
+      }
+    }
+
+    if (isError) dispatch(openModal(Popup.BUY_BID_ERROR))
+  }, [isApproved, isSigned, dispatch, popups.modal, isSuccess, isError])
+
+  const handleBuyNowUnlock = async () => {
+    setUnlocking(true)
     if (!listing?.buyNow || !account) return
 
-    const currencyAddress = getERC20TokenAddress(listing.buyNow.price.currency)
+    const amount = listing.buyNow.price.value.toString()
+    const { currency } = listing.buyNow.price
+
+    const currencyAddress = getERC20TokenAddress(currency)
     if (!currencyAddress) return
 
-    const swapAssets: UserFacingERC20AssetDataSerializedV4 = {
+    const makerAsset: UserFacingERC721AssetDataSerializedV4 = {
+      type: 'ERC721',
+      tokenAddress: account,
+      tokenId: listing.assetId
+    }
+    setMakerSwapAsset(makerAsset)
+
+    const takerAsset: UserFacingERC20AssetDataSerializedV4 = {
       type: 'ERC20',
       tokenAddress: currencyAddress,
-      amount: listing.buyNow.price.value.toString()
+      amount
     }
-    const { approved } = await approveAssetsForSwap(
-      provider,
-      account,
-      swapAssets
-    )
-    setIsApproved(approved)
+    setTakerSwapAsset(takerAsset)
+  }
+
+  const handleBidUnlock = async () => {
+    setUnlocking(true)
+    if (!listing?.auction || !account) return
+
+    const { value, currency } = bid
+
+    const currencyAddress = getERC20TokenAddress(currency)
+    if (!currencyAddress) return
+
+    const takerAsset: UserFacingERC721AssetDataSerializedV4 = {
+      type: 'ERC721',
+      tokenAddress: listing.assetAddress,
+      tokenId: listing.assetId
+    }
+    setTakerSwapAsset(takerAsset)
+
+    const makerAsset: UserFacingERC20AssetDataSerializedV4 = {
+      type: 'ERC20',
+      tokenAddress: currencyAddress,
+      amount: `${value}`
+    }
+
+    setMakerSwapAsset(makerAsset)
   }
 
   const handleConfirmBuyNow = async () => {
@@ -70,6 +138,7 @@ const Payment = () => {
     const provider = new ethers.providers.Web3Provider(
       await connector?.getProvider()
     )
+
     if (!account) return
 
     if (listing?.buyNow?.order) {
@@ -90,8 +159,43 @@ const Payment = () => {
     }
   }
 
+  const handleConfirmBid = async () => {
+    try {
+      const provider = new ethers.providers.Web3Provider(
+        await connector?.getProvider()
+      )
+
+      if (!account) return
+
+      if (listing?.auction) {
+        setIsConfirming(true)
+
+        const order = await createBidOrder(
+          provider,
+          account,
+          makerSwapAsset as UserFacingERC20AssetDataSerializedV4,
+          takerSwapAsset as UserFacingERC721AssetDataSerializedV4
+        )
+
+        await createBid({
+          order,
+          owner: account,
+          listingId: listing.id,
+          amount: {
+            currency: 'VHC',
+            value: +bid.value
+          }
+        })
+        setIsConfirming(false)
+        setIsSigned(true)
+      }
+    } catch (err) {
+      setIsConfirming(false)
+    }
+  }
+
   return (
-    <Modal heading='Payment' align='center' className='max-w-[32rem]'>
+    <Modal heading='Place a bid' align='center' className='max-w-[32rem]'>
       <div className='grid grid-cols-1 divide-y gap-6'>
         <div className='flex gap-x-6'>
           {!isApproved ? (
@@ -110,11 +214,11 @@ const Payment = () => {
             {!isApproved && (
               <Button
                 sizer={ButtonSizes.SMALL}
-                color={ButtonColors.PRIMARY}
+                color={ButtonColors.SECONDARY}
                 className='rounded-xl'
-                onClick={handleUnlock}
+                onClick={listing?.buyNow ? handleBuyNowUnlock : handleBidUnlock}
               >
-                Unlock
+                {unlocking ? 'Unlocking...' : 'Unlock'}
               </Button>
             )}
           </div>
@@ -132,31 +236,23 @@ const Payment = () => {
             <span className='text-sm text-gray-600'>
               Sign a message using your wallet to continue
             </span>
-            {isApproved && !isSigned && (
+            {isApproved &&
+            !isSigned &&
+            (listing?.buyNow || listing?.auction) ? (
               <Button
                 sizer={ButtonSizes.SMALL}
-                color={ButtonColors.PRIMARY}
+                color={ButtonColors.SECONDARY}
                 className='rounded-xl'
-                onClick={handleConfirmBuyNow}
-                isLoading={isConfirming}
+                onClick={
+                  listing.buyNow ? handleConfirmBuyNow : handleConfirmBid
+                }
+                disabled={isConfirming}
               >
-                Sign
+                {isConfirming ? 'Signing...' : 'Sign'}
               </Button>
-            )}
+            ) : null}
           </div>
         </div>
-        {isApproved && isSigned && (
-          <div className='pt-5'>
-            <Button
-              color={ButtonColors.PRIMARY}
-              sizer={ButtonSizes.FULL}
-              className='rounded-xl'
-              onClick={handleSubmit}
-            >
-              Finish
-            </Button>
-          </div>
-        )}
       </div>
     </Modal>
   )

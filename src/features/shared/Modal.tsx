@@ -32,7 +32,7 @@ export const Modal = ({
       <div
         className={classNames(
           className ?? '',
-          'max-w-[26rem] m-auto border shadow px-3 py-8 md:px-10 md:pt-10 md:pb-20 rounded-xl md:rounded-2xl bg-white'
+          'm-auto border shadow px-3 py-8 md:px-10 md:pt-10 md:pb-20 rounded-xl md:rounded-2xl bg-white'
         )}
       >
         <div className='flex justify-between items-center md:mb-8 mb-6'>
@@ -52,7 +52,7 @@ export const Modal = ({
           <h1
             className={classNames(
               alignment,
-              'md:text-2xl text-xl',
+              'md:text-2xl text-xl font-prototype',
               !description ? 'mb-11' : ''
             )}
           >

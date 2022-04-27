@@ -5,7 +5,7 @@ const UserHeader = () => {
   const { account } = useWeb3React()
 
   return (
-    <div className='flex flex-col items-center justify-center mb-52'>
+    <div className='flex flex-col items-center justify-center mb-40'>
       <img
         src='https://picsum.photos/id/60/1700/320'
         alt=''

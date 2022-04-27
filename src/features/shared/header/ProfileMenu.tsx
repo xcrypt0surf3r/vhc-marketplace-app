@@ -38,11 +38,11 @@ const ProfileMenu = ({ account, subMenuItems }: Props) => {
             <span>Wallet balance</span>
             <div className='text-lg pt-2'>
               <span>
-                {walletBalance?.amount} {walletBalance?.currency}
+                {walletBalance?.VHC.currency} {walletBalance?.VHC.value}
               </span>
               <span className='px-2 text-[#9490D5]'>|</span>
               <span className='text-[#9490D5]'>
-                ${walletBalance?.usdAmount.toFixed(2)}
+                ${walletBalance?.USD.value.toFixed(2)}
               </span>
             </div>
           </div>

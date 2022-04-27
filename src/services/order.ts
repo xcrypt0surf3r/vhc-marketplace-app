@@ -68,6 +68,21 @@ export const createBuyNowOrder = async (
   return signedOrder as SignedERC721OrderStruct
 }
 
+export const createBidOrder = async (
+  provider: Web3Provider,
+  makerAddress: string,
+  makerSwapAssets: UserFacingERC20AssetDataSerializedV4,
+  takerSwapAssets: UserFacingERC721AssetDataSerializedV4
+): Promise<string> => {
+  const nftSwapSdk = initSwapSdk(provider)
+  const order = nftSwapSdk.buildOrder(
+    makerSwapAssets,
+    takerSwapAssets,
+    makerAddress
+  )
+  const signedOrder = await nftSwapSdk.signOrder(order)
+  return JSON.stringify(signedOrder)
+}
 // This function should be called following `approveAssetsForSwap` for the takers assets
 export const fillBuyNowOrder = async (
   provider: Web3Provider,

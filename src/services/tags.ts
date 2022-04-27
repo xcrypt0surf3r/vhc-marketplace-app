@@ -1,5 +1,5 @@
 export const ASSET_LIST_TAG = 'ASSET_LIST'
 export const ASSET_TAG = 'ASSET'
 export const USER_TAG = 'USER'
-export const USER_BIDS_TAG = 'USER_BIDS'
+export const BID_TAG = 'BID'
 export const USER_ASSETS_TAG = 'USER_ASSETS'

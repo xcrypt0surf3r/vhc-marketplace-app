@@ -11,6 +11,7 @@ const ConnectWallet = () => {
 
   return (
     <Modal
+      className='w-[407px]'
       heading='Connect your wallet'
       description='Choose one of available wallet providers or create a new wallet'
     >
@@ -42,7 +43,7 @@ const ConnectWallet = () => {
               />
             </div>
             <div>
-              <h2 className='mb-1 font-medium'>WalletConnect</h2>
+              <h2 className='mb-1 font-medium'>Metamask</h2>
               <p className='text-gray-500 text-xs'>
                 Connect using a browser extension
               </p>

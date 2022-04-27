@@ -40,6 +40,7 @@ export const LISTING_FETCHER = listing$$
     auction$$.bids(
       bid$$
     )
+    .startingPrice(price$$)
   )
   .buyNow(
     buyNow$$.price(
@@ -62,6 +63,8 @@ export const ASSET_LIST_FETCHER = ASSET_FETCHER.activeListing(LISTING_FETCHER)
 export const ASSET_LISTING_QUERY = query$.asset(ASSET_LIST_FETCHER)
 
 export const CANCEL_BID_MUTATION = mutation$.cancelBid(LISTING_FETCHER)
+
+export const CREATE_BID_MUTATION = mutation$.createBid(LISTING_FETCHER)
 //
 //
 //
