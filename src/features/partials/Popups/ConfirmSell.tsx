@@ -38,9 +38,6 @@ const ConfirmSell = () => {
   const handleSellApproved = async () => {
     if (!account || !buyNow) return
 
-    const currencyAddress = getERC20TokenAddress(buyNow.currency)
-    if (!currencyAddress) return
-
     try {
       const swapAssets: UserFacingERC721AssetDataSerializedV4 = {
         type: 'ERC721',
@@ -77,16 +74,19 @@ const ConfirmSell = () => {
     if (buyNow && buyNow.tokenAddress && buyNow.assetId) {
       setIsConfirming(true)
 
-      const makerAssets: UserFacingERC721AssetDataSerializedV4 = {
-        tokenAddress: buyNow.tokenAddress,
-        tokenId: buyNow.assetId,
-        type: 'ERC721'
-      }
-
       try {
+        const currencyAddress = getERC20TokenAddress(buyNow.currency)
+        if (!currencyAddress) return
+
+        const makerAssets: UserFacingERC721AssetDataSerializedV4 = {
+          tokenAddress: buyNow.tokenAddress,
+          tokenId: buyNow.assetId,
+          type: 'ERC721'
+        }
+
         const takerAddress: UserFacingERC20AssetDataSerializedV4 = {
           amount: buyNow.price,
-          tokenAddress: buyNow.tokenAddress,
+          tokenAddress: currencyAddress,
           type: 'ERC20'
         }
 
