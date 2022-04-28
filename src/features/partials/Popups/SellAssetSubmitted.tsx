@@ -1,7 +1,22 @@
 import { CheckIcon } from '@heroicons/react/outline'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Modal } from '../../shared/Modal'
+import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
+import { closeModal } from '../../../state/popup.slice'
+import { useAppDispatch } from '../../../state'
 
 const SellAssetSubmitted = () => {
+  const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+  const params = useParams<{ tokenId: string }>()
+
+  const handleClose = () => {
+    dispatch(closeModal())
+    navigate(`/asset-details/${params.tokenId}`, {
+      replace: true
+    })
+  }
+
   return (
     <Modal>
       <div className='flex flex-col justify-center items-center'>
@@ -13,6 +28,17 @@ const SellAssetSubmitted = () => {
           Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet
           sint.
         </p>
+      </div>
+      <div className='flex justify-center'>
+        <Button
+          magnify
+          color={ButtonColors.PRIMARY}
+          sizer={ButtonSizes.SMALL}
+          className='rounded-xl mt-8'
+          onClick={handleClose}
+        >
+          Close
+        </Button>
       </div>
     </Modal>
   )

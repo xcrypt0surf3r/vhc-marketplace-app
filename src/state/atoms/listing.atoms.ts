@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { Listing } from '../../services/queries'
+import { Asset, Listing } from '../../services/queries'
 import { Currency } from '../../__generated/enums'
 
 export const listingAtom = atom<Listing | undefined>(undefined)
@@ -14,3 +14,5 @@ export interface IBuyNow {
 }
 
 export const buyNowAtom = atom<IBuyNow | undefined>(undefined)
+
+export const cancelBuyNowAtom = atom<Asset | undefined>(undefined)

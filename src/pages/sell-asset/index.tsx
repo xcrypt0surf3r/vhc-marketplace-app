@@ -5,9 +5,9 @@ import { useGetAssetByTokenIdQuery } from '../../services/assets'
 import { useIsOwner } from '../../hooks/permission'
 
 const Sell = () => {
-  const params: any = useParams() as { tokenId: string }
+  const params = useParams<{ tokenId: string }>()
   const { data: asset } = useGetAssetByTokenIdQuery({
-    tokenId: parseFloat(params.tokenId)
+    tokenId: parseFloat(params.tokenId ?? '')
   })
 
   const isOwner = useIsOwner(asset?.owner ?? '')

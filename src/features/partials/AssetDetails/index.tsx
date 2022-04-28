@@ -4,7 +4,10 @@ import currencyIcon from '../../../assets/images/icons/currency.svg'
 import BidCountDownTimer from '../../../pages/asset-details/BidCountdownTimer'
 import { AssetWithListing } from '../../../services/queries'
 import { useAppDispatch } from '../../../state'
-import { listingAtom } from '../../../state/atoms/listing.atoms'
+import {
+  cancelBuyNowAtom,
+  listingAtom
+} from '../../../state/atoms/listing.atoms'
 import { openModal, Popup } from '../../../state/popup.slice'
 import {
   classNames,
@@ -23,6 +26,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   const [, setListing] = useAtom(listingAtom)
   const isOwner = useIsOwner(asset?.owner ?? '')
   const navigate = useNavigate()
+  const [, setCancelBuyNow] = useAtom(cancelBuyNowAtom)
 
   const handleClick = () => {
     setListing(asset?.activeListing)
@@ -34,18 +38,15 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
     }
   }
 
-  const handleSellClick = () => {
-    setListing(asset?.activeListing)
-    if (asset?.activeListing) {
-      dispatch(openModal(Popup.CANCEL_BUY_NOW))
-    } else {
-      navigate(`/sell-asset/${asset?.tokenId}`, {
-        replace: true
-      })
-    }
-    if (asset?.activeListing?.type === 'AUCTION') {
-      dispatch(openModal(Popup.PLACE_BID))
-    }
+  const handleUnlist = () => {
+    setCancelBuyNow(asset)
+    dispatch(openModal(Popup.CANCEL_BUY_NOW))
+  }
+
+  const handleSell = () => {
+    navigate(`/sell-asset/${asset?.tokenId}`, {
+      replace: true
+    })
   }
 
   const renderBuyNowPrice = () => (
@@ -177,11 +178,11 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                           className='rounded-3xl'
                           sizer={ButtonSizes.FULL}
                           color={ButtonColors.PRIMARY}
-                          onClick={handleSellClick}
+                          onClick={
+                            asset?.activeListing ? handleUnlist : handleSell
+                          }
                         >
-                          {asset?.activeListing !== undefined
-                            ? 'Unlist'
-                            : 'Sell'}
+                          {asset?.activeListing ? 'Unlist' : 'Sell'}
                         </Button>
                       ) : (
                         asset?.activeListing &&
