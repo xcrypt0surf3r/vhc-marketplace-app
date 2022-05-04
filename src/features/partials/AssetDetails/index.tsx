@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useAtom } from 'jotai'
 import { useNavigate } from 'react-router-dom'
-import { useWeb3React } from '@web3-react/core'
 import currencyIcon from '../../../assets/images/icons/currency.svg'
 import BidCountDownTimer from '../../../pages/asset-details/BidCountdownTimer'
 import { AssetWithListing, Bid } from '../../../services/queries'
@@ -22,12 +21,13 @@ import { AssetDetailSkeleton } from '../../elements/AssetDetailSkeleton'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import Properties from './Properties'
 import AssetPanels from './AssetPanels'
+import { useIsOwner } from '../../../hooks'
 
 const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   const [usdPrice, setUsdPrice] = useState<number>()
   const dispatch = useAppDispatch()
   const [, setListing] = useAtom(listingAtom)
-  const { account } = useWeb3React()
+  const isOwner = useIsOwner(asset?.owner)
   const navigate = useNavigate()
   const [, setCancelBuyNow] = useAtom(cancelBuyNowAtom)
 
@@ -193,7 +193,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                     {renderPrice()}
 
                     <div className='flex pt-10 justify-between gap-4 overflow-x-visible'>
-                      {asset.owner === account ? (
+                      {isOwner ? (
                         <Button
                           magnify={false}
                           className='rounded-3xl'

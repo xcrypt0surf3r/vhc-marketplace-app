@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom'
 import { SellAsset } from '../../features/partials/SellAsset'
 import DefaultLayoutContainer from '../../features/shared/layout/DefaultLayoutContainer'
 import { useGetAssetByTokenIdQuery } from '../../services/assets'
-import { useIsOwner } from '../../hooks/permission'
+import { useIsOwner } from '../../hooks'
 
 const Sell = () => {
   const params = useParams<{ tokenId: string }>()
