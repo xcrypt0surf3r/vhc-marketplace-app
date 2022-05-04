@@ -17,11 +17,11 @@ import {
   truncate,
   currencyExchange
 } from '../../../utils'
-import { AssetDetailSkeleton } from '../../elements/AssetDetailSkeleton'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import Properties from './Properties'
 import AssetPanels from './AssetPanels'
 import { useIsOwner } from '../../../hooks'
+import AssetDetailsSkeleton from '../../elements/AssetDetailsSkeleton'
 
 const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   const [usdPrice, setUsdPrice] = useState<number>()
@@ -76,7 +76,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
       <div className='flex items-center gap-3'>
         <img
           src={currencyIcon}
-          className='w-6 h-6 object-center object-cover rounded-[.75rem] inline-block'
+          className='w-6 h-6 object-center object-cover rounded-[.75rem] inline-block animate-skeleton'
         />
         {asset?.activeListing?.buyNow && (
           <span className='font-medium text-xl font-prototype'>
@@ -121,7 +121,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   }
 
   return (
-    <div className='bg-white flex flex-col justify-center md:flex'>
+    <>
       {asset ? (
         <div className='mx-auto pt-10 pb-24 lg:pt-0 md:px-6 lg:px-0'>
           <div className='grid xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
@@ -253,9 +253,9 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
           </div>
         </div>
       ) : (
-        <AssetDetailSkeleton />
+        <AssetDetailsSkeleton />
       )}
-    </div>
+    </>
   )
 }
 

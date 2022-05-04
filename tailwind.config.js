@@ -13,7 +13,7 @@ module.exports = {
     extend: {
       keyframes: {
         skeleton: {
-          '0%': { backgroundColor: 'hsl(200, 20%, 70%)' },
+          '0%': { backgroundColor: 'hsl(200, 20%, 80%)' },
           '100%': { backgroundColor: 'hsl(200, 20%, 95%)' }
         },
         check: {
