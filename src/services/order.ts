@@ -83,6 +83,7 @@ export const createBidOrder = async (
   const signedOrder = await nftSwapSdk.signOrder(order)
   return JSON.stringify(signedOrder)
 }
+
 // This function should be called following `approveAssetsForSwap` for the takers assets
 export const fillBuyNowOrder = async (
   provider: Web3Provider,

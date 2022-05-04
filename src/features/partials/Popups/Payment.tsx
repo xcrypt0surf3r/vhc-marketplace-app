@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { CheckCircleIcon } from '@heroicons/react/solid'
 import {
   SwappableAssetV4,
@@ -19,7 +20,7 @@ import { useAppDispatch, useAppSelector } from '../../../state'
 import { createBidAtom } from '../../../state/atoms/bid.atom'
 import { listingAtom } from '../../../state/atoms/listing.atoms'
 import { getPopup, openModal, Popup } from '../../../state/popup.slice'
-import { getERC20TokenAddress } from '../../../utils'
+import { getERC20TokenAddress, getERC20TokenDecimals } from '../../../utils'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import { Modal } from '../../shared/Modal'
 
@@ -115,6 +116,10 @@ const Payment = () => {
     const currencyAddress = getERC20TokenAddress(currency)
     if (!currencyAddress) return
 
+    const decimals = getERC20TokenDecimals(currency)
+    // Amount with correct decimals is required 0x order (VHC has 18 decimals)
+    const tokenAmountForOrder = value * 10 ** decimals
+
     const takerAsset: UserFacingERC721AssetDataSerializedV4 = {
       type: 'ERC721',
       tokenAddress: listing.assetAddress,
@@ -125,7 +130,7 @@ const Payment = () => {
     const makerAsset: UserFacingERC20AssetDataSerializedV4 = {
       type: 'ERC20',
       tokenAddress: currencyAddress,
-      amount: `${value}`
+      amount: tokenAmountForOrder.toString()
     }
 
     setMakerSwapAsset(makerAsset)

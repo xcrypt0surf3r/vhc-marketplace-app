@@ -15,7 +15,7 @@ import {
   approveAssetsForSwap,
   createBuyNowOrder
 } from '../../../services/order'
-import { getERC20TokenAddress } from '../../../utils'
+import { getERC20TokenAddress, getERC20TokenDecimals } from '../../../utils'
 import { useCreateBuyNowMutation } from '../../../services/assets'
 import { CreateBuyNowInput } from '../../../__generated/inputs'
 import { useWeb3Provider } from '../../../hooks/web3Provider'
@@ -78,6 +78,10 @@ const ConfirmSell = () => {
         const currencyAddress = getERC20TokenAddress(buyNow.currency)
         if (!currencyAddress) return
 
+        const decimals = getERC20TokenDecimals(buyNow.currency)
+        // Amount with correct decimals is required 0x order (VHC has 18 decimals)
+        const tokenAmountForOrder = +buyNow.price * 10 ** decimals
+
         const makerAssets: UserFacingERC721AssetDataSerializedV4 = {
           tokenAddress: buyNow.tokenAddress,
           tokenId: buyNow.assetId,
@@ -85,7 +89,7 @@ const ConfirmSell = () => {
         }
 
         const takerAddress: UserFacingERC20AssetDataSerializedV4 = {
-          amount: buyNow.price,
+          amount: tokenAmountForOrder.toString(),
           tokenAddress: currencyAddress,
           type: 'ERC20'
         }

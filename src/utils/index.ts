@@ -39,6 +39,18 @@ export const getERC20TokenAddress = (currency: Currency) => {
   throw new Error('Unsupported currency type')
 }
 
+export const getERC20TokenDecimals = (currency: Currency) => {
+  switch (currency) {
+    case 'VHC':
+      return 18
+    default:
+      break
+  }
+  throw new Error(
+    'Unsupported currency type: cannot get decimals for unknown currency'
+  )
+}
+
 export const getOrder = (bid: Bid) => {
   if (bid.order) {
     return JSON.parse(bid.order) as SignedERC721OrderStruct
