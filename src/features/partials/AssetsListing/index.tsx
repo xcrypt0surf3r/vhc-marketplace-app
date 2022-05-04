@@ -15,9 +15,9 @@ const AssetsListing = ({
   isLoading
 }: {
   skeletons: number
-  title: string
+  title?: string
   assets: Asset[]
-  isLoading: boolean
+  isLoading?: boolean
 }) => {
   const navigate = useNavigate()
 
@@ -25,7 +25,7 @@ const AssetsListing = ({
     <div className='bg-white'>
       <div className='mx-auto pt-10 pb-24 lg:pt-0 px-3 xs:px-6 lg:px-0'>
         <div className='md:flex md:items-center md:justify-between'>
-          <h2 className='text-2xl font-semibold tracking-tight text-gray-900 w-100'>
+          <h2 className='text-2xl tracking-tight text-gray-900 w-100'>
             {title}
           </h2>
           {/* <div className='hidden md:flex items-center justify-between w-5/6'>

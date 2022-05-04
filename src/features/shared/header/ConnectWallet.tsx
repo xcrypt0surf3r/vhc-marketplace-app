@@ -12,7 +12,7 @@ import {
   walletBalanceAtom
 } from '../../../state/atoms/wallet.atoms'
 import { MenuItems, ProfileMenu } from './ProfileMenu'
-import { truncate } from '../../../utils'
+import { currencyExchange, truncate } from '../../../utils'
 import vhcabi from '../../../web3/abis/vhc.abi.json'
 
 declare let window: any
@@ -88,11 +88,8 @@ const ConnectWallet = () => {
       const vhcBalance = +ethers.utils.formatEther(vhcBalanceBN)
 
       // Get current value of VHC in $ from coingecko
-      const response = await fetch(
-        'https://api.coingecko.com/api/v3/simple/price?include_last_updated_at=true&ids=vault-hill-city&vs_currencies=usd'
-      )
-      const jsonResponse = await response.json()
-      const usdBalance = vhcBalance * jsonResponse['vault-hill-city'].usd
+      const usdBalance = await currencyExchange(vhcBalance)
+
       setWalletBalance({
         USD: { currency: 'USD', value: usdBalance },
         VHC: { currency: 'VHC', value: vhcBalance }

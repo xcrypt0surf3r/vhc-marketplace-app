@@ -1,30 +1,21 @@
 import { Tab } from '@headlessui/react'
 import * as _ from 'lodash'
-import BidsPanel from './BidPanel'
-import PanelPlaceHolder from './PanelPlaceHolder'
-import { Asset, Bid } from '../../../services/queries'
+import { Bid } from '../../../services/queries'
 import { classNames } from '../../../utils'
-import { AssetsListing } from '../AssetsListing'
+import BidsPanel from '../UserProfile/BidPanel'
+import PanelPlaceHolder from '../UserProfile/PanelPlaceHolder'
 
 type Panels = {
-  assets: readonly Asset[]
-  onSale: unknown[]
-  favorites: unknown[]
-  activities: unknown[]
-  bids: readonly Bid[]
+  bids?: readonly Bid[]
+  salesHistory?: unknown[]
+  owners?: unknown[]
 }
 
-const UserPanels = ({
-  panels,
-  loading
-}: {
-  panels: Panels
-  loading?: boolean
-}) => {
+const AssetPanels = ({ panels }: { panels: Panels; loading?: boolean }) => {
   return (
     <div className='lg:p-6'>
       <Tab.Group>
-        <Tab.List className='flex gap-10 border-gray-200 border-b justify-center'>
+        <Tab.List className='flex gap-10 border-gray-200 border-b'>
           {Object.keys(panels).map((panel) => (
             <Tab
               key={panel}
@@ -41,17 +32,16 @@ const UserPanels = ({
         </Tab.List>
         <Tab.Panels className='mt-8'>
           {Object.keys(panels).map((panelName, idx) => (
-            <Tab.Panel key={idx} className={classNames('bg-white rounded-lg')}>
+            <Tab.Panel
+              key={idx}
+              className={classNames(
+                'bg-white rounded-lg border-[#E4ECF7]-600 border-2'
+              )}
+            >
               {panels[panelName as keyof Panels]!.length < 1 ? (
                 <PanelPlaceHolder panelName={panelName} />
-              ) : panelName === 'assets' ? (
-                <AssetsListing
-                  assets={(panels.assets as Asset[]) ?? []}
-                  skeletons={8}
-                  isLoading={loading}
-                />
               ) : panelName === 'bids' ? (
-                <BidsPanel data={panels.bids as Bid[]} />
+                <BidsPanel data={panels.bids as Bid[]} mini />
               ) : (
                 <PanelPlaceHolder panelName={panelName} />
               )}
@@ -63,4 +53,4 @@ const UserPanels = ({
   )
 }
 
-export default UserPanels
+export default AssetPanels

@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react'
 import { useAtom } from 'jotai'
 import { useNavigate } from 'react-router-dom'
+import { useWeb3React } from '@web3-react/core'
 import currencyIcon from '../../../assets/images/icons/currency.svg'
 import BidCountDownTimer from '../../../pages/asset-details/BidCountdownTimer'
-import { AssetWithListing } from '../../../services/queries'
+import { AssetWithListing, Bid } from '../../../services/queries'
 import { useAppDispatch } from '../../../state'
 import {
   cancelBuyNowAtom,
@@ -14,19 +16,38 @@ import {
   styleTypology,
   getAssetImage,
   truncate,
-  useIsOwner
+  currencyExchange
 } from '../../../utils'
 import { AssetDetailSkeleton } from '../../elements/AssetDetailSkeleton'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import Properties from './Properties'
-import SalesHistory from './SalesHistory'
+import AssetPanels from './AssetPanels'
 
 const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
+  const [usdPrice, setUsdPrice] = useState<number>()
   const dispatch = useAppDispatch()
   const [, setListing] = useAtom(listingAtom)
-  const isOwner = useIsOwner(asset?.owner ?? '')
+  const { account } = useWeb3React()
   const navigate = useNavigate()
   const [, setCancelBuyNow] = useAtom(cancelBuyNowAtom)
+
+  useEffect(() => {
+    setListing(asset?.activeListing)
+    ;(async () => {
+      if (asset?.activeListing?.buyNow) {
+        setUsdPrice(
+          await currencyExchange(asset?.activeListing.buyNow.price.value)
+        )
+      }
+      if (asset?.activeListing?.auction) {
+        setUsdPrice(
+          await currencyExchange(
+            asset?.activeListing.auction?.startingPrice.value
+          )
+        )
+      }
+    })()
+  }, [asset, setListing])
 
   const handleClick = () => {
     setListing(asset?.activeListing)
@@ -58,7 +79,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
           className='w-6 h-6 object-center object-cover rounded-[.75rem] inline-block'
         />
         {asset?.activeListing?.buyNow && (
-          <span className='font-medium text-2xl'>
+          <span className='font-medium text-xl font-prototype'>
             {asset.activeListing.buyNow.price.value} $
             {asset.activeListing.buyNow.price.currency}
           </span>
@@ -68,17 +89,20 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   )
 
   const renderAuctionPrice = () => (
-    <div className='flex flex-col'>
-      <span className='text-[#505780] font-xs'>Price</span>
+    <div className='flex flex-col pt-2 pb-5'>
+      <span className='text-[#505780] font-xs'>Starting Price</span>
       <div className='flex items-center gap-3'>
         <img
           src={currencyIcon}
-          alt={'4000 $VHC'}
+          alt='Vault Hiill'
           className='w-6 h-6 object-center object-cover rounded-[.75rem] inline-block'
         />
-        <span className='font-medium text-2xl'>4000 $VHC</span>
+        <span className='font-medium text-2xl font-prototype'>
+          {asset?.activeListing?.auction?.startingPrice.value} $
+          {asset?.activeListing?.auction?.startingPrice.currency}
+        </span>
         <span className='font-thin text-[#505780]font-sm border-l border-l-gray-300 pl-3'>
-          $200
+          ${usdPrice?.toFixed(2)}
         </span>
       </div>
     </div>
@@ -135,7 +159,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                       </span>
                     </div>
                   </div>
-                  <div className='w-full overflow-hidden h-50 lg:h-66 xl:h-74 mt-11'>
+                  <div className='w-full overflow-hidden h-50 lg:h-66 xl:h-74 mt-8'>
                     <div className='flex items-center gap-4'>
                       <img
                         src={'https://picsum.photos/id/1/31/31'}
@@ -154,15 +178,12 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                         </h3>
                       </div>
                     </div>
-                    <p className='font-sm mt-4 mb-6'>
+                    <p className='font-sm mt-4 mb-6 line-clamp-4 tracking-wide'>
                       {asset.assetData.description}
                     </p>
                     {asset?.activeListing?.type === 'AUCTION' &&
                       asset.activeListing.auction && (
                         <BidCountDownTimer
-                          startDate={
-                            new Date(asset.activeListing.auction.startDate)
-                          }
                           endDate={
                             new Date(asset.activeListing.auction.endDate)
                           }
@@ -172,7 +193,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                     {renderPrice()}
 
                     <div className='flex pt-10 justify-between gap-4 overflow-x-visible'>
-                      {isOwner ? (
+                      {asset.owner === account ? (
                         <Button
                           magnify={false}
                           className='rounded-3xl'
@@ -222,10 +243,10 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
               unlistProps={['name', 'description', 'x', 'y']}
               mergeProps={['x', 'y']}
             />
-            <SalesHistory
+            <AssetPanels
               panels={{
-                bids: asset?.activeListing?.auction?.bids ?? [],
-                orders: [],
+                bids: (asset?.activeListing?.auction?.bids as Bid[]) ?? [],
+                salesHistory: [],
                 owners: []
               }}
             />

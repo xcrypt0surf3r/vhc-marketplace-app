@@ -135,9 +135,9 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
             </div>
             <div className='p-6 bg-white-100 flex flex-col'>
               <div className='flex flex-row justify-between items-center'>
-                <h3 className='p-2 text-2xl text-black text-left font-prototype'>
+                <h2 className='p-2 text-2xl text-black text-left'>
                   List item for sale
-                </h3>
+                </h2>
                 <XIcon className='h-6 w-6 font-light cursor-pointer hover:text-rose-600' />
               </div>
               <div className='group w-full rounded-lg overflow-hidden sm:relative sm:aspect-none h-full border-[#E4ECF7]-600 border-2 p-4'>
@@ -163,9 +163,9 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
               />
             </div>
             <div className='lg:p-6 bg-white-100 flex flex-col'>
-              <h3 className='p-2 text-2xl text-black text-left font-prototype'>
+              <h2 className='p-2 text-2xl text-black text-left'>
                 List item for sale
-              </h3>
+              </h2>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className='group w-full rounded-lg overflow-hidden sm:relative sm:aspect-none h-full border-[#E4ECF7]-600 border-2 p-4'>
                   <div className='pt-6 px-6 items-end'>

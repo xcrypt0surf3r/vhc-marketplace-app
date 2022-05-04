@@ -2,7 +2,6 @@ import { AssetsListing } from '../../features/partials/AssetsListing'
 import DefaultLayoutContainer from '../../features/shared/layout/DefaultLayoutContainer'
 import { useGetAssetsQuery } from '../../services/assets'
 import Hero from './Hero'
-import Promotion from './Promotion'
 
 const Landing = () => {
   const { data, isLoading, isFetching } = useGetAssetsQuery()
@@ -13,10 +12,9 @@ const Landing = () => {
       <AssetsListing
         assets={data?.slice(0, 12) ?? []}
         skeletons={8}
-        title='Newest Assets'
         isLoading={isLoading || isFetching}
       />
-      <Promotion />
+      {/* <Promotion /> */}
     </DefaultLayoutContainer>
   )
 }

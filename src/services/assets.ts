@@ -51,7 +51,16 @@ export const assetApi = baseAPI.injectEndpoints({
         return response.asset as Asset
       },
       providesTags: (res) => {
-        return res
+        const bids = res?.activeListing?.auction?.bids
+        return bids
+          ? [
+              ...bids.map(({ id, listingId }) => ({
+                type: 'BID' as const,
+                id: `${id}_${listingId}`
+              })),
+              { type: 'BID', id: 'LIST' }
+            ]
+          : res
           ? [{ type: ASSET_TAG, id: `${res.tokenId}_${res.tokenAddress}` }]
           : []
       }

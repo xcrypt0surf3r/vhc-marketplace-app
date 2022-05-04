@@ -25,20 +25,13 @@ export const VLAND_FETCHER = vland$
   .y
   .cluster
 
-// prettier-ignore
-export const ASSET_FETCHER = asset$
-  .tokenId
-  .tokenAddress
-  .tokenUri
-  .creator
-  .owner
-  .assetData(VLAND_FETCHER)
+export const BID_FETCHER = bid$$.amount(price$$)
 
 // prettier-ignore
 export const LISTING_FETCHER = listing$$
   .auction(
     auction$$.bids(
-      bid$$
+      BID_FETCHER
     )
     .startingPrice(price$$)
   )
@@ -48,7 +41,15 @@ export const LISTING_FETCHER = listing$$
     )
   )
 
-export const BID_FETCHER = bid$$.amount(price$$)
+// prettier-ignore
+export const ASSET_FETCHER = asset$
+.tokenId
+.activeListing(LISTING_FETCHER)
+.tokenAddress
+.tokenUri
+.creator
+.owner
+.assetData(VLAND_FETCHER)
 
 export const BID_QUERY = query$.asset(asset$.listings(listing$.id))
 
@@ -65,6 +66,8 @@ export const ASSET_LISTING_QUERY = query$.asset(ASSET_LIST_FETCHER)
 export const CANCEL_BID_MUTATION = mutation$.cancelBid(LISTING_FETCHER)
 
 export const CREATE_BID_MUTATION = mutation$.createBid(LISTING_FETCHER)
+
+export const ACCEPT_BID_MUTATION = mutation$.acceptBid(LISTING_FETCHER)
 //
 //
 //

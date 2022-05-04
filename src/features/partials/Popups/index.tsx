@@ -1,5 +1,6 @@
 import { getPopup, Popup } from '../../../state/popup.slice'
 import { useAppSelector } from '../../../state/store'
+import AcceptOffer from './AcceptOffer'
 import BidSubmitted from './BidSubmitted'
 import BuyBidError from './BuyBidError'
 import BuyNow from './BuyNow'
@@ -64,6 +65,9 @@ const Popups = () => {
       break
     case Popup.CANCEL_BUY_NOW:
       modal = <CancelBuyNow />
+      break
+    case Popup.ACCEPT_OFFER:
+      modal = <AcceptOffer />
       break
     default:
       break

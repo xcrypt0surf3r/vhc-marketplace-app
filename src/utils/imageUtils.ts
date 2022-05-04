@@ -1,10 +1,4 @@
-import {
-  defaultAssetImage,
-  deluxeImage,
-  exclusiveImage,
-  premiumImage,
-  standardImage
-} from '../assets'
+import { defaultAssetImage, deluxeImage, exclusiveImage } from '../assets'
 import { Asset } from '../services/queries'
 
 export const getVlandImage = (
@@ -17,12 +11,6 @@ export const getVlandImage = (
 }
 
 export const getAssetImage = (asset: Asset): string => {
-  const assetImages: string[] = [
-    defaultAssetImage,
-    standardImage,
-    premiumImage,
-    deluxeImage,
-    exclusiveImage
-  ]
+  const assetImages: string[] = [defaultAssetImage, deluxeImage, exclusiveImage]
   return getVlandImage(assetImages, asset.assetData.typology, defaultAssetImage)
 }

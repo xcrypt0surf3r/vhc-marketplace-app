@@ -41,5 +41,64 @@ export const getERC20TokenAddress = (currency: Currency) => {
 }
 
 export const getOrder = (bid: Bid) => {
-  return JSON.parse(bid.order) as SignedERC721OrderStruct
+  if (bid.order) {
+    return JSON.parse(bid.order) as SignedERC721OrderStruct
+  }
+
+  return undefined
+}
+
+export const formatDate = (date: Date) => {
+  const raw = new Intl.DateTimeFormat('en-US', {
+    dateStyle: 'full',
+    timeStyle: 'medium'
+  }).format(date)
+
+  const actual = raw.replace('at', ',').split(',')
+  actual[1] = `${actual[1]},`
+  switch (actual[0]) {
+    case 'Monday':
+      actual[0] = 'Mon'
+      break
+    case 'Tuesday':
+      actual[0] = 'Tue'
+      break
+    case 'Wednesday':
+      actual[0] = 'Wed'
+      break
+    case 'Thursday':
+      actual[0] = 'Thu'
+      break
+    case 'Friday':
+      actual[0] = 'Fri'
+      break
+    case 'Saturday':
+      actual[0] = 'Sat'
+      break
+    case 'Sunday':
+      actual[0] = 'Sun'
+      break
+    default:
+      break
+  }
+
+  return actual
+}
+
+export const currencyExchange = async (
+  amount: number,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  options?: { direction: 'VHC to USD' | 'USD to VHC' }
+) => {
+  const response = await fetch(
+    'https://api.coingecko.com/api/v3/simple/price?include_last_updated_at=true&ids=vault-hill-city&vs_currencies=usd'
+  )
+  const jsonResponse = await response.json()
+  return amount * jsonResponse['vault-hill-city'].usd
+}
+
+export const isDateElapsed = (date: string) => {
+  const present = new Date().getTime()
+  const moment = new Date(date).getTime()
+  return present >= moment
 }

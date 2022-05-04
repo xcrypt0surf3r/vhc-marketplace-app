@@ -22,7 +22,7 @@ const ProfileMenu = ({ account, subMenuItems }: Props) => {
   return (
     <Menu as='div' className='relative inline-block'>
       <div className='ml-2'>
-        <Menu.Button className='py-3 px-3 md:px-4 inline-flex rounded-full w-full text-white bg-purple-600'>
+        <Menu.Button className='p-3.5 inline-flex justify-between items-center rounded-full text-white bg-purple-600'>
           VH
         </Menu.Button>
       </div>

@@ -2,13 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* body {
-  font-family: AVENIR NXT LT PRO
+body {
+  font-family: 'Avenir Next LT Pro', sans-serif;
 }
 
-h1, h2, h3, h4 {
-  font-family: PROTOTYPE
-} */
+h1,
+h2 {
+  font-family: 'Prototype', sans-serif;
+}
 
 @layer components {
   .Deluxe {
@@ -44,11 +45,6 @@ h1, h2, h3, h4 {
   }
 }
 
-@font-face {
-  font-family: 'Avenir-Light';
-  src: local('Avenir-Light'),
-    url(/src/assets/fonts/Avenir-Light.woff) format('woff');
-}
 @font-face {
   font-family: 'Prototype';
   src: local('Prototype'), url(/src/assets/fonts/Prototype.woff) format('woff');

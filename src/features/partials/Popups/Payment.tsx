@@ -93,7 +93,7 @@ const Payment = () => {
 
     const makerAsset: UserFacingERC721AssetDataSerializedV4 = {
       type: 'ERC721',
-      tokenAddress: account,
+      tokenAddress: listing.assetAddress,
       tokenId: listing.assetId
     }
     setMakerSwapAsset(makerAsset)

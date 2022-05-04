@@ -13,7 +13,7 @@ const BuyBidError = () => {
         <div className='h-20 w-20 rounded-full flex justify-center bg-pink-400 items-center '>
           <ExclamationCircleIcon className='h-12 w-12 stroke-white' />
         </div>
-        <h1 className='text-2xl my-4 font-prototype'>Error</h1>
+        <h1 className='text-2xl my-4'>Error</h1>
         <p className='text-gray-500 text-center'>
           There was an error submitting your bid. Please check your wallet
           details and try again.

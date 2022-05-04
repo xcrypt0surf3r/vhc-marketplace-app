@@ -81,9 +81,9 @@ const Footer = () => {
           <div className='mt-12 grid grid-cols-3 gap-8 xl:mt-0 xl:col-span-2'>
             {Object.keys(navigation).map((keyValue: string) => (
               <div className='mt-12 md:mt-0' key={keyValue}>
-                <h3 className='text-sm font-bold text-black tracking-wider capitalize'>
+                <h2 className='text-lg text-black tracking-wider capitalize'>
                   {_.upperFirst(keyValue)}
-                </h3>
+                </h2>
                 <ul role='list' className='mt-4 space-y-4'>
                   {navigation[keyValue].map((item: NavigationProperties) => (
                     <li key={item.name}>

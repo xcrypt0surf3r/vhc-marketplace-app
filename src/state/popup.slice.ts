@@ -16,7 +16,8 @@ export enum Popup {
   CANCEL_BID = 'cancelBid',
   CONFIRM_SELL = 'confirmSell',
   SELL_ASSET_SUBMITTED = 'sellAssetSubmitted',
-  CANCEL_BUY_NOW = 'cancelBuyNow'
+  CANCEL_BUY_NOW = 'cancelBuyNow',
+  ACCEPT_OFFER = 'acceptBid'
 }
 
 const popSlice = createSlice({

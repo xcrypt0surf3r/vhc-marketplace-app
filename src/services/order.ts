@@ -95,3 +95,15 @@ export const fillBuyNowOrder = async (
   )
   return fillReceipt
 }
+
+export const acceptBidOrder = async (
+  provider: Web3Provider,
+  order: SignedERC721OrderStruct
+) => {
+  const nftSwapSdk = initSwapSdk(provider)
+  const fillTransaction = await nftSwapSdk.fillSignedOrder(order)
+  const fillReceipt = await nftSwapSdk.awaitTransactionHash(
+    fillTransaction.hash
+  )
+  return fillReceipt
+}

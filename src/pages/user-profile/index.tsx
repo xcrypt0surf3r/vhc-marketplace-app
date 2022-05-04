@@ -17,6 +17,10 @@ const UserProfile = () => {
     { skip: !account }
   )
 
+  const assetsOnSale = data?.user?.assets?.filter(
+    (asset) => asset.activeListing
+  )
+
   return (
     <DefaultLayoutContainer>
       {account === accountVH ? <VaultHillHeader /> : <UserHeader />}
@@ -24,7 +28,7 @@ const UserProfile = () => {
         loading={isLoading || isFetching}
         panels={{
           assets: (data?.user?.assets as Asset[]) ?? [],
-          onSale: [],
+          onSale: assetsOnSale ?? [],
           favorites: [],
           bids: (data?.user?.bids as Bid[]) ?? [],
           activities: []

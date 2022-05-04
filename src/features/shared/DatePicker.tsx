@@ -42,12 +42,10 @@ export const DatePickerComponent = ({
   const DatePickerContainer = (propsVal: CalendarContainerProps) => {
     return (
       <CalendarContainer className={propsVal.className}>
-        <div className='font-avenir'>
-          {propsVal.showPopperArrow && (
-            <div className='react-datepicker__triangle' />
-          )}
-          {propsVal.children}
-        </div>
+        {propsVal.showPopperArrow && (
+          <div className='react-datepicker__triangle' />
+        )}
+        {propsVal.children}
       </CalendarContainer>
     )
   }

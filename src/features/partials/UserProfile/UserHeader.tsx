@@ -24,10 +24,10 @@ const UserHeader = () => {
             <span className='font-prototype'>
               {account ? truncate(account, 9) : ''}
             </span>
-            <div>
+            {/* <div>
               Joined
               <span className='text-blue-400'>{' 2 months ago'}</span>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

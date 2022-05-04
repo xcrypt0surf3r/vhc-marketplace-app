@@ -22,7 +22,7 @@ const ConnectWallet = () => {
               <WalletConnectIcon size={3} color='white' />
             </div>
             <div>
-              <h2 className='mb-1 font-medium'>WalletConnect</h2>
+              <h3 className='mb-1 font-medium'>WalletConnect</h3>
               <p className='text-gray-500 text-xs'>
                 Connect using your mobile wallet
               </p>
@@ -43,7 +43,7 @@ const ConnectWallet = () => {
               />
             </div>
             <div>
-              <h2 className='mb-1 font-medium'>Metamask</h2>
+              <h3 className='mb-1 font-medium'>Metamask</h3>
               <p className='text-gray-500 text-xs'>
                 Connect using a browser extension
               </p>
