@@ -6,6 +6,7 @@ import {
   UserFacingERC721AssetDataSerializedV4
 } from '@traderxyz/nft-swap-sdk'
 import { useState } from 'react'
+import { parseUnits } from 'ethers/lib/utils'
 import { useAppDispatch } from '../../../state'
 import { openModal, Popup } from '../../../state/popup.slice'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
@@ -88,8 +89,8 @@ const ConfirmSell = () => {
         if (!currencyAddress) return
 
         const decimals = getERC20TokenDecimals(buyNow.currency)
-        // Amount with correct decimals is required 0x order (VHC has 18 decimals)
-        const tokenAmountForOrder = buyNow.price * 10 ** decimals
+        // Get BN value of ERC20 amount for on-chain 0x order
+        const amountBigNumber = parseUnits(buyNow.price.toString(), decimals)
 
         const makerAssets: UserFacingERC721AssetDataSerializedV4 = {
           tokenAddress: buyNow.tokenAddress,
@@ -98,7 +99,7 @@ const ConfirmSell = () => {
         }
 
         const takerAddress: UserFacingERC20AssetDataSerializedV4 = {
-          amount: tokenAmountForOrder.toString(),
+          amount: amountBigNumber.toString(),
           tokenAddress: currencyAddress,
           type: 'ERC20'
         }

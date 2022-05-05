@@ -7,6 +7,7 @@ import {
 } from '@traderxyz/nft-swap-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { ethers } from 'ethers'
+import { parseUnits } from 'ethers/lib/utils'
 import { useAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 import { useFillBuyNowMutation } from '../../../services/assets'
@@ -117,8 +118,8 @@ const Payment = () => {
     if (!currencyAddress) return
 
     const decimals = getERC20TokenDecimals(currency)
-    // Amount with correct decimals is required 0x order (VHC has 18 decimals)
-    const tokenAmountForOrder = value * 10 ** decimals
+    // Get BN value of ERC20 amount for on-chain 0x order
+    const amountBigNumber = parseUnits(value.toString(), decimals)
 
     const takerAsset: UserFacingERC721AssetDataSerializedV4 = {
       type: 'ERC721',
@@ -130,7 +131,7 @@ const Payment = () => {
     const makerAsset: UserFacingERC20AssetDataSerializedV4 = {
       type: 'ERC20',
       tokenAddress: currencyAddress,
-      amount: tokenAmountForOrder.toString()
+      amount: amountBigNumber.toString()
     }
 
     setMakerSwapAsset(makerAsset)
