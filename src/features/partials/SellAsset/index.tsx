@@ -1,128 +1,141 @@
-import { Listbox } from '@headlessui/react'
-import { useForm } from 'react-hook-form'
+import { Listbox, Transition } from '@headlessui/react'
 import {
-  XIcon,
   ChevronDownIcon,
-  InformationCircleIcon
+  InformationCircleIcon,
+  CheckIcon,
+  ChevronUpIcon
 } from '@heroicons/react/outline'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useAtom } from 'jotai'
 import { useWeb3React } from '@web3-react/core'
+import { Form, Formik } from 'formik'
 import { AssetWithListing } from '../../../services/queries'
 import { classNames, getAssetImage } from '../../../utils'
 import { Button, ButtonSizes, ButtonColors } from '../../shared/Button'
-import { DatePickerComponent } from '../../shared/DatePicker'
+import { Calendar } from '../../shared/DatePicker'
 import { openModal, Popup } from '../../../state/popup.slice'
 import { useAppDispatch } from '../../../state'
-import { Currency } from '../../../__generated/enums'
+import { Currency as CurrencyType } from '../../../__generated/enums'
 import { buyNowAtom } from '../../../state/atoms/listing.atoms'
 import { AuctionInput } from '../../../__generated/inputs'
 import { useCreateAuctionMutation } from '../../../services/assets'
+import { TextInput, TextLabel } from '../../shared/Form'
 
-type SaleType = {
-  name: string
-  description: string
-}
-
-export enum BuyNowTypeEnum {
-  SELL_NOW = 'Sell Now',
+export enum Sale {
+  SELL = 'Sell',
   AUCTION = 'Auction'
 }
 
 const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
   const { account } = useWeb3React()
   const [, setBuyNow] = useAtom(buyNowAtom)
-  const [createAuctionMutation] = useCreateAuctionMutation()
-  const [errorMessage, setErrorMessage] = useState(false)
+  const [createAuctionMutation, { error: mutationError, isLoading }] =
+    useCreateAuctionMutation()
+  const [sale, setSale] = useState<string>(Sale.SELL)
+  const [error, setError] = useState<string | undefined>()
 
-  const buyNowTypes: { [key: string]: SaleType } = {
+  const saleOptions: {
+    [key: string]: {
+      name: string
+      description: string
+    }
+  } = {
     sellnow: {
-      name: BuyNowTypeEnum.SELL_NOW,
+      name: Sale.SELL,
       description: 'Sell your asset at a price of your choice'
     },
     auction: {
-      name: BuyNowTypeEnum.AUCTION,
+      name: Sale.AUCTION,
       description: 'Sell your asset to the highest bidder'
     }
   }
-  const [buyNowType, setSaleType] = useState(BuyNowTypeEnum.SELL_NOW.toString())
-  const onSaleTypeClick = (name: string) => {
-    setSaleType(name)
+  enum Currency {
+    VHC = 'VHC'
   }
 
-  const [selectedDate, setSelectedDate] = useState(
-    new Date(Date.now() + 3600 * 1000 * 24)
-  )
-  const currencies: Currency[] = ['VHC']
-  const [selectedCurrency, setSelectedCurrency] = useState(currencies[0])
-  const [isLoading, setIsLoading] = useState(false)
+  const currencyOptions: CurrencyType[] = Object.values(Currency)
+
+  const [picked, setPicked] = useState(currencyOptions[0])
 
   const dispatch = useAppDispatch()
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    getValues
-  } = useForm()
+  const validate = ({ price, endDate }: { price: string; endDate: Date }) => {
+    const errors = {} as { price: string; endDate: string }
+    if (/^([^0-9.]*)$/.test(price)) {
+      errors.price = 'Invalid price'
+    }
 
-  const handleCreateAuction = async () => {
+    if (price.split('.')[1]?.length > 3) {
+      errors.price = 'Max. three decimals'
+    }
+
+    if (!price || +price <= 0) {
+      errors.price = 'Price is required'
+    }
+
+    if (!endDate) {
+      errors.endDate = 'End date is required'
+    }
+
+    return errors
+  }
+
+  const handleCreateAuction = async (price: number, endDate: Date) => {
     if (asset && account) {
       const data: AuctionInput = {
         assetAddress: asset.tokenAddress,
         assetId: asset.tokenId.toString(),
         startDate: new Date().toUTCString(),
-        endDate: selectedDate.toUTCString(),
+        endDate: endDate.toUTCString(),
         makerAddress: account,
         startingPrice: {
-          currency: selectedCurrency,
-          value: parseFloat(getValues('amount'))
+          currency: picked,
+          value: price
         },
         type: 'ENGLISH'
       }
 
-      try {
-        const auctionResponse = await createAuctionMutation(data)
-        if (auctionResponse) {
-          dispatch(openModal(Popup.SELL_ASSET_SUBMITTED))
-        } else {
-          setErrorMessage(true)
-        }
-      } catch (error) {
-        setErrorMessage(true)
-      }
+      await createAuctionMutation(data)
+
+      if (mutationError) throw Error(JSON.stringify(mutationError))
+
+      dispatch(openModal(Popup.SELL_ASSET_SUBMITTED))
     }
   }
 
-  const handleSellNow = async () => {
+  const handleSellNow = async (price: number, endDate: Date) => {
     if (asset) {
       setBuyNow({
         tokenAddress: asset?.tokenAddress,
         assetId: asset?.tokenId.toString(),
-        currency: selectedCurrency,
-        endDate: selectedDate,
+        currency: picked,
+        endDate,
         startDate: new Date().toUTCString(),
-        price: getValues('amount')
+        price
       })
       dispatch(openModal(Popup.CONFIRM_SELL))
     }
   }
 
-  const onSubmit = () => {
-    setIsLoading(true)
+  const handleSubmit = ({
+    price,
+    endDate
+  }: {
+    price: string
+    endDate: Date
+  }) => {
     if (asset) {
-      switch (buyNowType) {
-        case BuyNowTypeEnum.SELL_NOW:
-          handleSellNow()
+      switch (sale) {
+        case Sale.SELL:
+          handleSellNow(+price, endDate)
           break
-        case BuyNowTypeEnum.AUCTION:
-          handleCreateAuction()
+        case Sale.AUCTION:
+          handleCreateAuction(+price, endDate)
           break
         default:
           break
       }
     }
-    setIsLoading(false)
   }
 
   const renderSkeleton = () => {
@@ -134,12 +147,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
               <div className='w-full lg:h-full h-[25rem] animate-skeleton rounded-[.75rem]'></div>
             </div>
             <div className='p-6 bg-white-100 flex flex-col'>
-              <div className='flex flex-row justify-between items-center'>
-                <h2 className='p-2 text-2xl text-black text-left'>
-                  List item for sale
-                </h2>
-                <XIcon className='h-6 w-6 font-light cursor-pointer hover:text-rose-600' />
-              </div>
+              <div className='flex justify-between items-center'></div>
               <div className='group w-full rounded-lg overflow-hidden sm:relative sm:aspect-none h-full border-[#E4ECF7]-600 border-2 p-4'>
                 <div className='w-full lg:h-[30rem] h-[25rem] animate-skeleton rounded-[.75rem]'></div>
               </div>
@@ -159,145 +167,185 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
               <img
                 src={getAssetImage(asset)}
                 alt={asset?.assetData.name}
-                className='object-center object-cover rounded-lg w-full h-full min-h-[600px]'
+                className='object-center object-cover rounded-lg w-full h-full min-h-[600px] animate-skeleton'
               />
             </div>
             <div className='lg:p-6 bg-white-100 flex flex-col'>
-              <h2 className='p-2 text-2xl text-black text-left'>
-                List item for sale
-              </h2>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <div className='group w-full rounded-lg overflow-hidden sm:relative sm:aspect-none h-full border-[#E4ECF7]-600 border-2 p-4'>
-                  <div className='pt-6 px-6 items-end'>
-                    <div className='font-normal text-sm tracking-tight mb-3 text-left'>
-                      <label className='text-[#505780] text-sm leading-6'>
-                        Choose sale type
-                      </label>
+              <h2 className='text-3xl mb-2'>List item for sale</h2>
+              <Formik
+                initialValues={
+                  {
+                    price: '',
+                    endDate: '' as unknown
+                  } as {
+                    price: string
+                    endDate: Date
+                  }
+                }
+                validate={validate}
+                onSubmit={handleSubmit}
+              >
+                {({ isSubmitting }) => (
+                  <Form>
+                    <div className='text-gray-700 group w-full rounded-lg sm:relative sm:aspect-none h-full border p-4'>
+                      <div className='pt-6 px-6 items-end'>
+                        <TextLabel>Choose sale type</TextLabel>
 
-                      <div className='grid xs:grid-cols-2 gap-4 my-4'>
-                        {Object.keys(buyNowTypes).map(
-                          (key: string, index: number) => {
-                            return (
-                              <div
-                                className={classNames(
-                                  'flex flex-col p-6 rounded-lg cursor-pointer',
-                                  buyNowType === buyNowTypes[key].name
-                                    ? 'bg-[#4D7EFF] text-white'
-                                    : 'bg-[#EBF2FA] text-black'
-                                )}
-                                key={index}
-                                onClick={() => {
-                                  onSaleTypeClick(buyNowTypes[key].name)
-                                }}
-                              >
-                                <div className='font-prototype mb-2 tracking-wide'>
-                                  {buyNowTypes[key].name}
+                        <div className='grid xs:grid-cols-2 gap-4'>
+                          {Object.keys(saleOptions).map(
+                            (key: string, index: number) => {
+                              return (
+                                <div
+                                  className={classNames(
+                                    'flex flex-col p-6 rounded-lg cursor-pointer',
+                                    sale === saleOptions[key].name
+                                      ? 'bg-blue-500 text-blue-50'
+                                      : 'bg-blue-50 text-gray-700'
+                                  )}
+                                  key={index}
+                                  onClick={() => setSale(saleOptions[key].name)}
+                                >
+                                  <h2 className='text-xl mb-2 tracking-wide'>
+                                    {saleOptions[key].name}
+                                  </h2>
+                                  <div>{saleOptions[key].description}</div>
                                 </div>
-                                <div>{buyNowTypes[key].description}</div>
-                              </div>
-                            )
-                          }
-                        )}
-                      </div>
+                              )
+                            }
+                          )}
+                        </div>
 
-                      <div className='mt-8 mb-4'>
-                        <label className='text-[#505780] text-sm leading-6'>
-                          {buyNowType === BuyNowTypeEnum.SELL_NOW
-                            ? 'Enter price'
-                            : 'Enter starting price'}
-                        </label>
-                        <div className='flex flex-row'>
-                          <div>
-                            <Listbox
-                              value={selectedCurrency}
-                              onChange={setSelectedCurrency}
-                            >
-                              <Listbox.Button className='border-[#EBF2FA] border-2 rounded-tl-lg rounded-bl-lg w-20'>
-                                <div className='flex items-center p-2'>
-                                  {selectedCurrency}
-                                  <ChevronDownIcon className='ml-2 h-4 w-4 cursor-pointer' />
-                                </div>
-                              </Listbox.Button>
-
-                              <Listbox.Options className='border-[#EBF2FA] border-2 w-20 absolute z-[40] bg-white cursor-pointer'>
-                                {currencies.map((currency: Currency) => (
-                                  <Listbox.Option
-                                    className='p-2 hover:bg-[#4D7EFF]'
-                                    key={currency}
-                                    value={currency}
+                        <div className='mt-8 mb-4'>
+                          <TextLabel>
+                            {sale === Sale.SELL
+                              ? 'Enter Price'
+                              : 'Enter Starting Price'}
+                          </TextLabel>
+                          <div className='flex rounded-xl border'>
+                            <Listbox value={picked} onChange={setPicked}>
+                              {({ open }) => (
+                                <div className='relative'>
+                                  <Listbox.Button className='inline-flex items-center p-3 mr-3 border-r text-black gap-2'>
+                                    <p className='ml-2.5 '>{picked}</p>
+                                    {open ? (
+                                      <ChevronUpIcon className='h-4 w-4 text-gray-400' />
+                                    ) : (
+                                      <ChevronDownIcon className='h-4 w-4 text-gray-400' />
+                                    )}
+                                  </Listbox.Button>
+                                  <Transition
+                                    show={open}
+                                    as={Fragment}
+                                    leave='transition ease-in duration-100'
+                                    leaveFrom='opacity-100'
+                                    leaveTo='opacity-0'
                                   >
-                                    {currency}
-                                  </Listbox.Option>
-                                ))}
-                              </Listbox.Options>
+                                    <Listbox.Options className='absolute z-10 -left-1 mt-2 w-40  shadow-lg overflow-hidden bg-white divide-y divide-gray-200 ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                                      {currencyOptions.map(
+                                        (currency, index) => (
+                                          <Listbox.Option
+                                            key={index}
+                                            className={({ active }) =>
+                                              classNames(
+                                                active
+                                                  ? 'text-white bg-blue-500'
+                                                  : 'text-gray-900',
+                                                'cursor-default select-none relative p-2 '
+                                              )
+                                            }
+                                            value={currency}
+                                          >
+                                            {({ selected, active }) => (
+                                              <div className='flex flex-col'>
+                                                <div className='flex justify-between'>
+                                                  <p
+                                                    className={
+                                                      selected
+                                                        ? 'font-semibold'
+                                                        : 'font-normal'
+                                                    }
+                                                  >
+                                                    {currency}
+                                                  </p>
+                                                  {selected ? (
+                                                    <span
+                                                      className={
+                                                        active
+                                                          ? 'text-white'
+                                                          : 'text-blue-500'
+                                                      }
+                                                    >
+                                                      <CheckIcon
+                                                        className='h-5 w-5'
+                                                        aria-hidden='true'
+                                                      />
+                                                    </span>
+                                                  ) : null}
+                                                </div>
+                                              </div>
+                                            )}
+                                          </Listbox.Option>
+                                        )
+                                      )}
+                                    </Listbox.Options>
+                                  </Transition>
+                                </div>
+                              )}
                             </Listbox>
+                            <TextInput
+                              noFormik
+                              setExternalError={setError}
+                              type='text'
+                              min={0}
+                              id='price'
+                              name='price'
+                              disabled={sale === Sale.AUCTION && isLoading}
+                              className='w-full leading-5 py-3 bg-white placeholder-gray-400 focus:outline-none focus:placeholder-gray-300 sm:text-md'
+                              placeholder='Amount'
+                            />
                           </div>
+                          <span className='block h-2 text-red-600 mb-1 text-sm'>
+                            {error}
+                          </span>
+                        </div>
 
-                          <input
-                            type='text'
-                            className='border-[#EBF2FA] border-2 rounded-tr-lg rounded-br-lg border-l-0 p-2 flex-1'
-                            {...register('amount', {
-                              required: true,
-                              pattern: /^[+-]?\d*(?:[.,]\d*)?$/
-                            })}
+                        <div className='mt-8'>
+                          <TextLabel>End date</TextLabel>
+                          <Calendar
+                            className='placeholder-gray-400 focus:outline-none focus:placeholder-gray-300'
+                            showPopperArrow={false}
+                            minDate={new Date(Date.now() + 3600 * 1000 * 24)}
+                            name='endDate'
+                            placeholderText='mm/dd/yyyy'
                           />
                         </div>
-                        {errors.amount && (
-                          <p className='text-red-500 text-sm mt-2'>
-                            Price is required.
-                          </p>
-                        )}
-                      </div>
 
-                      <div className='mt-8'>
-                        <label className='text-[#505780] text-sm leading-6'>
-                          End date
-                        </label>
-                        <div className='flex flex-col'>
-                          <DatePickerComponent
-                            selected={selectedDate}
-                            minDate={selectedDate}
-                            popperPlacement='top-end'
-                            showPopperArrow={true}
-                            className='cursor-pointer w-full z-[40]'
-                            {...register('endDate')}
-                            onChange={(date: Date) => setSelectedDate(date)}
-                          />
+                        <div className='flex items-center justify-between mt-8'>
+                          <TextLabel>Fees</TextLabel>
+                          <InformationCircleIcon className='h-4 w-4' />
                         </div>
-                      </div>
 
-                      <div className='flex items-center justify-between mt-8'>
-                        <label className='text-[#505780] text-sm leading-6'>
-                          Fees
-                        </label>
-                        <InformationCircleIcon className='h-4 w-4' />
-                      </div>
-
-                      <div className='flex items-center justify-between mt-2'>
-                        <label className='text-black font-semibold text-sm leading-6'>
-                          Service fee
-                        </label>
-                        <div>2.5%</div>
-                      </div>
-
-                      <Button
-                        magnify={false}
-                        className='rounded-3xl mt-8'
-                        sizer={ButtonSizes.FULL}
-                        color={ButtonColors.PRIMARY}
-                        isLoading={isLoading}
-                      >
-                        {buyNowType}
-                      </Button>
-                      {errorMessage ? (
-                        <div className='text-red-700 mt-2 text-lg'>
-                          Sorry, something went wrong.
+                        <div className='flex items-center justify-between font-semibold'>
+                          <span>Service fee</span>
+                          <span>2.5%</span>
                         </div>
-                      ) : null}
+
+                        <Button
+                          magnify={false}
+                          className='rounded-3xl mt-8'
+                          sizer={ButtonSizes.FULL}
+                          color={ButtonColors.PRIMARY}
+                          isDisabled={
+                            (sale === Sale.AUCTION && isSubmitting) || isLoading
+                          }
+                        >
+                          {sale}
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </form>
+                  </Form>
+                )}
+              </Formik>
             </div>
           </div>
         </div>

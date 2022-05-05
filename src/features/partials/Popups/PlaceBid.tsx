@@ -13,7 +13,7 @@ import { walletBalanceAtom } from '../../../state/atoms/wallet.atoms'
 import { classNames } from '../../../utils'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import { Modal } from '../../shared/Modal'
-import TextInput from '../../shared/TextInput'
+import { TextInput } from '../../shared/Form'
 import { createBidAtom } from '../../../state/atoms/bid.atom'
 import { listingAtom } from '../../../state/atoms/listing.atoms'
 

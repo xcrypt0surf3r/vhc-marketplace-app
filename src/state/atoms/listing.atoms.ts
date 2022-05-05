@@ -10,7 +10,7 @@ export interface IBuyNow {
   currency: Currency
   endDate: Date
   startDate: string
-  price: string
+  price: number
 }
 
 export const buyNowAtom = atom<IBuyNow | undefined>(undefined)

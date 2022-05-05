@@ -5,7 +5,7 @@ import {
   UserFacingERC20AssetDataSerializedV4,
   UserFacingERC721AssetDataSerializedV4
 } from '@traderxyz/nft-swap-sdk'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useAppDispatch } from '../../../state'
 import { openModal, Popup } from '../../../state/popup.slice'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
@@ -24,21 +24,16 @@ const ConfirmSell = () => {
   const { account } = useWeb3React()
   const [buyNow] = useAtom(buyNowAtom)
   const [errorMessage, setErrorMessage] = useState(false)
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true)
   const [isSellApproved, setIsSellApproved] = useState(false)
   const [isSellSigned, setIsSellSigned] = useState(false)
   const [isConfirming, setIsConfirming] = useState(false)
   const [createBuyNowMutation] = useCreateBuyNowMutation()
   const provider = useWeb3Provider()
 
-  useEffect(() => {
-    setIsButtonDisabled(!account || !buyNow)
-  }, [account, buyNow])
-
   const handleSellApproved = async () => {
     if (!account || !buyNow) return
-
     try {
+      setIsConfirming(true)
       const swapAssets: UserFacingERC721AssetDataSerializedV4 = {
         type: 'ERC721',
         tokenAddress: buyNow.tokenAddress,
@@ -49,11 +44,13 @@ const ConfirmSell = () => {
         account,
         swapAssets
       )
+      setIsConfirming(false)
       setIsSellApproved(approved)
       if (!approved) {
         setErrorMessage(true)
       }
     } catch {
+      setIsConfirming(false)
       setIsSellApproved(false)
       setErrorMessage(true)
     }
@@ -63,7 +60,6 @@ const ConfirmSell = () => {
 
   const handleError = () => {
     setErrorMessage(true)
-    setIsButtonDisabled(true)
     setIsConfirming(false)
   }
 
@@ -80,7 +76,7 @@ const ConfirmSell = () => {
 
         const decimals = getERC20TokenDecimals(buyNow.currency)
         // Amount with correct decimals is required 0x order (VHC has 18 decimals)
-        const tokenAmountForOrder = +buyNow.price * 10 ** decimals
+        const tokenAmountForOrder = buyNow.price * 10 ** decimals
 
         const makerAssets: UserFacingERC721AssetDataSerializedV4 = {
           tokenAddress: buyNow.tokenAddress,
@@ -93,7 +89,6 @@ const ConfirmSell = () => {
           tokenAddress: currencyAddress,
           type: 'ERC20'
         }
-
         const signedOrder = await createBuyNowOrder(
           await provider,
           account,
@@ -109,21 +104,28 @@ const ConfirmSell = () => {
           makerAddress: account,
           order: JSON.stringify(signedOrder),
           startDate: new Date().toUTCString(),
-          value: parseFloat(buyNow.price)
+          value: buyNow.price
         }
 
         await createBuyNowMutation(data)
-        setIsConfirming(false)
         setIsSellSigned(true)
+        setIsConfirming(false)
         dispatch(openModal(Popup.SELL_ASSET_SUBMITTED))
-      } catch {
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err)
         handleError()
       }
     }
   }
 
   return (
-    <Modal heading='Complete listing' align='center' className='max-w-[40rem]'>
+    <Modal
+      heading='Complete listing'
+      align='center'
+      className='max-w-[40rem]'
+      freeze={isConfirming}
+    >
       <div className='grid grid-cols-1 divide-y'>
         <div className='flex items-center gap-32 py-5'>
           <div className='flex gap-4 items-center'>
@@ -166,9 +168,9 @@ const ConfirmSell = () => {
                     color={ButtonColors.PRIMARY}
                     className='rounded-xl'
                     onClick={handleSellApproved}
-                    isDisabled={isButtonDisabled}
+                    isDisabled={isConfirming || !account || !buyNow}
                   >
-                    Approve Sell
+                    {isConfirming ? 'Approving...' : 'Approve'}
                   </Button>
                 )}
               </div>
@@ -192,10 +194,9 @@ const ConfirmSell = () => {
                     color={ButtonColors.PRIMARY}
                     className='rounded-xl'
                     onClick={handleSignAndCreateBuyNow}
-                    isLoading={isConfirming}
-                    isDisabled={isButtonDisabled}
+                    isDisabled={isConfirming}
                   >
-                    Sign
+                    {isConfirming ? 'Signing...' : 'Sign'}
                   </Button>
                 )}
               </div>

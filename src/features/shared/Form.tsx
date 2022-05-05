@@ -16,7 +16,7 @@ type FormInputProps = FormProps &
     HTMLInputElement
   >
 
-const TextInput = ({
+export const TextInput = ({
   name,
   id,
   label,
@@ -60,4 +60,19 @@ const TextInput = ({
   )
 }
 
-export default TextInput
+export const TextLabel = ({
+  id,
+  name,
+  children
+}: {
+  id?: string
+  name?: string
+  children: React.ReactNode
+}) => (
+  <label
+    htmlFor={id || name}
+    className='block text-sm font-medium text-gray-700 mb-2'
+  >
+    {children}
+  </label>
+)

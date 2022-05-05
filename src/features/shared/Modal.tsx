@@ -6,6 +6,7 @@ import { classNames } from '../../utils'
 const backable = [Popup.CHECKOUT, Popup.PAYMENT] as string[]
 
 export const Modal = ({
+  freeze,
   align,
   className,
   heading,
@@ -37,14 +38,14 @@ export const Modal = ({
       >
         <div className='flex justify-between items-center md:mb-8 mb-6'>
           <ArrowLeftIcon
-            onClick={handleBack}
+            onClick={!freeze ? handleBack : undefined}
             className={classNames(
               'md:h-7 md:w-7 h-6 w-6 cursor-pointer hover:text-blue-600',
               backable.includes(popups.modal.at(-1) ?? '') ? '' : 'invisible'
             )}
           />
           <XIcon
-            onClick={() => dispatch(closeModal())}
+            onClick={() => (!freeze ? dispatch(closeModal()) : undefined)}
             className='md:h-8 md:w-8 h-6 w-6 cursor-pointer hover:text-rose-600'
           />
         </div>
@@ -71,6 +72,7 @@ export const Modal = ({
 }
 
 type ModalProps = {
+  freeze?: boolean
   nav?: boolean
   align?: 'center'
   className?: string
