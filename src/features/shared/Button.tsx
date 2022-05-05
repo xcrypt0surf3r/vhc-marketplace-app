@@ -1,8 +1,8 @@
 import { classNames } from '../../utils'
 
 export enum ButtonColors {
-  SECONDARY = 'text-white bg-blue-500',
-  PRIMARY = 'text-white bg-gradient-to-r from-[#BE9DED] to-[#A96CEF]',
+  PRIMARY = 'text-white btn-primary-gradient',
+  SECONDARY = 'text-white bg-[#BE9DED]',
   OUTLINE = 'text-[#A96CEF] border bg-white border-[#A96CEF]'
 }
 

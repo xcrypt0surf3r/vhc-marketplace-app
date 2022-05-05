@@ -43,6 +43,17 @@ h2 {
   .magnify {
     @apply hover:shadow-lg hover:scale-105 transition-all;
   }
+
+  .btn-primary-gradient {
+    background: linear-gradient(
+      103.54deg,
+      #66dfc4 -4.84%,
+      #7fa8ec 16.16%,
+      #a96cee 47.66%,
+      #ec8bc0 72.34%,
+      #f9c294 95.97%
+    );
+  }
 }
 
 @font-face {
