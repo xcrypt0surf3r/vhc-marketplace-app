@@ -2,6 +2,7 @@ import { useWeb3React } from '@web3-react/core'
 import _ from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import { useAtom } from 'jotai'
+import { useEffect, useState } from 'react'
 import { Bid } from '../../../services/queries'
 import { classNames, formatDate, getOrder, truncate } from '../../../utils'
 import currencyIcon from '../../../assets/images/icons/currency.svg'
@@ -9,6 +10,7 @@ import { useAppDispatch } from '../../../state'
 import { openModal, Popup } from '../../../state/popup.slice'
 import { bidAtom } from '../../../state/atoms/bid.atom'
 import { listingAtom } from '../../../state/atoms/listing.atoms'
+import SortBy, { OrderProps } from '../../shared/SortBy'
 
 type Prop = {
   data: Bid[]
@@ -20,8 +22,43 @@ const BidsPanel = ({ data, mini }: Prop) => {
   const dispatch = useAppDispatch()
   const [, setBid] = useAtom(bidAtom)
   const navigate = useNavigate()
+  const [order, setOrder] = useState<OrderProps>({ by: 'date', dir: 'desc' })
+  const [list, setList] = useState<Bid[]>(data)
 
   const [listing] = useAtom(listingAtom)
+
+  useEffect(() => {
+    ;(() => {
+      if (order.by === 'price') {
+        switch (order.dir) {
+          case 'asc':
+            setList(
+              data.slice().sort((a, b) => a.amount.value - b.amount.value)
+            )
+            break
+          case 'desc':
+            setList(
+              data.slice().sort((a, b) => b.amount.value - a.amount.value)
+            )
+            break
+          default:
+            break
+        }
+      }
+      if (order.by === 'date') {
+        switch (order.dir) {
+          case 'asc':
+            setList(data)
+            break
+          case 'desc':
+            setList(data.slice().reverse())
+            break
+          default:
+            break
+        }
+      }
+    })()
+  }, [order, data])
 
   const cancelBid = (bid: Bid) => {
     setBid(bid)
@@ -34,7 +71,7 @@ const BidsPanel = ({ data, mini }: Prop) => {
   }
 
   const FullPanel = () => {
-    const bids = data.map((bid) => ({
+    const bids = list?.map((bid) => ({
       assetName: bid.assetName,
       price: `${bid.amount.value} $${bid.amount.currency}`,
       seller: getOrder(bid)?.maker ?? '',
@@ -65,7 +102,13 @@ const BidsPanel = ({ data, mini }: Prop) => {
                   value === 'status' || value === 'action' ? 'w-32' : ''
                 )}
               >
-                {_.startCase(value)}
+                {value === 'price' || value === 'activeUntil' ? (
+                  <SortBy value={value} order={order} sorter={setOrder}>
+                    {_.startCase(value)}
+                  </SortBy>
+                ) : (
+                  _.startCase(value)
+                )}
               </th>
             ))}
           </tr>
@@ -80,7 +123,7 @@ const BidsPanel = ({ data, mini }: Prop) => {
                   role='button'
                   onClick={() =>
                     navigate(
-                      `/asset-details/${getOrder(data[index])?.erc721TokenId}`
+                      `/asset-details/${getOrder(list[index])?.erc721TokenId}`
                     )
                   }
                 >
@@ -115,7 +158,7 @@ const BidsPanel = ({ data, mini }: Prop) => {
   }
 
   const MiniPanel = () => {
-    const bids = data.map((bid) => ({
+    const bids = list.map((bid) => ({
       owner: bid.owner,
       price: `${bid.amount.value} $${bid.amount.currency}`,
       date: formatDate(new Date(bid.createdAt)),
@@ -149,13 +192,19 @@ const BidsPanel = ({ data, mini }: Prop) => {
                 key={index}
                 className={classNames(
                   'capitalize text-gray-600 font-normal text-left pr-4 py-4',
-                  value === 'status' || value === 'actio,n' ? 'w-[93px]' : '',
+                  value === 'status' ? 'w-[93px]' : '',
                   value === 'owner' ? 'w-[200px]' : '',
                   value === 'price' ? 'w-[140px]' : '',
                   value === 'action' ? 'w-[80px] pr-0' : ''
                 )}
               >
-                {_.startCase(value)}
+                {value === 'price' || value === 'date' ? (
+                  <SortBy value={value} order={order} sorter={setOrder}>
+                    {_.startCase(value)}
+                  </SortBy>
+                ) : (
+                  _.startCase(value)
+                )}
               </th>
             ))}
           </tr>
