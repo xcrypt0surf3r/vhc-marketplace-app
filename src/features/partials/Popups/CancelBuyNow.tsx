@@ -7,6 +7,7 @@ import WarningIcon from '../../../assets/images/icons/warning.svg'
 import { closeModal } from '../../../state/popup.slice'
 import { useCancelBuyNowListingMutation } from '../../../services/assets'
 import { cancelBuyNowAtom } from '../../../state/atoms/listing.atoms'
+import { ErrorHandler } from '../../shared/ErrorHandler'
 
 const CancelBuyNow = () => {
   const dispatch = useDispatch()
@@ -62,11 +63,10 @@ const CancelBuyNow = () => {
           Cancel
         </Button>
       </div>
-      {reportError ? (
-        <div className='text-red-700 mt-2 text-lg'>
-          Error while unlisting the item.
-        </div>
-      ) : null}
+      <ErrorHandler
+        visible={reportError}
+        message={'Error while unlisting the item.'}
+      />
     </Modal>
   )
 }

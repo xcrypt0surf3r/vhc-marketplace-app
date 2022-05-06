@@ -19,11 +19,15 @@ import { getERC20TokenAddress, getERC20TokenDecimals } from '../../../utils'
 import { useCreateBuyNowMutation } from '../../../services/assets'
 import { CreateBuyNowInput } from '../../../__generated/inputs'
 import { useWeb3Provider } from '../../../hooks/web3Provider'
+import { ErrorHandler, ErrorProps, Exception } from '../../shared/ErrorHandler'
 
 const ConfirmSell = () => {
   const { account } = useWeb3React()
   const [buyNow] = useAtom(buyNowAtom)
-  const [errorMessage, setErrorMessage] = useState(false)
+  const [reportError, setReportError] = useState({
+    visible: false,
+    message: ''
+  } as ErrorProps)
   const [isSellApproved, setIsSellApproved] = useState(false)
   const [isSellSigned, setIsSellSigned] = useState(false)
   const [isConfirming, setIsConfirming] = useState(false)
@@ -47,19 +51,28 @@ const ConfirmSell = () => {
       setIsConfirming(false)
       setIsSellApproved(approved)
       if (!approved) {
-        setErrorMessage(true)
+        setReportError({
+          visible: true,
+          message: 'Sale request rejected'
+        })
       }
-    } catch {
-      setIsConfirming(false)
+    } catch (exception) {
       setIsSellApproved(false)
-      setErrorMessage(true)
+      const exceptionObj = exception as Exception
+      setReportError({
+        visible: true,
+        message: exceptionObj.message
+      })
     }
   }
 
   const dispatch = useAppDispatch()
 
-  const handleError = () => {
-    setErrorMessage(true)
+  const handleError = (message: string) => {
+    setReportError({
+      visible: true,
+      message
+    })
     setIsConfirming(false)
   }
 
@@ -107,14 +120,17 @@ const ConfirmSell = () => {
           value: buyNow.price
         }
 
-        await createBuyNowMutation(data)
-        setIsSellSigned(true)
-        setIsConfirming(false)
-        dispatch(openModal(Popup.SELL_ASSET_SUBMITTED))
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err)
-        handleError()
+        const buyNowResponse = await createBuyNowMutation(data)
+        if ('error' in buyNowResponse) {
+          handleError('Error while processing the asset for sale')
+        } else {
+          setIsConfirming(false)
+          setIsSellSigned(true)
+          dispatch(openModal(Popup.SELL_ASSET_SUBMITTED))
+        }
+      } catch (exception) {
+        const exceptionObj = exception as Exception
+        handleError(exceptionObj.message)
       }
     }
   }
@@ -201,11 +217,10 @@ const ConfirmSell = () => {
                 )}
               </div>
             </div>
-            {errorMessage ? (
-              <div className='text-red-700 mt-2 text-lg'>
-                Sorry, something went wrong.
-              </div>
-            ) : null}
+            <ErrorHandler
+              visible={reportError.visible}
+              message={reportError.message}
+            />
           </div>
         )}
       </div>

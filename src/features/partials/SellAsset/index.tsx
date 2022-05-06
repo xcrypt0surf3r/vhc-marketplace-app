@@ -19,6 +19,7 @@ import { buyNowAtom } from '../../../state/atoms/listing.atoms'
 import { AuctionInput } from '../../../__generated/inputs'
 import { useCreateAuctionMutation } from '../../../services/assets'
 import { TextInput, TextLabel } from '../../shared/Form'
+import { ErrorHandler, ErrorProps, Exception } from '../../shared/ErrorHandler'
 
 export enum Sale {
   SELL = 'Sell',
@@ -32,6 +33,10 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
     useCreateAuctionMutation()
   const [sale, setSale] = useState<string>(Sale.SELL)
   const [error, setError] = useState<string | undefined>()
+  const [reportError, setReportError] = useState({
+    visible: false,
+    message: ''
+  } as ErrorProps)
 
   const saleOptions: {
     [key: string]: {
@@ -90,11 +95,19 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
         type: 'ENGLISH'
       }
 
-      await createAuctionMutation(data)
+      try {
+        await createAuctionMutation(data)
 
-      if (mutationError) throw Error(JSON.stringify(mutationError))
+        if (mutationError) throw Error(JSON.stringify(mutationError))
 
-      dispatch(openModal(Popup.SELL_ASSET_SUBMITTED))
+        dispatch(openModal(Popup.SELL_ASSET_SUBMITTED))
+      } catch (exception) {
+        const exceptionObj = exception as Exception
+        setReportError({
+          visible: true,
+          message: exceptionObj.message
+        })
+      }
     }
   }
 
@@ -338,6 +351,10 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
                         >
                           {sale}
                         </Button>
+                        <ErrorHandler
+                          visible={reportError.visible}
+                          message={reportError.message}
+                        />
                       </div>
                     </div>
                   </Form>

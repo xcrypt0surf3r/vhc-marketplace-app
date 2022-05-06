@@ -10,7 +10,7 @@ const SellAssetSubmitted = () => {
   const dispatch = useAppDispatch()
   const params = useParams<{ tokenId: string }>()
 
-  const handleClose = () => {
+  const handleNavigation = () => {
     dispatch(closeModal())
     navigate(`/asset-details/${params.tokenId}`, {
       replace: true
@@ -33,11 +33,11 @@ const SellAssetSubmitted = () => {
         <Button
           magnify
           color={ButtonColors.PRIMARY}
-          sizer={ButtonSizes.SMALL}
+          sizer={ButtonSizes.MEDIUM}
           className='rounded-xl mt-8'
-          onClick={handleClose}
+          onClick={handleNavigation}
         >
-          Close
+          Go to Asset details
         </Button>
       </div>
     </Modal>
