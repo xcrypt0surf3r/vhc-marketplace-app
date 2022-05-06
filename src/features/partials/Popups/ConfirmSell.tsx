@@ -129,17 +129,17 @@ const ConfirmSell = () => {
       <div className='grid grid-cols-1 divide-y'>
         <div className='flex items-center gap-32 py-5'>
           <div className='flex gap-4 items-center'>
-            <div className='bg-black h-[58px] w-[58px] rounded-xl'>
-              <img src='' alt='' />
+            <div className='bg-white h-[58px] w-[58px] rounded-xl'>
+              <img src={buyNow?.assetImage} alt='' />
             </div>
             <div className='flex flex-col gap-1'>
-              <span className='font-medium'>{'AssetName'}</span>
+              <span className='font-medium'>{buyNow?.assetName}</span>
               <span className='text-gray-500 text-sm'>Quantity: {'1'}</span>
             </div>
           </div>
           <div className='flex flex-col items-end'>
             <span className='text-gray-500'>Price</span>
-            <span className='text-lg'>
+            <span className='text-lg font-semibold'>
               ${buyNow?.currency} {buyNow?.price}
             </span>
           </div>

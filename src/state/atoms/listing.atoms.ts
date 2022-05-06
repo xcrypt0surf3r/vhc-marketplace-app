@@ -11,6 +11,8 @@ export interface IBuyNow {
   endDate: Date
   startDate: string
   price: number
+  assetName: string
+  assetImage: string
 }
 
 export const buyNowAtom = atom<IBuyNow | undefined>(undefined)

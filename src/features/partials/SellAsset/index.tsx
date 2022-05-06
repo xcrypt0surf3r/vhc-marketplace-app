@@ -107,7 +107,9 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
         currency: picked,
         endDate,
         startDate: new Date().toUTCString(),
-        price
+        price,
+        assetName: asset?.assetData.name,
+        assetImage: getAssetImage(asset)
       })
       dispatch(openModal(Popup.CONFIRM_SELL))
     }
