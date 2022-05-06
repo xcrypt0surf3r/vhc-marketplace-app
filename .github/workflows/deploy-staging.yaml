@@ -13,6 +13,8 @@ env:
   REACT_APP_SERVER_API: https://mp-server-staging.vaulthill.io/graphql
   REACT_APP_VHC_ADDRESS: '0xe29Ae1FAa69D22dF8D5866B1b3a750740a9f7893'
   REACT_APP_CHAIN_ID: 3
+  REACT_APP_FEES_PERCENTAGE: 1.5
+  REACT_APP_FEES_RECIPIENT: "0xF221F2c929aA1f6B55c502B3D95385A3D82DD6Fa"
 
 on:
   workflow_dispatch:
@@ -43,6 +45,8 @@ jobs:
           echo "REACT_APP_SERVER_API=${{ env.REACT_APP_SERVER_API }}" >> .env
           echo "REACT_APP_VHC_ADDRESS=${{ env.REACT_APP_VHC_ADDRESS }}" >> .env
           echo "REACT_APP_CHAIN_ID=${{ env.REACT_APP_CHAIN_ID }}" >> .env
+          echo "REACT_APP_FEES_PERCENTAGE=${{ env.REACT_APP_FEES_PERCENTAGE }}" >> .env
+          echo "REACT_APP_FEES_RECIPIENT=${{ env.REACT_APP_FEES_RECIPIENT }}" >> .env
           npm install
           npm run build
           zip -r ${{ env.EBS_APP_NAME }}-${{ env.DEPLOY_ID }}-${{ steps.current-time.outputs.time }}.zip build Dockerfile
