@@ -1,7 +1,6 @@
 import { Listbox, Transition } from '@headlessui/react'
 import {
   ChevronDownIcon,
-  InformationCircleIcon,
   CheckIcon,
   ChevronUpIcon
 } from '@heroicons/react/outline'
@@ -321,7 +320,6 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
 
                         <div className='flex items-center justify-between mt-8'>
                           <TextLabel>Fees</TextLabel>
-                          <InformationCircleIcon className='h-4 w-4' />
                         </div>
 
                         <div className='flex items-center justify-between font-semibold'>
