@@ -1,17 +1,16 @@
 import { Button, ButtonSizes } from '../../shared/Button'
-import { Modal } from '../../shared/Modal'
 
 const WrongNetwork = () => {
   return (
-    <Modal
-      align='center'
-      heading='Wrong network'
-      description='Looks like you connected to unsupported network. Change network to Mainnet'
-    >
+    <div>
+      <div>
+        Looks like you connected to unsupported network. Change network to
+        Mainnet
+      </div>
       <Button sizer={ButtonSizes.FULL} className='rounded-xl'>
         Try again
       </Button>
-    </Modal>
+    </div>
   )
 }
 

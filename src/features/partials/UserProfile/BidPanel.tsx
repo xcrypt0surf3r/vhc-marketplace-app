@@ -6,11 +6,12 @@ import { useEffect, useState } from 'react'
 import { Bid } from '../../../services/queries'
 import { classNames, formatDate, getOrder, truncate } from '../../../utils'
 import currencyIcon from '../../../assets/images/icons/currency.svg'
-import { useAppDispatch } from '../../../state'
-import { openModal, Popup } from '../../../state/popup.slice'
 import { bidAtom } from '../../../state/atoms/bid.atom'
 import { listingAtom } from '../../../state/atoms/listing.atoms'
 import SortBy, { OrderProps } from '../../shared/SortBy'
+import { useModal } from '../../../hooks/use-modal'
+import CancelBid from '../modals/CancelBid'
+import AcceptOffer from '../modals/AcceptOffer'
 
 type Prop = {
   data: Bid[]
@@ -19,11 +20,11 @@ type Prop = {
 
 const BidsPanel = ({ data, mini }: Prop) => {
   const { account } = useWeb3React()
-  const dispatch = useAppDispatch()
   const [, setBid] = useAtom(bidAtom)
   const navigate = useNavigate()
   const [order, setOrder] = useState<OrderProps>({ by: 'date', dir: 'desc' })
   const [list, setList] = useState<Bid[]>(data)
+  const { openModal } = useModal()
 
   const [listing] = useAtom(listingAtom)
 
@@ -62,12 +63,12 @@ const BidsPanel = ({ data, mini }: Prop) => {
 
   const cancelBid = (bid: Bid) => {
     setBid(bid)
-    dispatch(openModal(Popup.CANCEL_BID))
+    openModal('Cancel Bid', <CancelBid />)
   }
 
   const acceptBid = (bid: Bid) => {
     setBid(bid)
-    dispatch(openModal(Popup.ACCEPT_OFFER))
+    openModal('Accept Offer', <AcceptOffer />)
   }
 
   const FullPanel = () => {

@@ -1,11 +1,10 @@
 import { useAtom } from 'jotai'
 import { useState } from 'react'
-import { useAppDispatch } from '../../../state'
+import { useModal } from '../../../hooks/use-modal'
 import { listingAtom } from '../../../state/atoms/listing.atoms'
-import { openModal, Popup } from '../../../state/popup.slice'
 import { classNames, truncate } from '../../../utils'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
-import { Modal } from '../../shared/Modal'
+import Checkout from './Checkout'
 
 export interface IBuyNow {
   [key: string]: string | number
@@ -14,6 +13,7 @@ export interface IBuyNow {
 const BuyNow = () => {
   const [accept, setAccept] = useState(false)
   const [listing] = useAtom(listingAtom)
+  const { openModal } = useModal()
 
   const data: IBuyNow = {
     'Collection name': 'VLAND', // TODO Get collection name once server updates made.
@@ -23,13 +23,11 @@ const BuyNow = () => {
       : '-'
   }
 
-  const dispatch = useAppDispatch()
-
   const handleSubmit = () => {
-    dispatch(openModal(Popup.CHECKOUT))
+    openModal('Checkout', <Checkout />)
   }
   return (
-    <Modal heading='Buy now' align='center' className='max-w-[34rem]'>
+    <div className='max-w-[34rem]'>
       <table className='table-fixed'>
         <tbody>
           {Object.keys(data).map((key) => (
@@ -70,7 +68,7 @@ const BuyNow = () => {
       >
         Continue
       </Button>
-    </Modal>
+    </div>
   )
 }
 

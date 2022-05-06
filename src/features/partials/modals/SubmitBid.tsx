@@ -2,38 +2,33 @@
 import { CheckCircleIcon } from '@heroicons/react/solid'
 import {
   SwappableAssetV4,
-  UserFacingERC20AssetDataSerializedV4,
-  UserFacingERC721AssetDataSerializedV4
+  UserFacingERC20AssetDataSerializedV4
 } from '@traderxyz/nft-swap-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { ethers } from 'ethers'
 import { parseUnits } from 'ethers/lib/utils'
 import { useAtom } from 'jotai'
 import { useEffect, useState } from 'react'
-import { useFillBuyNowMutation } from '../../../services/assets'
+import { useModal } from '../../../hooks/use-modal'
 import { useCreateBidMutation } from '../../../services/bid'
-import {
-  approveAssetsForSwap,
-  createBidOrder,
-  fillBuyNowOrder
-} from '../../../services/order'
-import { useAppDispatch, useAppSelector } from '../../../state'
+import { approveAssetsForSwap, createBidOrder } from '../../../services/order'
 import { createBidAtom } from '../../../state/atoms/bid.atom'
 import { listingAtom } from '../../../state/atoms/listing.atoms'
-import { getPopup, openModal, Popup } from '../../../state/popup.slice'
 import {
   getERC20TokenAddress,
   getERC20TokenDecimals,
   getERC20TokenInfo
 } from '../../../utils'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
-import { Modal } from '../../shared/Modal'
+import BidSubmitted from './BidSubmitted'
+import BuyBidError from './BuyBidError'
 
-const Payment = () => {
+const SubmitBid = () => {
   const [unlocking, setUnlocking] = useState(false)
   const { account, connector } = useWeb3React()
   const [listing] = useAtom(listingAtom)
   const [bid] = useAtom(createBidAtom)
+  const { openModal, freezeModal, unfreezeModal } = useModal()
 
   const [isApproved, setIsApproved] = useState(false)
   const [isConfirming, setIsConfirming] = useState(false)
@@ -42,17 +37,7 @@ const Payment = () => {
     SwappableAssetV4 | UserFacingERC20AssetDataSerializedV4 | undefined
   >()
 
-  const [fillBuyNowMutation] = useFillBuyNowMutation()
   const [createBid, { isSuccess, isError }] = useCreateBidMutation()
-  const dispatch = useAppDispatch()
-  const popups = useAppSelector(getPopup)
-
-  /**
-   * There is only one payment modal for BUY_NOW flow and AUCTION flow,
-   * this function help to determine which one it is then show the appropriate
-   * confirmation modal which is either ORDER_CONFIRMED or BID_SUBMITTED.
-   * ORDER_CONFIRMED is the default nextModal
-   */
 
   useEffect(() => {
     if (makerSwapAsset && account) {
@@ -74,30 +59,14 @@ const Payment = () => {
   useEffect(() => {
     if (isSigned && isApproved && isSuccess) {
       setIsConfirming(false)
-      if (popups.modal.at(-2) === Popup.PLACE_BID) {
-        dispatch(openModal(Popup.BID_SUBMITTED))
-      } else {
-        dispatch(openModal(Popup.ORDER_CONFIRMED))
-      }
+      openModal('Bid Submitted', <BidSubmitted />)
     }
 
-    if (isError) dispatch(openModal(Popup.BUY_BID_ERROR))
-  }, [isApproved, isSigned, dispatch, popups.modal, isSuccess, isError])
-
-  const handleBuyNowUnlock = async () => {
-    setUnlocking(true)
-    if (!listing?.buyNow || !account) return
-
-    // Set makerAsset for approval useEffect
-    const makerAsset: UserFacingERC721AssetDataSerializedV4 = {
-      type: 'ERC721',
-      tokenAddress: listing.assetAddress,
-      tokenId: listing.assetId
-    }
-    setMakerSwapAsset(makerAsset)
-  }
+    if (isError) openModal('', <BuyBidError />)
+  }, [isApproved, isSigned, isSuccess, isError, openModal])
 
   const handleBidUnlock = async () => {
+    freezeModal()
     setUnlocking(true)
     if (!listing?.auction || !account) return
 
@@ -117,37 +86,11 @@ const Payment = () => {
       amount: amountBigNumber.toString()
     }
     setMakerSwapAsset(makerAsset)
-  }
-
-  const handleConfirmBuyNow = async () => {
-    // Do not allow to reconfirm when tx is confirming.
-    if (isConfirming) return
-
-    const provider = new ethers.providers.Web3Provider(
-      await connector?.getProvider()
-    )
-
-    if (!account) return
-
-    if (listing?.buyNow?.order) {
-      const order = JSON.parse(listing?.buyNow?.order)
-      setIsConfirming(true)
-      const txReceipt = await fillBuyNowOrder(provider, order)
-
-      await fillBuyNowMutation({
-        assetAddress: listing.assetAddress,
-        assetId: listing.assetId,
-        txReceipt: JSON.stringify(txReceipt),
-        txHash: txReceipt.transactionHash,
-        makerAddress: listing.makerAddress,
-        takerAddress: account
-      })
-      setIsConfirming(false)
-      setIsSigned(true)
-    }
+    unfreezeModal()
   }
 
   const handleConfirmBid = async () => {
+    freezeModal()
     try {
       const provider = new ethers.providers.Web3Provider(
         await connector?.getProvider()
@@ -183,11 +126,14 @@ const Payment = () => {
       }
     } catch (err) {
       setIsConfirming(false)
+      if ((err as any).code === 4001) {
+        unfreezeModal()
+      }
     }
   }
 
   return (
-    <Modal heading='Place a bid' align='center' className='max-w-[32rem]'>
+    <div className='max-w-[28rem]'>
       <div className='grid grid-cols-1 divide-y gap-6'>
         <div className='flex gap-x-6'>
           {!isApproved ? (
@@ -208,7 +154,7 @@ const Payment = () => {
                 sizer={ButtonSizes.SMALL}
                 color={ButtonColors.SECONDARY}
                 className='rounded-xl'
-                onClick={listing?.buyNow ? handleBuyNowUnlock : handleBidUnlock}
+                onClick={handleBidUnlock}
               >
                 {unlocking ? 'Unlocking...' : 'Unlock'}
               </Button>
@@ -235,9 +181,7 @@ const Payment = () => {
                 sizer={ButtonSizes.SMALL}
                 color={ButtonColors.SECONDARY}
                 className='rounded-xl'
-                onClick={
-                  listing.buyNow ? handleConfirmBuyNow : handleConfirmBid
-                }
+                onClick={handleConfirmBid}
                 disabled={isConfirming}
               >
                 {isConfirming ? 'Signing...' : 'Sign'}
@@ -246,8 +190,8 @@ const Payment = () => {
           </div>
         </div>
       </div>
-    </Modal>
+    </div>
   )
 }
 
-export default Payment
+export default SubmitBid

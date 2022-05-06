@@ -5,10 +5,10 @@ import {
 } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { baseAPI } from '../services/api'
-import { popupReducer } from './popup.slice'
+import { modalReducer } from './modal.slice'
 
 const rootReducer = combineReducers({
-  popup: popupReducer,
+  modal: modalReducer,
   [baseAPI.reducerPath]: baseAPI.reducer
 })
 

@@ -1,24 +1,22 @@
 import { CheckIcon } from '@heroicons/react/outline'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Modal } from '../../shared/Modal'
+import { useModal } from '../../../hooks/use-modal'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
-import { closeModal } from '../../../state/popup.slice'
-import { useAppDispatch } from '../../../state'
 
 const SellAssetSubmitted = () => {
   const navigate = useNavigate()
-  const dispatch = useAppDispatch()
   const params = useParams<{ tokenId: string }>()
+  const { closeModal } = useModal()
 
   const handleNavigation = () => {
-    dispatch(closeModal())
+    closeModal()
     navigate(`/asset-details/${params.tokenId}`, {
       replace: true
     })
   }
 
   return (
-    <Modal>
+    <div>
       <div className='flex flex-col justify-center items-center'>
         <div className='h-20 w-20 rounded-full flex justify-center bg-blue-500 items-center '>
           <CheckIcon className='h-12 w-12 animate-check stroke-white' />
@@ -40,7 +38,7 @@ const SellAssetSubmitted = () => {
           Go to Asset details
         </Button>
       </div>
-    </Modal>
+    </div>
   )
 }
 

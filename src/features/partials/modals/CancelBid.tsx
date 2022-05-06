@@ -1,17 +1,18 @@
 import { useDispatch } from 'react-redux'
 import { useAtom } from 'jotai'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
-import { Modal } from '../../shared/Modal'
 import WarningIcon from '../../../assets/images/icons/warning.svg'
-import { closeModal } from '../../../state/popup.slice'
 import { useCancelBidMutation } from '../../../services/bid'
 import { bidAtom } from '../../../state/atoms/bid.atom'
 import { Bid } from '../../../services/queries'
+import { useModal } from '../../../hooks/use-modal'
 
 const CancelBid = () => {
   const dispatch = useDispatch()
   const [cancelBidMutation, { isLoading }] = useCancelBidMutation()
   const [bid] = useAtom(bidAtom)
+  const { closeModal } = useModal()
+
   const cancel = async () => {
     const { listingId, id: bidId } = bid as Bid
     if (listingId && bidId) {
@@ -21,15 +22,15 @@ const CancelBid = () => {
       })
     }
 
-    dispatch(closeModal())
+    closeModal()
   }
   return (
-    <Modal className='max-w-[32rem]'>
+    <div className='max-w-[32rem]'>
       <div className='flex flex-col justify-center items-center gap-3 mb-3'>
         <img src={WarningIcon} alt='warning' />
-        <p className='text-xl text-center my-4 font-prototype'>
+        <h2 className='text-xl text-center my-4 font-prototype'>
           Are you sure you want to cancel your bid?
-        </p>
+        </h2>
       </div>
       <div className='flex justify-center gap-3'>
         <Button
@@ -51,7 +52,7 @@ const CancelBid = () => {
           No, go back
         </Button>
       </div>
-    </Modal>
+    </div>
   )
 }
 

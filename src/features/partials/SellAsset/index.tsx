@@ -12,14 +12,15 @@ import { AssetWithListing } from '../../../services/queries'
 import { classNames, getAssetImage } from '../../../utils'
 import { Button, ButtonSizes, ButtonColors } from '../../shared/Button'
 import { Calendar } from '../../shared/DatePicker'
-import { openModal, Popup } from '../../../state/popup.slice'
-import { useAppDispatch } from '../../../state'
 import { Currency as CurrencyType } from '../../../__generated/enums'
 import { buyNowAtom } from '../../../state/atoms/listing.atoms'
 import { AuctionInput } from '../../../__generated/inputs'
 import { useCreateAuctionMutation } from '../../../services/assets'
 import { TextInput, TextLabel } from '../../shared/Form'
 import { ErrorHandler, ErrorProps, Exception } from '../../shared/ErrorHandler'
+import { useModal } from '../../../hooks/use-modal'
+import SellAssetSubmitted from '../modals/SellAssetSubmitted'
+import ConfirmSell from '../modals/ConfirmSell'
 
 export enum Sale {
   SELL = 'Sell',
@@ -37,6 +38,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
     visible: false,
     message: ''
   } as ErrorProps)
+  const { openModal } = useModal()
 
   const saleOptions: {
     [key: string]: {
@@ -60,8 +62,6 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
   const currencyOptions: CurrencyType[] = Object.values(Currency)
 
   const [picked, setPicked] = useState(currencyOptions[0])
-
-  const dispatch = useAppDispatch()
 
   const validate = ({ price, endDate }: { price: number; endDate: Date }) => {
     const errors = {} as { price: string; endDate: string }
@@ -100,7 +100,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
 
         if (mutationError) throw Error(JSON.stringify(mutationError))
 
-        dispatch(openModal(Popup.SELL_ASSET_SUBMITTED))
+        openModal('', <SellAssetSubmitted />)
       } catch (exception) {
         const exceptionObj = exception as Exception
         setReportError({
@@ -123,7 +123,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
         assetName: asset?.assetData.name,
         assetImage: getAssetImage(asset)
       })
-      dispatch(openModal(Popup.CONFIRM_SELL))
+      openModal('Confirm Sell', <ConfirmSell />)
     }
   }
 
@@ -228,14 +228,14 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
                         <div className='mt-8 mb-4'>
                           <TextLabel>
                             {sale === Sale.SELL
-                              ? 'Enter Price'
-                              : 'Enter Starting Price'}
+                              ? 'Enter price'
+                              : 'Enter starting price'}
                           </TextLabel>
                           <div className='flex rounded-xl border'>
                             <Listbox value={picked} onChange={setPicked}>
                               {({ open }) => (
                                 <div className='relative'>
-                                  <Listbox.Button className='inline-flex items-center p-3 mr-3 border-r text-black gap-2'>
+                                  <Listbox.Button className='inline-flex items-center p-3 border-r text-black gap-2'>
                                     <p className='ml-2.5 '>{picked}</p>
                                     {open ? (
                                       <ChevronUpIcon className='h-4 w-4 text-gray-400' />
@@ -311,7 +311,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
                               id='price'
                               name='price'
                               disabled={sale === Sale.AUCTION && isLoading}
-                              className='w-full leading-5 py-3 bg-white placeholder-gray-400 focus:outline-none focus:placeholder-gray-300 sm:text-md'
+                              className='w-full h-full leading-5 px-3 py-4 bg-white placeholder-gray-400 focus:outline-none focus:placeholder-gray-300 sm:text-md'
                               placeholder='Amount'
                             />
                           </div>

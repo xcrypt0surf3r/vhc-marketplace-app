@@ -7,15 +7,14 @@ import {
 import { Form, Formik } from 'formik'
 import { useAtom } from 'jotai'
 import { Fragment, useState } from 'react'
-import { useAppDispatch } from '../../../state'
-import { openModal, Popup } from '../../../state/popup.slice'
 import { walletBalanceAtom } from '../../../state/atoms/wallet.atoms'
 import { classNames } from '../../../utils'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
-import { Modal } from '../../shared/Modal'
 import { TextInput } from '../../shared/Form'
 import { createBidAtom } from '../../../state/atoms/bid.atom'
 import { listingAtom } from '../../../state/atoms/listing.atoms'
+import { useModal } from '../../../hooks/use-modal'
+import Payment from './SubmitBid'
 
 // required to fill currency dropdown, will be updated
 //  as more currency is supported
@@ -31,8 +30,7 @@ const PlaceBid = () => {
   const [walletBalance] = useAtom(walletBalanceAtom)
   const [createBid, setCreateBid] = useAtom(createBidAtom)
   const [listing] = useAtom(listingAtom)
-
-  const dispatch = useAppDispatch()
+  const { openModal } = useModal()
 
   const validate = ({ amount }: { amount: number }) => {
     const errors = {} as { amount: string }
@@ -57,11 +55,11 @@ const PlaceBid = () => {
 
   const handleSubmit = ({ amount }: { amount: number }) => {
     setCreateBid({ value: amount, currency: picked })
-    dispatch(openModal(Popup.PAYMENT))
+    openModal('Place a bid', <Payment />, 'bid_flow')
   }
 
   return (
-    <Modal heading='Place a bid' align='center' className='w-[34rem]'>
+    <div className='w-[30rem]'>
       <label htmlFor='search' className='sr-only'>
         Place a bid
       </label>
@@ -183,7 +181,7 @@ const PlaceBid = () => {
           </Form>
         )}
       </Formik>
-    </Modal>
+    </div>
   )
 }
 

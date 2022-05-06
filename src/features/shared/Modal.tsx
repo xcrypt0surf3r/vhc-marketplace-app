@@ -1,82 +1,94 @@
-import { ArrowLeftIcon, XIcon } from '@heroicons/react/outline'
-import { useAppDispatch, useAppSelector } from '../../state'
-import { closeModal, getPopup, Popup, prevModal } from '../../state/popup.slice'
+import { Fragment } from 'react'
+import { Dialog, Transition } from '@headlessui/react'
+import { XIcon } from '@heroicons/react/outline'
+import { ArrowLeftIcon } from '@heroicons/react/solid'
+import { getModal } from '../../state/modal.slice'
+import { useAppSelector } from '../../state'
+import { useModal } from '../../hooks/use-modal'
 import { classNames } from '../../utils'
 
-const backable = [Popup.CHECKOUT, Popup.PAYMENT] as string[]
-
-export const Modal = ({
-  freeze,
-  align,
-  className,
-  heading,
-  description,
-  children
-}: ModalProps) => {
-  let alignment: string
-  const popups = useAppSelector(getPopup)
-  const dispatch = useAppDispatch()
-  switch (align) {
-    case 'center':
-      alignment = 'text-center'
-      break
-    default:
-      alignment = 'text-left'
-      break
+export const Modal = () => {
+  const modal = useAppSelector(getModal)
+  const { closeModal, openPreviousModal } = useModal()
+  const handleClose = () => {
+    if (!modal?.freeze) closeModal()
   }
 
-  const handleBack = () => {
-    dispatch(prevModal())
-  }
   return (
-    <div className='w-full h-full top-0 left-0 flex bg-black bg-opacity-70 fixed z-50 px-3'>
-      <div
-        className={classNames(
-          className ?? '',
-          'm-auto border shadow px-3 py-8 md:px-10 md:pt-10 md:pb-20 rounded-xl md:rounded-2xl bg-white'
-        )}
+    <Transition.Root show={modal?.open ?? false} as={Fragment}>
+      <Dialog
+        as='div'
+        className='fixed z-10 inset-0 overflow-y-auto'
+        onClose={handleClose}
       >
-        <div className='flex justify-between items-center md:mb-8 mb-6'>
-          <ArrowLeftIcon
-            onClick={!freeze ? handleBack : undefined}
-            className={classNames(
-              'md:h-7 md:w-7 h-6 w-6 cursor-pointer hover:text-blue-600',
-              backable.includes(popups.modal.at(-1) ?? '') ? '' : 'invisible'
-            )}
-          />
-          <XIcon
-            onClick={() => (!freeze ? dispatch(closeModal()) : undefined)}
-            className='md:h-8 md:w-8 h-6 w-6 cursor-pointer hover:text-rose-600'
-          />
-        </div>
-        {heading && (
-          <h1
-            className={classNames(
-              alignment,
-              'md:text-2xl text-xl font-prototype',
-              !description ? 'mb-11' : ''
-            )}
+        <div className='flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
+          <Transition.Child
+            as={Fragment}
+            enter='ease-out duration-300'
+            enterFrom='opacity-0'
+            enterTo='opacity-100'
+            leave='ease-in duration-200'
+            leaveFrom='opacity-100'
+            leaveTo='opacity-0'
           >
-            {heading}
-          </h1>
-        )}
-        {description && (
-          <p className={classNames(alignment, 'text-gray-500 my-5')}>
-            {description}:
-          </p>
-        )}
-        {children}
-      </div>
-    </div>
-  )
-}
+            <Dialog.Overlay className='fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity' />
+          </Transition.Child>
 
-type ModalProps = {
-  freeze?: boolean
-  nav?: boolean
-  align?: 'center'
-  className?: string
-  heading?: string
-  description?: string
-  children: React.ReactNode
+          <span
+            className='hidden sm:inline-block sm:align-middle sm:h-screen'
+            aria-hidden='true'
+          >
+            &#8203;
+          </span>
+
+          {modal?.open && (
+            <div className='inline-block bg-white rounded text-left overflow-hidden shadow-xl transition-all my-8 align-middle max-w-5xl min-w-max'>
+              <div className='bg-white pb-20 pt-10 px-10 relative rounded-2xl'>
+                <div className='flex justify-between mb-8'>
+                  <button
+                    type='button'
+                    className='text-gray-400 hover:text-gray-500'
+                    onClick={() => openPreviousModal()}
+                  >
+                    <span className='sr-only'>Go back</span>
+                    <ArrowLeftIcon
+                      className={classNames(
+                        'h-8 w-8',
+                        modal.flow && !modal.freeze
+                          ? 'inline-block'
+                          : 'invisible'
+                      )}
+                      aria-hidden='true'
+                    />
+                  </button>
+                  <button
+                    type='button'
+                    className={classNames(
+                      'text-gray-400 hover:text-gray-500',
+                      modal.freeze ? 'invisible' : 'inline-block'
+                    )}
+                    onClick={() => closeModal()}
+                  >
+                    <span className='sr-only'>Close</span>
+                    <XIcon className='h-8 w-8' aria-hidden='true' />
+                  </button>
+                </div>
+                <div className='text-left w-full'>
+                  <Dialog.Title
+                    as='h2'
+                    className='text-2xl text-center font-medium text-gray-900  mb-8'
+                  >
+                    {modal?.title}
+                  </Dialog.Title>
+                  <div>
+                    <>{modal?.children}</>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </Dialog>
+    </Transition.Root>
+  )
 }

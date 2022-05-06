@@ -7,13 +7,10 @@ import {
   UserFacingERC721AssetDataSerializedV4
 } from '@traderxyz/nft-swap-sdk'
 import { useWeb3React } from '@web3-react/core'
-import { useAppDispatch } from '../../../state'
 import { bidAtom } from '../../../state/atoms/bid.atom'
 import { listingAtom } from '../../../state/atoms/listing.atoms'
-import { openModal } from '../../../state/popup.slice'
 import { classNames, getOrder, isDateElapsed, truncate } from '../../../utils'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
-import { Modal } from '../../shared/Modal'
 import { useAcceptBidMutation } from '../../../services/bid'
 import { acceptBidOrder, approveAssetsForSwap } from '../../../services/order'
 
@@ -34,8 +31,6 @@ const AcceptOffer = () => {
     offerValue: `${bid?.amount.currency} ${bid?.amount.value}`,
     buyer: bid?.owner ? truncate(bid?.owner, 6) : ''
   }
-
-  const dispatch = useAppDispatch()
 
   const handleSubmit = async () => {
     setIsAccepting(true)
@@ -76,18 +71,16 @@ const AcceptOffer = () => {
         })
         setIsAccepting(false)
         // dispatch success modal
-        dispatch(openModal(''))
       }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log('error', error)
       setIsAccepting(false)
       // dispatch error modal
-      dispatch(openModal(''))
     }
   }
   return (
-    <Modal heading='Accept Offer' align='center' className='w-[30rem]'>
+    <div className='w-[30rem]'>
       <table className='table-fixed'>
         <tbody>
           {Object.keys(data).map((key) => (
@@ -117,7 +110,7 @@ const AcceptOffer = () => {
       >
         {isAccepting ? 'Confirming...' : 'Confirm'}
       </Button>
-    </Modal>
+    </div>
   )
 }
 

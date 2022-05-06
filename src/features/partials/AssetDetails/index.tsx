@@ -4,12 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import currencyIcon from '../../../assets/images/icons/currency.svg'
 import BidCountDownTimer from '../../../pages/asset-details/BidCountdownTimer'
 import { AssetWithListing, Bid } from '../../../services/queries'
-import { useAppDispatch } from '../../../state'
 import {
   cancelBuyNowAtom,
   listingAtom
 } from '../../../state/atoms/listing.atoms'
-import { openModal, Popup } from '../../../state/popup.slice'
 import {
   classNames,
   styleTypology,
@@ -22,14 +20,18 @@ import Properties from './Properties'
 import AssetPanels from './AssetPanels'
 import { useIsOwner } from '../../../hooks'
 import AssetDetailsSkeleton from '../../elements/AssetDetailsSkeleton'
+import { useModal } from '../../../hooks/use-modal'
+import BuyNow from '../modals/BuyNow'
+import PlaceBid from '../modals/PlaceBid'
+import CancelBuyNow from '../modals/CancelBuyNow'
 
 const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   const [usdPrice, setUsdPrice] = useState<number>()
-  const dispatch = useAppDispatch()
   const [, setListing] = useAtom(listingAtom)
   const isOwner = useIsOwner(asset?.owner)
   const navigate = useNavigate()
   const [, setCancelBuyNow] = useAtom(cancelBuyNowAtom)
+  const { openModal } = useModal()
 
   useEffect(() => {
     setListing(asset?.activeListing)
@@ -52,16 +54,16 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   const handleClick = () => {
     setListing(asset?.activeListing)
     if (asset?.activeListing?.type === 'BUY_NOW') {
-      dispatch(openModal(Popup.BUY_NOW))
+      openModal('Buy Now', <BuyNow />)
     }
     if (asset?.activeListing?.type === 'AUCTION') {
-      dispatch(openModal(Popup.PLACE_BID))
+      openModal('Place a bid', <PlaceBid />)
     }
   }
 
   const handleUnlist = () => {
     setCancelBuyNow(asset?.activeListing)
-    dispatch(openModal(Popup.CANCEL_BUY_NOW))
+    openModal('', <CancelBuyNow />)
   }
 
   const handleSell = () => {

@@ -2,10 +2,8 @@ import { useWeb3React } from '@web3-react/core'
 import { Contract, ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { useAtom } from 'jotai'
-import { closeModal, openModal, Popup } from '../../../state/popup.slice'
 import { Button, ButtonSizes, ButtonColors } from '../Button'
 import { injected } from '../../../web3/connectors'
-import { useAppDispatch } from '../../../state'
 import {
   connectWalletAtom,
   disconnectWalletAtom,
@@ -14,6 +12,9 @@ import {
 import { MenuItems, ProfileMenu } from './ProfileMenu'
 import { currencyExchange, truncate } from '../../../utils'
 import vhcabi from '../../../web3/abis/vhc.abi.json'
+import { useModal } from '../../../hooks/use-modal'
+import InstallWallet from '../../partials/modals/InstallWallet'
+import ConnectWalletModal from '../../partials/modals/ConnectWallet'
 
 declare let window: any
 
@@ -26,12 +27,11 @@ const ConnectWallet = () => {
     active: networkActive,
     error: networkError
   } = useWeb3React()
+  const { openModal, closeModal } = useModal()
 
   const [connectWallet, setConnectWallet] = useAtom(connectWalletAtom)
   const [disconnected, setDisconnected] = useAtom(disconnectWalletAtom)
   const [, setWalletBalance] = useAtom(walletBalanceAtom)
-
-  const dispatch = useAppDispatch()
 
   const initialize = useCallback(async () => {
     const isAuthorized = await injected.isAuthorized()
@@ -45,7 +45,7 @@ const ConnectWallet = () => {
     const connect = async () => {
       try {
         await activate(injected)
-        dispatch(closeModal())
+        closeModal()
         setConnectWallet(false)
       } catch (ex) {
         window.console.log('connect error', ex)
@@ -55,10 +55,17 @@ const ConnectWallet = () => {
       if ((window as any).ethereum) {
         connect()
       } else {
-        dispatch(openModal(Popup.INSTALL_WALLET))
+        openModal('Install Wallet', <InstallWallet />)
       }
     }
-  }, [account, activate, connectWallet, dispatch, setConnectWallet])
+  }, [
+    account,
+    activate,
+    connectWallet,
+    setConnectWallet,
+    closeModal,
+    openModal
+  ])
 
   useEffect(() => {
     // user has explicitly disconnected, so don't initialize unless
@@ -99,7 +106,7 @@ const ConnectWallet = () => {
   }, [account, library, setWalletBalance])
 
   const handleConnectWallet = () => {
-    dispatch(openModal(Popup.CONNECT_WALLET))
+    openModal('Connect your wallet', <ConnectWalletModal />)
   }
 
   async function disconnect() {
