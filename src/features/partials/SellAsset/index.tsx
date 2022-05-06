@@ -59,17 +59,13 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
 
   const dispatch = useAppDispatch()
 
-  const validate = ({ price, endDate }: { price: string; endDate: Date }) => {
+  const validate = ({ price, endDate }: { price: number; endDate: Date }) => {
     const errors = {} as { price: string; endDate: string }
-    if (/^([^0-9.]*)$/.test(price)) {
-      errors.price = 'Invalid price'
-    }
-
-    if (price.split('.')[1]?.length > 3) {
+    if (price.toString().split('.')[1]?.length > 3) {
       errors.price = 'Max. three decimals'
     }
 
-    if (!price || +price <= 0) {
+    if (!price || price <= 0) {
       errors.price = 'Price is required'
     }
 
@@ -121,16 +117,16 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
     price,
     endDate
   }: {
-    price: string
+    price: number
     endDate: Date
   }) => {
     if (asset) {
       switch (sale) {
         case Sale.SELL:
-          handleSellNow(+price, endDate)
+          handleSellNow(price, endDate)
           break
         case Sale.AUCTION:
-          handleCreateAuction(+price, endDate)
+          handleCreateAuction(price, endDate)
           break
         default:
           break
@@ -175,10 +171,10 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
               <Formik
                 initialValues={
                   {
-                    price: '',
+                    price: '' as unknown,
                     endDate: '' as unknown
                   } as {
-                    price: string
+                    price: number
                     endDate: Date
                   }
                 }
@@ -295,7 +291,8 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
                             <TextInput
                               noFormik
                               setExternalError={setError}
-                              type='text'
+                              type='number'
+                              step='any'
                               min={0}
                               id='price'
                               name='price'
