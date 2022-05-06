@@ -1,1 +1,1 @@
-export type Currency = 'ETH' | 'VHC'
+export type Currency = 'VHC'

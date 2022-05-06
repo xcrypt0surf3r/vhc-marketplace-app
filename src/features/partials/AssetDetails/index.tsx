@@ -60,7 +60,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   }
 
   const handleUnlist = () => {
-    setCancelBuyNow(asset)
+    setCancelBuyNow(asset?.activeListing)
     dispatch(openModal(Popup.CANCEL_BUY_NOW))
   }
 

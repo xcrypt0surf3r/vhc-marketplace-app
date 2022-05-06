@@ -1,12 +1,9 @@
 import { CheckCircleIcon } from '@heroicons/react/outline'
 import { useWeb3React } from '@web3-react/core'
 import { useAtom } from 'jotai'
-import {
-  UserFacingERC20AssetDataSerializedV4,
-  UserFacingERC721AssetDataSerializedV4
-} from '@traderxyz/nft-swap-sdk'
+import { UserFacingERC721AssetDataSerializedV4 } from '@traderxyz/nft-swap-sdk'
 import { useState } from 'react'
-import { parseUnits } from 'ethers/lib/utils'
+// import { parseUnits } from 'ethers/lib/utils'
 import { useAppDispatch } from '../../../state'
 import { openModal, Popup } from '../../../state/popup.slice'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
@@ -16,7 +13,7 @@ import {
   approveAssetsForSwap,
   createBuyNowOrder
 } from '../../../services/order'
-import { getERC20TokenAddress, getERC20TokenDecimals } from '../../../utils'
+import { getERC20TokenInfo } from '../../../utils'
 import { useCreateBuyNowMutation } from '../../../services/assets'
 import { CreateBuyNowInput } from '../../../__generated/inputs'
 import { useWeb3Provider } from '../../../hooks/web3Provider'
@@ -85,29 +82,16 @@ const ConfirmSell = () => {
       setIsConfirming(true)
 
       try {
-        const currencyAddress = getERC20TokenAddress(buyNow.currency)
-        if (!currencyAddress) return
+        const erc20Info = getERC20TokenInfo(buyNow.currency)
+        if (!erc20Info) return
 
-        const decimals = getERC20TokenDecimals(buyNow.currency)
-        // Get BN value of ERC20 amount for on-chain 0x order
-        const amountBigNumber = parseUnits(buyNow.price.toString(), decimals)
-
-        const makerAssets: UserFacingERC721AssetDataSerializedV4 = {
-          tokenAddress: buyNow.tokenAddress,
-          tokenId: buyNow.assetId,
-          type: 'ERC721'
-        }
-
-        const takerAddress: UserFacingERC20AssetDataSerializedV4 = {
-          amount: amountBigNumber.toString(),
-          tokenAddress: currencyAddress,
-          type: 'ERC20'
-        }
         const signedOrder = await createBuyNowOrder(
           await provider,
           account,
-          makerAssets,
-          takerAddress,
+          buyNow.tokenAddress,
+          buyNow.assetId,
+          buyNow.price,
+          erc20Info,
           buyNow.endDate
         )
         const data: CreateBuyNowInput = {

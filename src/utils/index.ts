@@ -29,6 +29,22 @@ export const convertHexToEthNumber = (value: string): number => {
   return eth
 }
 
+// TODO refactor app to use this instead of next two functions
+export const getERC20TokenInfo = (
+  currency: Currency
+): { address: string; decimals: number } => {
+  switch (currency) {
+    case 'VHC':
+      return {
+        address: process.env.REACT_APP_VHC_ADDRESS!,
+        decimals: 18
+      }
+    default:
+      break
+  }
+  throw new Error('Unsupported currency type')
+}
+
 export const getERC20TokenAddress = (currency: Currency) => {
   switch (currency) {
     case 'VHC':

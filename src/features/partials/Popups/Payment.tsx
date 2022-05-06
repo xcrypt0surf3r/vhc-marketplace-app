@@ -21,7 +21,11 @@ import { useAppDispatch, useAppSelector } from '../../../state'
 import { createBidAtom } from '../../../state/atoms/bid.atom'
 import { listingAtom } from '../../../state/atoms/listing.atoms'
 import { getPopup, openModal, Popup } from '../../../state/popup.slice'
-import { getERC20TokenAddress, getERC20TokenDecimals } from '../../../utils'
+import {
+  getERC20TokenAddress,
+  getERC20TokenDecimals,
+  getERC20TokenInfo
+} from '../../../utils'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import { Modal } from '../../shared/Modal'
 
@@ -36,9 +40,6 @@ const Payment = () => {
   const [isSigned, setIsSigned] = useState(false)
   const [makerSwapAsset, setMakerSwapAsset] = useState<
     SwappableAssetV4 | UserFacingERC20AssetDataSerializedV4 | undefined
-  >()
-  const [takerSwapAsset, setTakerSwapAsset] = useState<
-    SwappableAssetV4 | UserFacingERC721AssetDataSerializedV4 | undefined
   >()
 
   const [fillBuyNowMutation] = useFillBuyNowMutation()
@@ -87,25 +88,13 @@ const Payment = () => {
     setUnlocking(true)
     if (!listing?.buyNow || !account) return
 
-    const amount = listing.buyNow.price.value.toString()
-    const { currency } = listing.buyNow.price
-
-    const currencyAddress = getERC20TokenAddress(currency)
-    if (!currencyAddress) return
-
+    // Set makerAsset for approval useEffect
     const makerAsset: UserFacingERC721AssetDataSerializedV4 = {
       type: 'ERC721',
       tokenAddress: listing.assetAddress,
       tokenId: listing.assetId
     }
     setMakerSwapAsset(makerAsset)
-
-    const takerAsset: UserFacingERC20AssetDataSerializedV4 = {
-      type: 'ERC20',
-      tokenAddress: currencyAddress,
-      amount
-    }
-    setTakerSwapAsset(takerAsset)
   }
 
   const handleBidUnlock = async () => {
@@ -121,19 +110,12 @@ const Payment = () => {
     // Get BN value of ERC20 amount for on-chain 0x order
     const amountBigNumber = parseUnits(value.toString(), decimals)
 
-    const takerAsset: UserFacingERC721AssetDataSerializedV4 = {
-      type: 'ERC721',
-      tokenAddress: listing.assetAddress,
-      tokenId: listing.assetId
-    }
-    setTakerSwapAsset(takerAsset)
-
+    // Set makerAsset for approval useEffect
     const makerAsset: UserFacingERC20AssetDataSerializedV4 = {
       type: 'ERC20',
       tokenAddress: currencyAddress,
       amount: amountBigNumber.toString()
     }
-
     setMakerSwapAsset(makerAsset)
   }
 
@@ -171,7 +153,9 @@ const Payment = () => {
         await connector?.getProvider()
       )
 
-      if (!account) return
+      const { value, currency } = bid
+      const erc20Info = getERC20TokenInfo(currency)
+      if (!erc20Info || !account) return
 
       if (listing?.auction) {
         setIsConfirming(true)
@@ -179,8 +163,10 @@ const Payment = () => {
         const order = await createBidOrder(
           provider,
           account,
-          makerSwapAsset as UserFacingERC20AssetDataSerializedV4,
-          takerSwapAsset as UserFacingERC721AssetDataSerializedV4
+          listing.assetAddress,
+          listing.assetId,
+          value,
+          erc20Info
         )
 
         await createBid({

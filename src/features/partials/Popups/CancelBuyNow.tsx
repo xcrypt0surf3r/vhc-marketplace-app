@@ -12,26 +12,22 @@ import { ErrorHandler } from '../../shared/ErrorHandler'
 const CancelBuyNow = () => {
   const dispatch = useDispatch()
   const [cancelBuyNowMutation, { isLoading }] = useCancelBuyNowListingMutation()
-  const [buyNow] = useAtom(cancelBuyNowAtom)
+  const [buyNowListing] = useAtom(cancelBuyNowAtom)
   const [reportError, setReportError] = useState(false)
 
   const handleCancelBuyNow = async () => {
-    if (buyNow) {
-      const { tokenId, tokenAddress } = buyNow
-      if (tokenId && tokenAddress) {
-        try {
-          const cancelBuyNowResponse = await cancelBuyNowMutation({
-            assetId: String(tokenId),
-            assetAddress: tokenAddress
-          })
-          if ('error' in cancelBuyNowResponse) {
-            setReportError(true)
-            return
-          }
-          dispatch(closeModal())
-        } catch {
+    if (buyNowListing?.id) {
+      try {
+        const cancelBuyNowResponse = await cancelBuyNowMutation({
+          listingId: buyNowListing.id
+        })
+        if ('error' in cancelBuyNowResponse) {
           setReportError(true)
+          return
         }
+        dispatch(closeModal())
+      } catch {
+        setReportError(true)
       }
     }
   }

@@ -61,7 +61,10 @@ export const assetApi = baseAPI.injectEndpoints({
               { type: 'BID', id: 'LIST' }
             ]
           : res
-          ? [{ type: ASSET_TAG, id: `${res.tokenId}_${res.tokenAddress}` }]
+          ? [
+              { type: ASSET_TAG, id: `${res.tokenId}_${res.tokenAddress}` },
+              { type: 'ASSET', id: 'LIST' }
+            ]
           : []
       }
     }),
@@ -91,8 +94,9 @@ export const assetApi = baseAPI.injectEndpoints({
         return [{ type: ASSET_TAG, id: `${assetId}_${assetAddress}` }]
       }
     }),
+    // TODO Test this
     cancelBuyNowListing: builder.mutation<Listing, CancelBuyNowInput>({
-      query: (data: AuctionInput) => ({
+      query: (data: CancelBuyNowInput) => ({
         fetcher: mutation$.cancelBuyNowListing(LISTING_FETCHER),
         options: {
           variables: {
@@ -100,8 +104,8 @@ export const assetApi = baseAPI.injectEndpoints({
           }
         }
       }),
-      invalidatesTags: (_, __, { assetAddress, assetId }) => {
-        return [{ type: ASSET_TAG, id: `${assetId}_${assetAddress}` }]
+      invalidatesTags: () => {
+        return [{ type: ASSET_TAG, id: 'LIST' }]
       }
     }),
     fillBuyNow: builder.mutation<Listing, FillBuyNowInput>({
