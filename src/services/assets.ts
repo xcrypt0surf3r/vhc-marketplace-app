@@ -94,7 +94,6 @@ export const assetApi = baseAPI.injectEndpoints({
         return [{ type: ASSET_TAG, id: `${assetId}_${assetAddress}` }]
       }
     }),
-    // TODO Test this
     cancelBuyNowListing: builder.mutation<Listing, CancelBuyNowInput>({
       query: (data: CancelBuyNowInput) => ({
         fetcher: mutation$.cancelBuyNowListing(LISTING_FETCHER),
@@ -117,8 +116,8 @@ export const assetApi = baseAPI.injectEndpoints({
           }
         }
       }),
-      invalidatesTags: (_, __, { assetAddress, assetId }) => {
-        return [{ type: ASSET_TAG, id: `${assetId}_${assetAddress}` }]
+      invalidatesTags: () => {
+        return [{ type: ASSET_TAG, id: 'LIST' }]
       }
     })
   })

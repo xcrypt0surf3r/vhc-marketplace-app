@@ -88,8 +88,7 @@ const SubmitOrder = () => {
       const txReceipt = await fillBuyNowOrder(provider, order)
 
       await fillBuyNowMutation({
-        assetAddress: listing.assetAddress,
-        assetId: listing.assetId,
+        listingId: listing.id,
         txReceipt: JSON.stringify(txReceipt),
         txHash: txReceipt.transactionHash,
         makerAddress: listing.makerAddress,

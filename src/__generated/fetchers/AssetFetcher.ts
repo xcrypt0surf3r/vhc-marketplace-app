@@ -245,6 +245,32 @@ export interface AssetFetcher<T extends object, TVariables extends object>
     T & { readonly [key in XAlias]?: readonly X[] },
     TVariables & XVariables & XDirectiveVariables
   >
+
+  salesHistory<X extends object, XVariables extends object>(
+    child: ObjectFetcher<'SalesHistory', X, XVariables>
+  ): AssetFetcher<
+    T & { readonly salesHistory?: readonly X[] },
+    TVariables & XVariables
+  >
+
+  salesHistory<
+    X extends object,
+    XVariables extends object,
+    XAlias extends string = 'salesHistory',
+    XDirectiveVariables extends object = {}
+  >(
+    child: ObjectFetcher<'SalesHistory', X, XVariables>,
+    optionsConfigurer: (
+      options: FieldOptions<'salesHistory', {}, {}>
+    ) => FieldOptions<
+      XAlias,
+      { readonly [key: string]: DirectiveArgs },
+      XDirectiveVariables
+    >
+  ): AssetFetcher<
+    T & { readonly [key in XAlias]?: readonly X[] },
+    TVariables & XVariables & XDirectiveVariables
+  >
 }
 
 export const asset$: AssetFetcher<{}, {}> = createFetcher(
@@ -274,6 +300,12 @@ export const asset$: AssetFetcher<{}, {}> = createFetcher(
         category: 'LIST',
         name: 'listings',
         targetTypeName: 'Listing',
+        undefinable: true
+      },
+      {
+        category: 'LIST',
+        name: 'salesHistory',
+        targetTypeName: 'SalesHistory',
         undefinable: true
       }
     ]

@@ -3,8 +3,7 @@
  * do not satisfy the constraint 'SerializableParam' of recoil
  */
 export type FillBuyNowInput = {
-  readonly assetAddress: string
-  readonly assetId: string
+  readonly listingId: string
   readonly txReceipt: string
   readonly txHash: string
   readonly makerAddress: string
