@@ -9,7 +9,7 @@ const UserHeader = () => {
       <img
         src='https://picsum.photos/id/60/1700/320'
         alt=''
-        className='rounded-3xl animate-skeleton h-[320px] w-[1700px]'
+        className='rounded-3xl skeleton h-[320px] w-[1700px]'
       />
       <div className='flex justify-center'>
         <div className='absolute -translate-y-12'>
@@ -18,7 +18,7 @@ const UserHeader = () => {
               <img
                 src='https://picsum.photos/id/19/80/80'
                 alt=''
-                className='rounded-full border-8 border-white h-[80px] w-[80px] animate-skeleton'
+                className='rounded-full border-8 border-white h-[80px] w-[80px] skeleton'
               />
             </div>
             <span className='font-prototype'>

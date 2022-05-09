@@ -59,7 +59,6 @@ const BuyNow = () => {
         </span>
       </div>
       <Button
-        magnify
         color={ButtonColors.PRIMARY}
         disabled={accept !== true}
         isDisabled={accept !== true}

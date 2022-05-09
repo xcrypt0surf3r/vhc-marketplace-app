@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
 import { useState } from 'react'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
-import WarningIcon from '../../../assets/images/icons/warning.svg'
+import { WarningIcon } from '../../../assets/images/icons/warning'
 import { useCancelBuyNowListingMutation } from '../../../services/assets'
 import { cancelBuyNowAtom } from '../../../state/atoms/listing.atoms'
 import { ErrorHandler } from '../../shared/ErrorHandler'
@@ -33,14 +33,13 @@ const CancelBuyNow = () => {
   return (
     <ModalContainer>
       <div className='flex flex-col justify-center items-center gap-3 mb-3'>
-        <img src={WarningIcon} alt='warning' />
+        <WarningIcon size={8} />
         <h2 className='text-xl text-center my-4'>
           Are you sure you want to unlist this item?
         </h2>
       </div>
       <div className='flex justify-center gap-3'>
         <Button
-          magnify
           onClick={handleCancelBuyNow}
           color={ButtonColors.PRIMARY}
           sizer={ButtonSizes.LARGE}
@@ -48,7 +47,6 @@ const CancelBuyNow = () => {
           {isLoading ? 'Unlisting...' : 'Yes'}
         </Button>
         <Button
-          magnify
           onClick={() => closeModal()}
           color={ButtonColors.OUTLINE}
           sizer={ButtonSizes.LARGE}

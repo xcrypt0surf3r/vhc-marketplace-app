@@ -20,7 +20,6 @@ const SellAssetSubmitted = () => {
       </div>
       <div className='flex justify-center mt-8'>
         <Button
-          magnify
           color={ButtonColors.SECONDARY}
           sizer={ButtonSizes.MEDIUM}
           onClick={closeModal}

@@ -37,7 +37,7 @@ const Properties = ({ properties, unlistProps, mergeProps }: Props) => {
   ) => {
     return (
       <div
-        className='flex flex-row items-center p-2 bg-[#F7FAFD] border-[#E4ECF7] border-2 rounded-lg'
+        className='flex flex-row items-center p-2 bg-[#F7FAFD] border rounded-lg'
         key={index}
       >
         {imageName !== '' ? (
@@ -80,7 +80,7 @@ const Properties = ({ properties, unlistProps, mergeProps }: Props) => {
 
   return (
     <div className='w-full pt-2 lg:p-6'>
-      <div className='w-full bg-white rounded-lg border-[#E4ECF7]-600 border-2'>
+      <div className='w-full bg-white rounded-3xl border'>
         <Disclosure defaultOpen={true}>
           {({ open }) => (
             <>
@@ -94,7 +94,7 @@ const Properties = ({ properties, unlistProps, mergeProps }: Props) => {
                   } w-5 h-5 text-white-500`}
                 />
               </Disclosure.Button>
-              <Disclosure.Panel className='grid grid-cols-3 gap-6 px-8 py-8 text-sm text-gray-500 border-[#E4ECF7]-600 border-t-2'>
+              <Disclosure.Panel className='grid grid-cols-3 gap-6 px-8 py-8 text-sm text-gray-500 border-t'>
                 {Object.keys(properties).map(
                   (propertyKey: string, index: any) => {
                     if (unlistProps?.includes(propertyKey)) {

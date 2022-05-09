@@ -17,7 +17,6 @@ export const Button = ({
   sizer = ButtonSizes.MEDIUM,
   color = ButtonColors.SECONDARY,
   isDisabled,
-  magnify,
   className = '',
   children,
   ...props
@@ -28,8 +27,8 @@ export const Button = ({
         color,
         sizer,
         className,
-        'rounded-3xl py-3 px-3 md:px-4 disabled:opacity-50 disabled:cursor-not-allowed',
-        !isDisabled && magnify ? 'magnify' : ''
+        'rounded-3xl p-3 md:px-4 disabled:opacity-50 disabled:cursor-not-allowed h-12',
+        !isDisabled ? 'magnify' : ''
       )}
       {...props}
     >
@@ -46,7 +45,6 @@ type ButtonProps = {
   className?: string
   color?: string
   sizer?: string
-  magnify?: boolean
 } & React.DetailedHTMLProps<
   React.SelectHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement

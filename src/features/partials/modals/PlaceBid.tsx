@@ -172,7 +172,6 @@ const PlaceBid = () => {
             <Button
               disabled={isSubmitting || !!errors.amount}
               isDisabled={isSubmitting || !!errors.amount}
-              magnify
               color={ButtonColors.SECONDARY}
               sizer={ButtonSizes.FULL}
             >

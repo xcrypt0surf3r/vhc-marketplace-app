@@ -1,12 +1,33 @@
 import { Disclosure } from '@headlessui/react'
+import { useEffect, useState } from 'react'
 import Hamburger from './Hamburger'
 import Logo from './Logo'
 import ConnectWallet from './ConnectWallet'
 import { Button, ButtonColors, ButtonSizes } from '../Button'
+import { useAppSelector } from '../../../state'
+import { getModal } from '../../../state/modal.slice'
 
 const Header = () => {
+  const [sticky, setSticky] = useState('')
+  const modal = useAppSelector(getModal)
+  useEffect(() => {
+    const makeSticky = () => {
+      if (window.pageYOffset > 1 && !modal) {
+        setSticky(
+          'sticky top-0 text-slate-900 dark:text-slate-200 bg-slate-50/90 dark:bg-slate-700/90 backdrop-blur-sm z-30 '
+        )
+      } else {
+        setSticky('')
+      }
+    }
+    makeSticky()
+    window.addEventListener('scroll', makeSticky)
+    return () => {
+      window.removeEventListener('scroll', makeSticky)
+    }
+  }, [modal])
   return (
-    <Disclosure as='nav' className='bg-white mb-8'>
+    <Disclosure as='nav' className={sticky}>
       {({ open }) => {
         return (
           <>
@@ -41,17 +62,12 @@ const Header = () => {
             <Disclosure.Panel className='sm:hidden'>
               <div className='flex flex-col sm:flex-row gap-5 w-full xs:px-4 items-center border-b border-gray-300 py-20'>
                 <Button
-                  magnify={false}
                   sizer={ButtonSizes.MEDIUM}
                   color={ButtonColors.SECONDARY}
                 >
                   VHC Token
                 </Button>
-                <Button
-                  magnify={false}
-                  sizer={ButtonSizes.MEDIUM}
-                  color={ButtonColors.OUTLINE}
-                >
+                <Button sizer={ButtonSizes.MEDIUM} color={ButtonColors.OUTLINE}>
                   Explore map
                 </Button>
                 <ConnectWallet />

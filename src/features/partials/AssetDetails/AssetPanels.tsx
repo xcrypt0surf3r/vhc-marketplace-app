@@ -34,9 +34,7 @@ const AssetPanels = ({ panels }: { panels: Panels; loading?: boolean }) => {
           {Object.keys(panels).map((panelName, idx) => (
             <Tab.Panel
               key={idx}
-              className={classNames(
-                'bg-white rounded-lg border-[#E4ECF7]-600 border-2'
-              )}
+              className={classNames('bg-white rounded-3xl border')}
             >
               {panels[panelName as keyof Panels]!.length < 1 ? (
                 <PanelPlaceHolder panelName={panelName} />

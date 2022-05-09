@@ -20,7 +20,6 @@ const BuyBidError = () => {
       </div>
       <div className='flex justify-center'>
         <Button
-          magnify
           color={ButtonColors.SECONDARY}
           sizer={ButtonSizes.SMALL}
           onClick={() => closeModal()}

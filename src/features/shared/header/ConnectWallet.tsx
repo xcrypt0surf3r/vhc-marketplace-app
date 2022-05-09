@@ -148,7 +148,6 @@ const ConnectWallet = () => {
         </div>
       ) : (
         <Button
-          magnify
           sizer={ButtonSizes.MEDIUM}
           color={ButtonColors.PRIMARY}
           onClick={handleConnectWallet}

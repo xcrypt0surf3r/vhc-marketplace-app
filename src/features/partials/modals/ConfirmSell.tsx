@@ -132,21 +132,21 @@ const ConfirmSell = () => {
   return (
     <ModalContainer size={ModalSizes.LARGE}>
       <div className='grid grid-cols-1 divide-y'>
-        <div className='flex items-center gap-32 py-5'>
+        <div className='flex items-center  justify-between gap-32 py-5'>
           <div className='flex gap-4 items-center'>
-            <div className='bg-black h-[58px] w-[58px] rounded-xl'>
-              <img src='' alt='' />
+            <div className='h-[58px] w-[58px] border'>
+              <img src={buyNow?.assetImage} alt='' />
             </div>
             <div className='flex flex-col gap-1'>
-              <span className='font-medium'>{'AssetName'}</span>
+              <h2 className='font-medium'>{buyNow?.assetName}</h2>
               <span className='text-gray-500 text-sm'>Quantity: {'1'}</span>
             </div>
           </div>
           <div className='flex flex-col items-end'>
-            <span className='text-gray-500'>Price</span>
-            <span className='text-lg'>
+            <span className='text-gray-500 text-sm'>Price:</span>
+            <h2 className='text-lg'>
               ${buyNow?.currency} {buyNow?.price}
-            </span>
+            </h2>
           </div>
         </div>
 

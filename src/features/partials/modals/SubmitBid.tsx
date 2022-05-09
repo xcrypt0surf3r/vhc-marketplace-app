@@ -60,7 +60,7 @@ const SubmitBid = () => {
   useEffect(() => {
     if (isSigned && isApproved && isSuccess) {
       setIsConfirming(false)
-      openModal('Bid Submitted', <BidSubmitted />)
+      openModal('', <BidSubmitted />)
     }
 
     if (isError) openModal('', <BuyBidError />)

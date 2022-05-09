@@ -128,7 +128,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
         assetName: asset?.assetData.name,
         assetImage: getAssetImage(asset)
       })
-      openModal('Confirm Sell', <ConfirmSell />)
+      openModal('Confirm sell', <ConfirmSell />)
     }
   }
 
@@ -159,12 +159,12 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
         <div className='pt-10 pb-24 lg:pt-0 md:px-3 lg:px-0'>
           <div className='grid xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
             <div className='xs:mb-2 p-6 bg-white-100 flex flex-col w-full h-full'>
-              <div className='w-full lg:h-full h-[25rem] animate-skeleton rounded-[.75rem]'></div>
+              <div className='w-full lg:h-full h-[25rem] skeleton rounded-[.75rem]'></div>
             </div>
             <div className='p-6 bg-white-100 flex flex-col'>
               <div className='flex justify-between items-center'></div>
               <div className='group w-full rounded-lg overflow-hidden sm:relative sm:aspect-none h-full border-[#E4ECF7]-600 border-2 p-4'>
-                <div className='w-full lg:h-[30rem] h-[25rem] animate-skeleton rounded-[.75rem]'></div>
+                <div className='w-full lg:h-[30rem] h-[25rem] skeleton rounded-[.75rem]'></div>
               </div>
             </div>
           </div>
@@ -182,7 +182,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
               <img
                 src={getAssetImage(asset)}
                 alt={asset?.assetData.name}
-                className='object-center object-cover rounded-lg w-full h-full min-h-[600px] animate-skeleton'
+                className='object-center object-cover rounded-lg w-full h-full min-h-[600px] skeleton'
               />
             </div>
             <div className='lg:p-6 bg-white-100 flex flex-col'>
@@ -346,7 +346,6 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
                         </div>
 
                         <Button
-                          magnify={false}
                           className='mt-8'
                           sizer={ButtonSizes.FULL}
                           color={ButtonColors.PRIMARY}

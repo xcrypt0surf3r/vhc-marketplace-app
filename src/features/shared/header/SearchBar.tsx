@@ -11,7 +11,7 @@ const SearchBar = () => {
   const [selected, setSelected] = useState(searchOptions[0])
 
   return (
-    <div className='flex items-center pl-2 pr-5 py-[.3125rem] border-[.0875rem] rounded-3xl'>
+    <div className='flex items-center pl-2 pr-5 py-[.3125rem] border rounded-3xl'>
       <label htmlFor='search' className='sr-only'>
         Search
       </label>

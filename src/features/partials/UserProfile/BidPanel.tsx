@@ -218,7 +218,7 @@ const BidsPanel = ({ data, mini }: Prop) => {
                 <img
                   src='https://picsum.photos/id/61/32/32'
                   alt=''
-                  className='rounded-full animate-skeleton h-8 w-8'
+                  className='rounded-full skeleton h-8 w-8'
                 />
                 <span>{truncate(bid.owner, 6)}</span>
               </td>

@@ -101,7 +101,6 @@ const AcceptOffer = () => {
         </tbody>
       </table>
       <Button
-        magnify
         color={ButtonColors.SECONDARY}
         disabled={isAccepting}
         isDisabled={isAccepting}

@@ -78,7 +78,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
       <div className='flex items-center gap-3'>
         <img
           src={currencyIcon}
-          className='w-6 h-6 object-center object-cover rounded-[.75rem] inline-block animate-skeleton'
+          className='w-6 h-6 object-center object-cover rounded-[.75rem] inline-block skeleton'
         />
         {asset?.activeListing?.buyNow && (
           <span className='font-medium text-xl font-prototype'>
@@ -131,11 +131,11 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
               <img
                 src={getAssetImage(asset)}
                 alt={asset.assetData.name}
-                className='object-center object-cover rounded-lg w-full h-full border-[#E4ECF7]-600 border-2 min-h-[600px]'
+                className='object-center object-cover rounded-lg w-full h-full min-h-[600px]'
               />
             </div>
             <div className='lg:p-6 bg-white-100 flex flex-col'>
-              <div className='group w-full rounded-lg overflow-hidden sm:relative sm:aspect-none h-full     border-[#E4ECF7]-600 border-2 p-4'>
+              <div className='group w-full rounded-3xl overflow-hidden sm:relative sm:aspect-none h-full border p-4'>
                 <div className='pt-6 px-6 items-end'>
                   <div className='font-normal text-sm tracking-tight mb-3 text-left'>
                     <div>
@@ -166,7 +166,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                       <img
                         src={'https://picsum.photos/id/1/31/31'}
                         alt={asset.owner}
-                        className='w-9 h-9 object-center object-cover rounded-full inline-block animate-skeleton'
+                        className='w-9 h-9 object-center object-cover rounded-full inline-block skeleton'
                       />
                       <div className='flex flex-col'>
                         <span className='text-[#505780] text-xs leading-6'>
@@ -194,10 +194,9 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
 
                     {renderPrice()}
 
-                    <div className='flex pt-10 justify-between gap-4 overflow-x-visible'>
+                    <div className='flex pt-10 justify-between gap-4 h-32'>
                       {isOwner ? (
                         <Button
-                          magnify={false}
                           sizer={ButtonSizes.FULL}
                           color={ButtonColors.PRIMARY}
                           onClick={
@@ -210,7 +209,6 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                         asset?.activeListing &&
                         asset.activeListing.status === 'ACTIVE' && (
                           <Button
-                            magnify={false}
                             sizer={ButtonSizes.FULL}
                             color={ButtonColors.PRIMARY}
                             onClick={handleClick}
@@ -224,7 +222,6 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                         )
                       )}
                       <Button
-                        magnify={false}
                         sizer={ButtonSizes.FULL}
                         color={ButtonColors.OUTLINE}
                       >
