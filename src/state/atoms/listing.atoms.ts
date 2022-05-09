@@ -2,7 +2,12 @@ import { atom } from 'jotai'
 import { Listing } from '../../services/queries'
 import { Currency } from '../../__generated/enums'
 
-export const listingAtom = atom<Listing | undefined>(undefined)
+export interface ListingExtended extends Listing {
+  assetName: string
+  assetImage: string
+}
+
+export const listingAtom = atom<ListingExtended | undefined>(undefined)
 
 export interface IBuyNow {
   tokenAddress: string

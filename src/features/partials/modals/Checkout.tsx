@@ -23,29 +23,29 @@ const Checkout = () => {
         </div>
         <div className='flex items-center gap-32 py-5'>
           <div className='flex gap-4 items-center'>
-            <div className='bg-black h-[58px] w-[58px] rounded-xl'>
-              <img src='' alt='' />
+            <div className='h-[58px] w-[58px] border'>
+              <img src={listing?.assetImage} alt='asset image' />
             </div>
             <div className='flex flex-col gap-1'>
-              <span className='font-medium'>{'AssetName'}</span>
+              <h2 className='font-medium'>{listing?.assetName}</h2>
               <span className='text-gray-500 text-sm'>
                 Quantity: {checkout.quantity}
               </span>
             </div>
           </div>
           <div className='flex flex-col items-end'>
-            <span className='text-gray-500'>Price</span>
-            <span className='text-lg'>
+            <span className='text-gray-500'>Price:</span>
+            <h2 className='text-lg'>
               ${listing?.buyNow?.price.currency} {listing?.buyNow?.price.value}
-            </span>
+            </h2>
           </div>
         </div>
         <div className='flex justify-between py-5'>
-          <span className='font-medium'>Total</span>
+          <span className='font-medium'>Total:</span>
           <div className='flex flex-col items-end'>
-            <span className='text-lg'>
+            <h2 className='text-lg'>
               ${listing?.buyNow?.price.currency} {listing?.buyNow?.price.value}
-            </span>
+            </h2>
           </div>
         </div>
         <div className='pt-5'>

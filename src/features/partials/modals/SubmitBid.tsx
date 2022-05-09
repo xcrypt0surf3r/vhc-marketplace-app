@@ -152,7 +152,7 @@ const SubmitBid = () => {
             </span>
             {!isApproved && (
               <Button
-                sizer={ButtonSizes.SMALL}
+                sizer={ButtonSizes.MEDIUM}
                 color={ButtonColors.SECONDARY}
                 onClick={handleBidUnlock}
               >
@@ -178,7 +178,7 @@ const SubmitBid = () => {
             !isSigned &&
             (listing?.buyNow || listing?.auction) ? (
               <Button
-                sizer={ButtonSizes.SMALL}
+                sizer={ButtonSizes.MEDIUM}
                 color={ButtonColors.SECONDARY}
                 onClick={handleConfirmBid}
                 disabled={isConfirming}

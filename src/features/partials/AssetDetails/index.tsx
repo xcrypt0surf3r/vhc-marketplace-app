@@ -6,10 +6,12 @@ import BidCountDownTimer from '../../../pages/asset-details/BidCountdownTimer'
 import { AssetWithListing, Bid } from '../../../services/queries'
 import {
   cancelBuyNowAtom,
-  listingAtom
+  listingAtom,
+  ListingExtended
 } from '../../../state/atoms/listing.atoms'
 import {
   classNames,
+  isDateElapsed,
   styleTypology,
   getAssetImage,
   truncate,
@@ -29,13 +31,21 @@ import { Currency } from '../../../__generated/enums'
 const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   const [usdPrice, setUsdPrice] = useState<number>()
   const [, setListing] = useAtom(listingAtom)
+  const [listed, setListed] = useState<ListingExtended>()
   const isOwner = useIsOwner(asset?.owner)
   const navigate = useNavigate()
   const [, setCancelBuyNow] = useAtom(cancelBuyNowAtom)
   const { openModal } = useModal()
 
   useEffect(() => {
-    setListing(asset?.activeListing)
+    if (asset) {
+      setListed({
+        ...asset?.activeListing,
+        assetName: asset?.assetData.name,
+        assetImage: getAssetImage(asset!)
+      } as ListingExtended)
+    }
+
     ;(async () => {
       if (asset?.activeListing?.buyNow) {
         setUsdPrice(
@@ -53,7 +63,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   }, [asset, setListing])
 
   const handleClick = () => {
-    setListing(asset?.activeListing)
+    setListing(listed)
     if (asset?.activeListing?.type === 'BUY_NOW') {
       openModal('Buy Now', <BuyNow />)
     }
@@ -141,12 +151,65 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
     ) : null
   }
 
-  const SellPrice = () =>
+  const SalePrice = () =>
     asset?.activeListing?.type === 'BUY_NOW' ? (
       <BuyNowPrice />
     ) : asset?.activeListing?.type === 'AUCTION' ? (
       <AuctionPrice />
     ) : null
+
+  const PurchaseButton = () => {
+    const endDate =
+      asset?.activeListing?.auction?.endDate ??
+      asset?.activeListing?.buyNow?.endDate
+
+    return asset?.activeListing &&
+      asset?.activeListing.isActive &&
+      !isDateElapsed(endDate!) ? (
+      <Button
+        sizer={ButtonSizes.FULL}
+        color={ButtonColors.PRIMARY}
+        onClick={handleClick}
+      >
+        {asset?.activeListing?.type === 'BUY_NOW'
+          ? 'Buy now'
+          : asset?.activeListing?.type === 'AUCTION'
+          ? 'Place a bid'
+          : ''}
+      </Button>
+    ) : null
+  }
+
+  const ListUnlistButton = () => {
+    const endDate =
+      asset?.activeListing?.auction?.endDate ??
+      asset?.activeListing?.buyNow?.endDate
+
+    if (!asset?.activeListing) {
+      return (
+        <Button
+          sizer={ButtonSizes.FULL}
+          color={ButtonColors.PRIMARY}
+          onClick={handleSell}
+        >
+          Sell
+        </Button>
+      )
+    }
+
+    if (asset?.activeListing && !isDateElapsed(endDate!)) {
+      return (
+        <Button
+          sizer={ButtonSizes.FULL}
+          color={ButtonColors.PRIMARY}
+          onClick={handleUnlist}
+        >
+          Unlist
+        </Button>
+      )
+    }
+    return null
+  }
 
   return (
     <>
@@ -218,37 +281,12 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                         />
                       )}
                     <div className='flex justify-between'>
-                      <SellPrice />
+                      <SalePrice />
                       <HighestBidPrice />
                     </div>
 
                     <div className='flex pt-10 justify-between gap-4 h-32'>
-                      {isOwner ? (
-                        <Button
-                          sizer={ButtonSizes.FULL}
-                          color={ButtonColors.PRIMARY}
-                          onClick={
-                            asset?.activeListing ? handleUnlist : handleSell
-                          }
-                        >
-                          {asset?.activeListing ? 'Unlist' : 'Sell'}
-                        </Button>
-                      ) : (
-                        asset?.activeListing &&
-                        asset.activeListing.isActive && (
-                          <Button
-                            sizer={ButtonSizes.FULL}
-                            color={ButtonColors.PRIMARY}
-                            onClick={handleClick}
-                          >
-                            {asset?.activeListing?.type === 'BUY_NOW'
-                              ? 'Buy now'
-                              : asset?.activeListing?.type === 'AUCTION'
-                              ? 'Place a bid'
-                              : ''}
-                          </Button>
-                        )
-                      )}
+                      {isOwner ? <ListUnlistButton /> : <PurchaseButton />}
                       <Button
                         sizer={ButtonSizes.FULL}
                         color={ButtonColors.OUTLINE}
