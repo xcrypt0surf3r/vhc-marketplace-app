@@ -13,6 +13,7 @@ import { classNames, getOrder, isDateElapsed, truncate } from '../../../utils'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import { useAcceptBidMutation } from '../../../services/bid'
 import { acceptBidOrder, approveAssetsForSwap } from '../../../services/order'
+import ModalContainer from '../../shared/layout/ModalContainer'
 
 export interface IBuyNow {
   [key: string]: string | number
@@ -80,7 +81,7 @@ const AcceptOffer = () => {
     }
   }
   return (
-    <div className='w-[30rem]'>
+    <ModalContainer>
       <table className='table-fixed'>
         <tbody>
           {Object.keys(data).map((key) => (
@@ -106,11 +107,10 @@ const AcceptOffer = () => {
         isDisabled={isAccepting}
         sizer={ButtonSizes.FULL}
         onClick={handleSubmit}
-        className='rounded-xl disabled:opacity-50 disabled:cursor-not-allowed mt-5'
       >
         {isAccepting ? 'Confirming...' : 'Confirm'}
       </Button>
-    </div>
+    </ModalContainer>
   )
 }
 

@@ -14,6 +14,7 @@ import { useFillBuyNowMutation } from '../../../services/assets'
 import { approveAssetsForSwap, fillBuyNowOrder } from '../../../services/order'
 import { listingAtom } from '../../../state/atoms/listing.atoms'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
+import ModalContainer from '../../shared/layout/ModalContainer'
 import OrderConfirmed from './OrderConfirmed'
 
 const SubmitOrder = () => {
@@ -26,7 +27,7 @@ const SubmitOrder = () => {
   const [makerSwapAsset, setMakerSwapAsset] = useState<
     SwappableAssetV4 | UserFacingERC20AssetDataSerializedV4 | undefined
   >()
-  const { openModal } = useModal()
+  const { openModal, freezeModal, unfreezeModal } = useModal()
 
   const [fillBuyNowMutation] = useFillBuyNowMutation()
 
@@ -55,6 +56,7 @@ const SubmitOrder = () => {
   }, [isApproved, isSigned, openModal])
 
   const handleBuyNowUnlock = async () => {
+    freezeModal()
     setUnlocking(true)
     if (!listing?.buyNow || !account) return
 
@@ -65,11 +67,14 @@ const SubmitOrder = () => {
       tokenId: listing.assetId
     }
     setMakerSwapAsset(makerAsset)
+    unfreezeModal()
   }
 
   const handleConfirmBuyNow = async () => {
     // Do not allow to reconfirm when tx is confirming.
     if (isConfirming) return
+
+    freezeModal()
 
     const provider = new ethers.providers.Web3Provider(
       await connector?.getProvider()
@@ -92,11 +97,12 @@ const SubmitOrder = () => {
       })
       setIsConfirming(false)
       setIsSigned(true)
+      unfreezeModal()
     }
   }
 
   return (
-    <div className='max-w-[32rem]'>
+    <ModalContainer>
       <div className='grid grid-cols-1 divide-y gap-6'>
         <div className='flex gap-x-6'>
           {!isApproved ? (
@@ -116,7 +122,6 @@ const SubmitOrder = () => {
               <Button
                 sizer={ButtonSizes.SMALL}
                 color={ButtonColors.SECONDARY}
-                className='rounded-xl'
                 onClick={handleBuyNowUnlock}
               >
                 {unlocking ? 'Unlocking...' : 'Unlock'}
@@ -143,7 +148,6 @@ const SubmitOrder = () => {
               <Button
                 sizer={ButtonSizes.SMALL}
                 color={ButtonColors.SECONDARY}
-                className='rounded-xl'
                 onClick={handleConfirmBuyNow}
                 disabled={isConfirming}
               >
@@ -153,7 +157,7 @@ const SubmitOrder = () => {
           </div>
         </div>
       </div>
-    </div>
+    </ModalContainer>
   )
 }
 

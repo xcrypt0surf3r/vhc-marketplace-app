@@ -1,4 +1,5 @@
 import { Listbox, Transition } from '@headlessui/react'
+import { useNavigate } from 'react-router-dom'
 import {
   ChevronDownIcon,
   CheckIcon,
@@ -39,6 +40,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
     message: ''
   } as ErrorProps)
   const { openModal } = useModal()
+  const navigate = useNavigate()
 
   const saleOptions: {
     [key: string]: {
@@ -101,6 +103,9 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
         if (mutationError) throw Error(JSON.stringify(mutationError))
 
         openModal('', <SellAssetSubmitted />)
+        navigate(`/asset-details/${asset.tokenId}`, {
+          replace: true
+        })
       } catch (exception) {
         const exceptionObj = exception as Exception
         setReportError({
@@ -231,7 +236,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
                               ? 'Enter price'
                               : 'Enter starting price'}
                           </TextLabel>
-                          <div className='flex rounded-xl border'>
+                          <div className='flex rounded-xl border items-center'>
                             <Listbox value={picked} onChange={setPicked}>
                               {({ open }) => (
                                 <div className='relative'>
@@ -311,7 +316,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
                               id='price'
                               name='price'
                               disabled={sale === Sale.AUCTION && isLoading}
-                              className='w-full h-full leading-5 px-3 py-4 bg-white placeholder-gray-400 focus:outline-none focus:placeholder-gray-300 sm:text-md'
+                              className='w-full h-full leading-5 px-3 py-2.5 bg-white placeholder-gray-400 focus:outline-none focus:placeholder-gray-300 sm:text-md'
                               placeholder='Amount'
                             />
                           </div>
@@ -342,7 +347,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
 
                         <Button
                           magnify={false}
-                          className='rounded-3xl mt-8'
+                          className='mt-8'
                           sizer={ButtonSizes.FULL}
                           color={ButtonColors.PRIMARY}
                           isDisabled={

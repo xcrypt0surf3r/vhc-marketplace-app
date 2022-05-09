@@ -2,10 +2,11 @@ import { useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from '../state'
 import {
   modal,
-  previousModal,
   ModalProps,
   getModal,
-  Flow
+  Flow,
+  freeze,
+  previous
 } from '../state/modal.slice'
 
 export const useModal = (): {
@@ -17,13 +18,17 @@ export const useModal = (): {
 } => {
   const dispatch = useAppDispatch()
   const targetModal = useAppSelector(getModal)
-  const modalMemo = useMemo(
+  const newModalMemo = useMemo(
     () => (modalState: ModalProps) => dispatch(modal(modalState)),
+    [dispatch]
+  )
+  const oldModalMemo = useMemo(
+    () => (modalState: ModalProps) => dispatch(freeze(modalState)),
     [dispatch]
   )
   return {
     openModal: (title: string, children: React.ReactNode, flow?: Flow) =>
-      modalMemo({
+      newModalMemo({
         id: Date.now(),
         title,
         children,
@@ -34,16 +39,16 @@ export const useModal = (): {
       dispatch(modal())
     },
     openPreviousModal: () => {
-      dispatch(previousModal())
+      dispatch(previous())
     },
     freezeModal: () => {
       if (targetModal) {
-        modalMemo({ ...targetModal, freeze: true })
+        oldModalMemo({ ...targetModal, freeze: true })
       }
     },
     unfreezeModal: () => {
       if (targetModal) {
-        modalMemo({ ...targetModal, freeze: false })
+        oldModalMemo({ ...targetModal, freeze: false })
       }
     }
   }

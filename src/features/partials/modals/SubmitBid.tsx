@@ -20,6 +20,7 @@ import {
   getERC20TokenInfo
 } from '../../../utils'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
+import ModalContainer from '../../shared/layout/ModalContainer'
 import BidSubmitted from './BidSubmitted'
 import BuyBidError from './BuyBidError'
 
@@ -133,7 +134,7 @@ const SubmitBid = () => {
   }
 
   return (
-    <div className='max-w-[28rem]'>
+    <ModalContainer>
       <div className='grid grid-cols-1 divide-y gap-6'>
         <div className='flex gap-x-6'>
           {!isApproved ? (
@@ -153,7 +154,6 @@ const SubmitBid = () => {
               <Button
                 sizer={ButtonSizes.SMALL}
                 color={ButtonColors.SECONDARY}
-                className='rounded-xl'
                 onClick={handleBidUnlock}
               >
                 {unlocking ? 'Unlocking...' : 'Unlock'}
@@ -180,7 +180,6 @@ const SubmitBid = () => {
               <Button
                 sizer={ButtonSizes.SMALL}
                 color={ButtonColors.SECONDARY}
-                className='rounded-xl'
                 onClick={handleConfirmBid}
                 disabled={isConfirming}
               >
@@ -190,7 +189,7 @@ const SubmitBid = () => {
           </div>
         </div>
       </div>
-    </div>
+    </ModalContainer>
   )
 }
 

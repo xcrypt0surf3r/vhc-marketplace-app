@@ -138,7 +138,6 @@ const ConnectWallet = () => {
       {account ? (
         <div>
           <Button
-            className='rounded-3xl cursor-pointer'
             sizer={ButtonSizes.MEDIUM}
             color={ButtonColors.PRIMARY}
             onClick={disconnect}
@@ -150,7 +149,6 @@ const ConnectWallet = () => {
       ) : (
         <Button
           magnify
-          className='rounded-3xl cursor-pointer'
           sizer={ButtonSizes.MEDIUM}
           color={ButtonColors.PRIMARY}
           onClick={handleConnectWallet}

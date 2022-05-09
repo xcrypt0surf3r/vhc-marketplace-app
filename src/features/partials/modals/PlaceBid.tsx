@@ -15,6 +15,7 @@ import { createBidAtom } from '../../../state/atoms/bid.atom'
 import { listingAtom } from '../../../state/atoms/listing.atoms'
 import { useModal } from '../../../hooks/use-modal'
 import Payment from './SubmitBid'
+import ModalContainer from '../../shared/layout/ModalContainer'
 
 // required to fill currency dropdown, will be updated
 //  as more currency is supported
@@ -59,7 +60,7 @@ const PlaceBid = () => {
   }
 
   return (
-    <div className='w-[30rem]'>
+    <ModalContainer>
       <label htmlFor='search' className='sr-only'>
         Place a bid
       </label>
@@ -174,14 +175,13 @@ const PlaceBid = () => {
               magnify
               color={ButtonColors.SECONDARY}
               sizer={ButtonSizes.FULL}
-              className='rounded-xl disabled:opacity-50 disabled:cursor-not-allowed'
             >
               Confirm bid
             </Button>
           </Form>
         )}
       </Formik>
-    </div>
+    </ModalContainer>
   )
 }
 

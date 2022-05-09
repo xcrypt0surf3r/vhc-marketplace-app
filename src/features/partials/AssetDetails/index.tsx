@@ -198,7 +198,6 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                       {isOwner ? (
                         <Button
                           magnify={false}
-                          className='rounded-3xl'
                           sizer={ButtonSizes.FULL}
                           color={ButtonColors.PRIMARY}
                           onClick={
@@ -212,7 +211,6 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                         asset.activeListing.status === 'ACTIVE' && (
                           <Button
                             magnify={false}
-                            className='rounded-3xl'
                             sizer={ButtonSizes.FULL}
                             color={ButtonColors.PRIMARY}
                             onClick={handleClick}
@@ -227,7 +225,6 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                       )}
                       <Button
                         magnify={false}
-                        className='rounded-3xl'
                         sizer={ButtonSizes.FULL}
                         color={ButtonColors.OUTLINE}
                       >

@@ -6,6 +6,7 @@ import { useCancelBuyNowListingMutation } from '../../../services/assets'
 import { cancelBuyNowAtom } from '../../../state/atoms/listing.atoms'
 import { ErrorHandler } from '../../shared/ErrorHandler'
 import { useModal } from '../../../hooks/use-modal'
+import ModalContainer from '../../shared/layout/ModalContainer'
 
 const CancelBuyNow = () => {
   const [cancelBuyNowMutation, { isLoading }] = useCancelBuyNowListingMutation()
@@ -30,7 +31,7 @@ const CancelBuyNow = () => {
     }
   }
   return (
-    <div className='w-[28rem]'>
+    <ModalContainer>
       <div className='flex flex-col justify-center items-center gap-3 mb-3'>
         <img src={WarningIcon} alt='warning' />
         <h2 className='text-xl text-center my-4'>
@@ -43,7 +44,6 @@ const CancelBuyNow = () => {
           onClick={handleCancelBuyNow}
           color={ButtonColors.PRIMARY}
           sizer={ButtonSizes.LARGE}
-          className='rounded-xl'
         >
           {isLoading ? 'Unlisting...' : 'Yes'}
         </Button>
@@ -52,7 +52,6 @@ const CancelBuyNow = () => {
           onClick={() => closeModal()}
           color={ButtonColors.OUTLINE}
           sizer={ButtonSizes.LARGE}
-          className='rounded-xl'
         >
           Cancel
         </Button>
@@ -61,7 +60,7 @@ const CancelBuyNow = () => {
         visible={reportError}
         message={'Error while unlisting the item.'}
       />
-    </div>
+    </ModalContainer>
   )
 }
 

@@ -31,7 +31,7 @@ export const TextInput = ({
     if (setExternalError) setExternalError(meta?.error)
   }, [setExternalError, meta?.error])
   return (
-    <div className='flexflex-col space-y-2 w-full pr-4'>
+    <div className='flex flex-col space-y-2 w-full'>
       {label && (
         <label
           htmlFor={name}

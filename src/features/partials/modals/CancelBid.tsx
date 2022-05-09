@@ -6,6 +6,7 @@ import { useCancelBidMutation } from '../../../services/bid'
 import { bidAtom } from '../../../state/atoms/bid.atom'
 import { Bid } from '../../../services/queries'
 import { useModal } from '../../../hooks/use-modal'
+import ModalContainer from '../../shared/layout/ModalContainer'
 
 const CancelBid = () => {
   const dispatch = useDispatch()
@@ -25,7 +26,7 @@ const CancelBid = () => {
     closeModal()
   }
   return (
-    <div className='max-w-[32rem]'>
+    <ModalContainer>
       <div className='flex flex-col justify-center items-center gap-3 mb-3'>
         <img src={WarningIcon} alt='warning' />
         <h2 className='text-xl text-center my-4 font-prototype'>
@@ -38,7 +39,6 @@ const CancelBid = () => {
           onClick={cancel}
           color={ButtonColors.SECONDARY}
           sizer={ButtonSizes.LARGE}
-          className='rounded-xl'
         >
           {isLoading ? 'Cancelling...' : 'Yes, cancel'}
         </Button>
@@ -47,12 +47,11 @@ const CancelBid = () => {
           onClick={() => dispatch(closeModal())}
           color={ButtonColors.OUTLINE}
           sizer={ButtonSizes.LARGE}
-          className='rounded-xl'
         >
           No, go back
         </Button>
       </div>
-    </div>
+    </ModalContainer>
   )
 }
 

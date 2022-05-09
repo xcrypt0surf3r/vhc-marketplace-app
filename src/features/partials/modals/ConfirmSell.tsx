@@ -1,4 +1,4 @@
-import { CheckCircleIcon } from '@heroicons/react/outline'
+import { CheckCircleIcon } from '@heroicons/react/solid'
 import { useNavigate } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import { useAtom } from 'jotai'
@@ -17,6 +17,7 @@ import { useWeb3Provider } from '../../../hooks/web3Provider'
 import { ErrorProps, Exception } from '../../shared/ErrorHandler'
 import { useModal } from '../../../hooks/use-modal'
 import SellAssetSubmitted from './SellAssetSubmitted'
+import ModalContainer, { ModalSizes } from '../../shared/layout/ModalContainer'
 
 const ConfirmSell = () => {
   const { account } = useWeb3React()
@@ -30,11 +31,12 @@ const ConfirmSell = () => {
   const [isConfirming, setIsConfirming] = useState(false)
   const [createBuyNowMutation] = useCreateBuyNowMutation()
   const provider = useWeb3Provider()
-  const { openModal } = useModal()
+  const { openModal, freezeModal, unfreezeModal } = useModal()
   const navigate = useNavigate()
 
   const handleSellApproved = async () => {
     if (!account || !buyNow) return
+    freezeModal()
     try {
       setIsConfirming(true)
       const swapAssets: UserFacingERC721AssetDataSerializedV4 = {
@@ -55,6 +57,7 @@ const ConfirmSell = () => {
           message: 'Sale request rejected'
         })
       }
+      unfreezeModal()
     } catch (exception) {
       setIsSellApproved(false)
       const exceptionObj = exception as Exception
@@ -74,6 +77,7 @@ const ConfirmSell = () => {
   }
 
   const handleSignAndCreateBuyNow = async () => {
+    freezeModal()
     // Do not allow to reconfirm when tx is confirming.
     if (isConfirming) return
     if (!account) return
@@ -118,6 +122,7 @@ const ConfirmSell = () => {
           replace: true
         })
       } catch (exception) {
+        unfreezeModal()
         const exceptionObj = exception as Exception
         handleError(exceptionObj.message)
       }
@@ -125,82 +130,84 @@ const ConfirmSell = () => {
   }
 
   return (
-    <div className='grid grid-cols-1 divide-y max-w-[40rem]'>
-      <div className='flex items-center gap-32 py-5'>
-        <div className='flex gap-4 items-center'>
-          <div className='bg-black h-[58px] w-[58px] rounded-xl'>
-            <img src='' alt='' />
+    <ModalContainer size={ModalSizes.LARGE}>
+      <div className='grid grid-cols-1 divide-y'>
+        <div className='flex items-center gap-32 py-5'>
+          <div className='flex gap-4 items-center'>
+            <div className='bg-black h-[58px] w-[58px] rounded-xl'>
+              <img src='' alt='' />
+            </div>
+            <div className='flex flex-col gap-1'>
+              <span className='font-medium'>{'AssetName'}</span>
+              <span className='text-gray-500 text-sm'>Quantity: {'1'}</span>
+            </div>
           </div>
-          <div className='flex flex-col gap-1'>
-            <span className='font-medium'>{'AssetName'}</span>
-            <span className='text-gray-500 text-sm'>Quantity: {'1'}</span>
+          <div className='flex flex-col items-end'>
+            <span className='text-gray-500'>Price</span>
+            <span className='text-lg'>
+              ${buyNow?.currency} {buyNow?.price}
+            </span>
           </div>
         </div>
-        <div className='flex flex-col items-end'>
-          <span className='text-gray-500'>Price</span>
-          <span className='text-lg'>
-            ${buyNow?.currency} {buyNow?.price}
-          </span>
-        </div>
-      </div>
 
-      {!isSellSigned && (
-        <div className='grid grid-cols-1 divide-y gap-6'>
-          <div className='flex gap-x-6 mt-8'>
-            {!isSellApproved ? (
-              <span className='text-xs bg-slate-200 text-indigo-300 rounded-full h-6 w-6 shrink-0 flex items-center justify-center'>
-                1
-              </span>
-            ) : (
-              <CheckCircleIcon className='h-6 w-6 shrink-0 text-blue-700' />
-            )}
-            <div className='flex flex-col gap-y-5'>
-              <span className='font-medium'>Unlock selling functionality</span>
-              <span className='text-sm text-gray-600'>
-                Please make sure your wallet is on the Polygon network
-              </span>
-              {!isSellApproved && (
-                <Button
-                  sizer={ButtonSizes.MEDIUM}
-                  color={ButtonColors.PRIMARY}
-                  className='rounded-xl'
-                  onClick={handleSellApproved}
-                  isDisabled={isConfirming || !account || !buyNow}
-                >
-                  {isConfirming ? 'Approving...' : 'Approve'}
-                </Button>
+        {!isSellSigned && (
+          <div className='grid grid-cols-1 divide-y gap-6'>
+            <div className='flex gap-x-6 mt-8'>
+              {!isSellApproved ? (
+                <span className='text-xs bg-slate-200 text-indigo-300 rounded-full h-6 w-6 shrink-0 flex items-center justify-center'>
+                  1
+                </span>
+              ) : (
+                <CheckCircleIcon className='h-6 w-6 shrink-0 text-blue-700' />
               )}
+              <div className='flex flex-col gap-y-5'>
+                <span className='font-medium'>
+                  Unlock selling functionality
+                </span>
+                <span className='text-sm text-gray-600'>
+                  Please make sure your wallet is on the Polygon network
+                </span>
+                {!isSellApproved && (
+                  <Button
+                    sizer={ButtonSizes.MEDIUM}
+                    color={ButtonColors.PRIMARY}
+                    onClick={handleSellApproved}
+                    isDisabled={isConfirming || !account || !buyNow}
+                  >
+                    {isConfirming ? 'Approving...' : 'Approve'}
+                  </Button>
+                )}
+              </div>
+            </div>
+            <div className='flex gap-x-6 pt-6'>
+              {!isSellSigned ? (
+                <span className='text-xs bg-slate-200 text-indigo-300 rounded-full h-6 w-6 shrink-0 flex items-center justify-center'>
+                  2
+                </span>
+              ) : (
+                <CheckCircleIcon className='h-6 w-6 shrink-0 text-blue-700' />
+              )}
+              <div className='flex flex-col gap-y-5'>
+                <span className='font-medium'>Sign message</span>
+                <span className='text-sm text-gray-600'>
+                  Sign a message using your wallet to continue
+                </span>
+                {isSellApproved && !isSellSigned && (
+                  <Button
+                    sizer={ButtonSizes.MEDIUM}
+                    color={ButtonColors.PRIMARY}
+                    onClick={handleSignAndCreateBuyNow}
+                    isDisabled={isConfirming}
+                  >
+                    {isConfirming ? 'Signing...' : 'Sign'}
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
-          <div className='flex gap-x-6 pt-6'>
-            {!isSellSigned ? (
-              <span className='text-xs bg-slate-200 text-indigo-300 rounded-full h-6 w-6 shrink-0 flex items-center justify-center'>
-                2
-              </span>
-            ) : (
-              <CheckCircleIcon className='h-6 w-6 shrink-0 text-blue-700' />
-            )}
-            <div className='flex flex-col gap-y-5'>
-              <span className='font-medium'>Sign message</span>
-              <span className='text-sm text-gray-600'>
-                Sign a message using your wallet to continue
-              </span>
-              {isSellApproved && !isSellSigned && (
-                <Button
-                  sizer={ButtonSizes.SMALL}
-                  color={ButtonColors.PRIMARY}
-                  className='rounded-xl'
-                  onClick={handleSignAndCreateBuyNow}
-                  isDisabled={isConfirming}
-                >
-                  {isConfirming ? 'Signing...' : 'Sign'}
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </ModalContainer>
   )
 }
 

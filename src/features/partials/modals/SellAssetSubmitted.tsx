@@ -1,22 +1,13 @@
 import { CheckIcon } from '@heroicons/react/outline'
-import { useNavigate, useParams } from 'react-router-dom'
 import { useModal } from '../../../hooks/use-modal'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
+import ModalContainer from '../../shared/layout/ModalContainer'
 
 const SellAssetSubmitted = () => {
-  const navigate = useNavigate()
-  const params = useParams<{ tokenId: string }>()
   const { closeModal } = useModal()
 
-  const handleNavigation = () => {
-    closeModal()
-    navigate(`/asset-details/${params.tokenId}`, {
-      replace: true
-    })
-  }
-
   return (
-    <div>
+    <ModalContainer>
       <div className='flex flex-col justify-center items-center'>
         <div className='h-20 w-20 rounded-full flex justify-center bg-blue-500 items-center '>
           <CheckIcon className='h-12 w-12 animate-check stroke-white' />
@@ -27,18 +18,17 @@ const SellAssetSubmitted = () => {
           sint.
         </p>
       </div>
-      <div className='flex justify-center'>
+      <div className='flex justify-center mt-8'>
         <Button
           magnify
-          color={ButtonColors.PRIMARY}
+          color={ButtonColors.SECONDARY}
           sizer={ButtonSizes.MEDIUM}
-          className='rounded-xl mt-8'
-          onClick={handleNavigation}
+          onClick={closeModal}
         >
-          Go to Asset details
+          Done
         </Button>
       </div>
-    </div>
+    </ModalContainer>
   )
 }
 

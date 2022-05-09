@@ -4,6 +4,7 @@ import { useModal } from '../../../hooks/use-modal'
 import { listingAtom } from '../../../state/atoms/listing.atoms'
 import { classNames, truncate } from '../../../utils'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
+import ModalContainer from '../../shared/layout/ModalContainer'
 import Checkout from './Checkout'
 
 export interface IBuyNow {
@@ -27,7 +28,7 @@ const BuyNow = () => {
     openModal('Checkout', <Checkout />)
   }
   return (
-    <div className='max-w-[34rem]'>
+    <ModalContainer>
       <table className='table-fixed'>
         <tbody>
           {Object.keys(data).map((key) => (
@@ -64,11 +65,10 @@ const BuyNow = () => {
         isDisabled={accept !== true}
         sizer={ButtonSizes.FULL}
         onClick={handleSubmit}
-        className='rounded-xl disabled:opacity-50 disabled:cursor-not-allowed'
       >
         Continue
       </Button>
-    </div>
+    </ModalContainer>
   )
 }
 

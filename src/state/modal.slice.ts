@@ -25,14 +25,18 @@ const modalSlice = createSlice({
         state.modals = []
       }
     },
-    previousModal: (state) => {
+    previous: (state) => {
       state.modals.pop()
+    },
+    freeze: (state, { payload }: { payload: ModalProps }) => {
+      const index = state.modals.findIndex((modal) => modal.id === payload.id)
+      state.modals.splice(index, 1, payload)
     }
   }
 })
 
 export const getModal = (state: RootState) => state.modal.modals.at(-1)
 
-export const { modal, previousModal } = modalSlice.actions
+export const { modal, previous, freeze } = modalSlice.actions
 
 export const modalReducer = modalSlice.reducer

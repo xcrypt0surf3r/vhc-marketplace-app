@@ -6,6 +6,7 @@ import {
 } from '../../../assets/images/icons'
 import { classNames } from '../../../utils'
 import { Button, ButtonSizes } from '../../shared/Button'
+import ModalContainer from '../../shared/layout/ModalContainer'
 
 const InstallWallet = () => {
   const IconWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -17,13 +18,13 @@ const InstallWallet = () => {
   }
   const styles = 'flex space-x-4 items-center'
   return (
-    <div>
+    <ModalContainer>
       <a
         href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en'
         target='_blank'
         rel='noreferrer'
       >
-        <Button sizer={ButtonSizes.FULL} className='rounded-xl mt-8 mb-12'>
+        <Button sizer={ButtonSizes.FULL} className='mt-8 mb-12'>
           Install extension
         </Button>
       </a>
@@ -51,7 +52,7 @@ const InstallWallet = () => {
           <span className='text-[14px]'>Compatible with all crypto apps</span>
         </div>
       </div>
-    </div>
+    </ModalContainer>
   )
 }
 

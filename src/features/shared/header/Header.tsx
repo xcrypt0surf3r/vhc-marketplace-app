@@ -42,7 +42,6 @@ const Header = () => {
               <div className='flex flex-col sm:flex-row gap-5 w-full xs:px-4 items-center border-b border-gray-300 py-20'>
                 <Button
                   magnify={false}
-                  className='rounded-3xl'
                   sizer={ButtonSizes.MEDIUM}
                   color={ButtonColors.SECONDARY}
                 >
@@ -50,7 +49,6 @@ const Header = () => {
                 </Button>
                 <Button
                   magnify={false}
-                  className='rounded-3xl'
                   sizer={ButtonSizes.MEDIUM}
                   color={ButtonColors.OUTLINE}
                 >

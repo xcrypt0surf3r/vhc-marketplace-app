@@ -1,8 +1,9 @@
 import { CheckIcon } from '@heroicons/react/outline'
+import ModalContainer from '../../shared/layout/ModalContainer'
 
 const BidSubmitted = () => {
   return (
-    <div className='max-w-[32rem]'>
+    <ModalContainer>
       <div className='flex flex-col justify-center items-center'>
         <div className='h-20 w-20 rounded-full flex justify-center bg-blue-500 items-center '>
           <CheckIcon className='h-12 w-12 animate-check stroke-white' />
@@ -12,7 +13,7 @@ const BidSubmitted = () => {
           Your bid for this land was submitted successfully
         </p>
       </div>
-    </div>
+    </ModalContainer>
   )
 }
 
