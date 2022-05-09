@@ -24,6 +24,7 @@ import { useModal } from '../../../hooks/use-modal'
 import BuyNow from '../modals/BuyNow'
 import PlaceBid from '../modals/PlaceBid'
 import CancelBuyNow from '../modals/CancelBuyNow'
+import { Currency } from '../../../__generated/enums'
 
 const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   const [usdPrice, setUsdPrice] = useState<number>()
@@ -72,55 +73,80 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
     })
   }
 
-  const renderBuyNowPrice = () => (
+  const Price = ({
+    title,
+    value,
+    currency,
+    noUsd
+  }: {
+    title: string
+    value: number
+    currency: Currency
+    noUsd?: boolean
+  }) => (
     <div className='flex flex-col'>
-      <span className='text-[#505780] font-xs'>Price</span>
+      <span className='text-[#505780] font-xs'>{title}</span>
       <div className='flex items-center gap-3'>
         <img
           src={currencyIcon}
           className='w-6 h-6 object-center object-cover rounded-[.75rem] inline-block skeleton'
         />
-        {asset?.activeListing?.buyNow && (
+        <>
           <span className='font-medium text-xl font-prototype'>
-            {asset.activeListing.buyNow.price.value} $
-            {asset.activeListing.buyNow.price.currency}
+            {value} ${currency}
           </span>
-        )}
+          {!noUsd && (
+            <span className='font-thin text-[#505780]font-sm border-l border-l-gray-300 pl-3'>
+              ${usdPrice?.toFixed(2)}
+            </span>
+          )}
+        </>
       </div>
     </div>
   )
 
-  const renderAuctionPrice = () => (
-    <div className='flex flex-col pt-2 pb-5'>
-      <span className='text-[#505780] font-xs'>Starting Price</span>
-      <div className='flex items-center gap-3'>
-        <img
-          src={currencyIcon}
-          alt='Vault Hiill'
-          className='w-6 h-6 object-center object-cover rounded-[.75rem] inline-block'
-        />
-        <span className='font-medium text-2xl font-prototype'>
-          {asset?.activeListing?.auction?.startingPrice.value} $
-          {asset?.activeListing?.auction?.startingPrice.currency}
-        </span>
-        <span className='font-thin text-[#505780]font-sm border-l border-l-gray-300 pl-3'>
-          ${usdPrice?.toFixed(2)}
-        </span>
-      </div>
-    </div>
-  )
+  const BuyNowPrice = () =>
+    asset?.activeListing?.buyNow ? (
+      <Price
+        title='Price'
+        value={asset.activeListing.buyNow.price.value}
+        currency={asset.activeListing.buyNow.price.currency}
+      />
+    ) : null
 
-  const renderPrice = () => {
-    if (!asset?.activeListing) return null
+  const AuctionPrice = () =>
+    asset?.activeListing?.auction ? (
+      <Price
+        title='Starting price'
+        value={asset.activeListing.auction?.startingPrice.value}
+        currency={asset.activeListing.auction?.startingPrice.currency}
+      />
+    ) : null
 
-    if (asset.activeListing?.type === 'BUY_NOW') {
-      return renderBuyNowPrice()
-    }
-    if (asset?.activeListing?.type === 'AUCTION') {
-      return renderAuctionPrice()
-    }
-    return null
+  const HighestBidPrice = () => {
+    const bids = asset?.activeListing?.auction?.bids
+    if (!asset?.activeListing?.auction || (bids && bids?.length < 1))
+      return null
+
+    const highestBid = bids!
+      .slice()
+      .sort((lowest, highest) => highest.amount.value - lowest.amount.value)[0]
+    return highestBid && highestBid.status !== 'CANCELLED' ? (
+      <Price
+        title='Highest bid price'
+        value={highestBid?.amount?.value}
+        currency={highestBid?.amount?.currency}
+        noUsd
+      />
+    ) : null
   }
+
+  const SellPrice = () =>
+    asset?.activeListing?.type === 'BUY_NOW' ? (
+      <BuyNowPrice />
+    ) : asset?.activeListing?.type === 'AUCTION' ? (
+      <AuctionPrice />
+    ) : null
 
   return (
     <>
@@ -191,8 +217,10 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                           }
                         />
                       )}
-
-                    {renderPrice()}
+                    <div className='flex justify-between'>
+                      <SellPrice />
+                      <HighestBidPrice />
+                    </div>
 
                     <div className='flex pt-10 justify-between gap-4 h-32'>
                       {isOwner ? (

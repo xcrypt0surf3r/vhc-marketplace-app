@@ -63,7 +63,7 @@ const BidsPanel = ({ data, mini }: Prop) => {
 
   const cancelBid = (bid: Bid) => {
     setBid(bid)
-    openModal('Cancel Bid', <CancelBid />)
+    openModal('', <CancelBid />)
   }
 
   const acceptBid = (bid: Bid) => {
