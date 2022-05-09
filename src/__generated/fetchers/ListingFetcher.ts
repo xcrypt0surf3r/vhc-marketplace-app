@@ -6,7 +6,7 @@ import {
 } from 'graphql-ts-client-api'
 import type { WithTypeName, ImplementationType } from '../CommonTypes'
 import { baseEntity$ } from './BaseEntityFetcher'
-import { ListingType, ListingStatus } from '../enums'
+import { ListingType } from '../enums'
 
 /*
  * Any instance of this interface is immutable,
@@ -153,29 +153,6 @@ export interface ListingFetcher<T extends object, TVariables extends object>
 
   readonly '~type': ListingFetcher<Omit<T, 'type'>, TVariables>
 
-  readonly status: ListingFetcher<
-    T & { readonly status: ListingStatus },
-    TVariables
-  >
-
-  'status+'<
-    XAlias extends string = 'status',
-    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
-    XDirectiveVariables extends object = {}
-  >(
-    optionsConfigurer: (
-      options: FieldOptions<'status', {}, {}>
-    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
-  ): ListingFetcher<
-    T &
-      (XDirectives extends { readonly include: any } | { readonly skip: any }
-        ? { readonly [key in XAlias]?: ListingStatus }
-        : { readonly [key in XAlias]: ListingStatus }),
-    TVariables & XDirectiveVariables
-  >
-
-  readonly '~status': ListingFetcher<Omit<T, 'status'>, TVariables>
-
   buyNow<X extends object, XVariables extends object>(
     child: ObjectFetcher<'BuyNow', X, XVariables>
   ): ListingFetcher<T & { readonly buyNow?: X }, TVariables & XVariables>
@@ -244,6 +221,98 @@ export interface ListingFetcher<T extends object, TVariables extends object>
     T & { readonly [key in XAlias]?: X },
     TVariables & XVariables & XDirectiveVariables
   >
+
+  readonly cancelled: ListingFetcher<
+    T & { readonly cancelled?: boolean },
+    TVariables
+  >
+
+  'cancelled+'<
+    XAlias extends string = 'cancelled',
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'cancelled', {}, {}>
+    ) => FieldOptions<
+      XAlias,
+      { readonly [key: string]: DirectiveArgs },
+      XDirectiveVariables
+    >
+  ): ListingFetcher<
+    T & { readonly [key in XAlias]?: boolean },
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~cancelled': ListingFetcher<Omit<T, 'cancelled'>, TVariables>
+
+  readonly isActive: ListingFetcher<
+    T & { readonly isActive: boolean },
+    TVariables
+  >
+
+  'isActive+'<
+    XAlias extends string = 'isActive',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'isActive', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): ListingFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: boolean }
+        : { readonly [key in XAlias]: boolean }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~isActive': ListingFetcher<Omit<T, 'isActive'>, TVariables>
+
+  readonly isExpired: ListingFetcher<
+    T & { readonly isExpired: boolean },
+    TVariables
+  >
+
+  'isExpired+'<
+    XAlias extends string = 'isExpired',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'isExpired', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): ListingFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: boolean }
+        : { readonly [key in XAlias]: boolean }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~isExpired': ListingFetcher<Omit<T, 'isExpired'>, TVariables>
+
+  readonly isComplete: ListingFetcher<
+    T & { readonly isComplete: boolean },
+    TVariables
+  >
+
+  'isComplete+'<
+    XAlias extends string = 'isComplete',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'isComplete', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): ListingFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: boolean }
+        : { readonly [key in XAlias]: boolean }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~isComplete': ListingFetcher<Omit<T, 'isComplete'>, TVariables>
 }
 
 export const listing$: ListingFetcher<{}, {}> = createFetcher(
@@ -256,7 +325,6 @@ export const listing$: ListingFetcher<{}, {}> = createFetcher(
       'assetId',
       'assetAddress',
       'type',
-      'status',
       {
         category: 'SCALAR',
         name: 'buyNow',
@@ -274,11 +342,20 @@ export const listing$: ListingFetcher<{}, {}> = createFetcher(
         name: 'fillDetails',
         targetTypeName: 'FillDetails',
         undefinable: true
-      }
+      },
+      {
+        category: 'SCALAR',
+        name: 'cancelled',
+        undefinable: true
+      },
+      'isActive',
+      'isExpired',
+      'isComplete'
     ]
   ),
   undefined
 )
 
 export const listing$$ =
-  listing$.id.makerAddress.assetId.assetAddress.type.status
+  listing$.id.makerAddress.assetId.assetAddress.type.cancelled.isActive
+    .isExpired.isComplete

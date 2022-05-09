@@ -235,7 +235,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                         </Button>
                       ) : (
                         asset?.activeListing &&
-                        asset.activeListing.status === 'ACTIVE' && (
+                        asset.activeListing.isActive && (
                           <Button
                             sizer={ButtonSizes.FULL}
                             color={ButtonColors.PRIMARY}

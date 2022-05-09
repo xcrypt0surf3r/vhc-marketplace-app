@@ -68,21 +68,21 @@ export interface BuyNowFetcher<T extends object, TVariables extends object>
 
   readonly '~startDate': BuyNowFetcher<Omit<T, 'startDate'>, TVariables>
 
-  readonly endDate: BuyNowFetcher<T & { readonly endDate: string }, TVariables>
+  readonly endDate: BuyNowFetcher<T & { readonly endDate?: string }, TVariables>
 
   'endDate+'<
     XAlias extends string = 'endDate',
-    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
     XDirectiveVariables extends object = {}
   >(
     optionsConfigurer: (
       options: FieldOptions<'endDate', {}, {}>
-    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+    ) => FieldOptions<
+      XAlias,
+      { readonly [key: string]: DirectiveArgs },
+      XDirectiveVariables
+    >
   ): BuyNowFetcher<
-    T &
-      (XDirectives extends { readonly include: any } | { readonly skip: any }
-        ? { readonly [key in XAlias]?: string }
-        : { readonly [key in XAlias]: string }),
+    T & { readonly [key in XAlias]?: string },
     TVariables & XDirectiveVariables
   >
 
@@ -139,7 +139,11 @@ export const buyNow$: BuyNowFetcher<{}, {}> = createFetcher(
     [],
     [
       'startDate',
-      'endDate',
+      {
+        category: 'SCALAR',
+        name: 'endDate',
+        undefinable: true
+      },
       {
         category: 'SCALAR',
         name: 'price',
