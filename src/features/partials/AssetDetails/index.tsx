@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAtom } from 'jotai'
 import { useNavigate } from 'react-router-dom'
+import makeBlockie from 'ethereum-blockies-base64'
 import currencyIcon from '../../../assets/images/icons/currency.svg'
 import BidCountDownTimer from '../../../pages/asset-details/BidCountdownTimer'
 import { AssetWithListing, Bid } from '../../../services/queries'
@@ -253,7 +254,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                   <div className='w-full overflow-hidden h-50 lg:h-66 xl:h-74 mt-8'>
                     <div className='flex items-center gap-4'>
                       <img
-                        src={'https://picsum.photos/id/1/31/31'}
+                        src={makeBlockie(asset?.owner ?? '')}
                         alt={asset.owner}
                         className='w-9 h-9 object-center object-cover rounded-full inline-block skeleton'
                       />

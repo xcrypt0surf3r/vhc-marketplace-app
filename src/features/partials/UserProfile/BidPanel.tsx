@@ -3,6 +3,7 @@ import _ from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { useEffect, useState } from 'react'
+import makeBlockie from 'ethereum-blockies-base64'
 import { Bid } from '../../../services/queries'
 import { classNames, formatDate, getOrder, truncate } from '../../../utils'
 import currencyIcon from '../../../assets/images/icons/currency.svg'
@@ -216,7 +217,7 @@ const BidsPanel = ({ data, mini }: Prop) => {
               <td className='px-4'>{index + 1}</td>
               <td className='flex items-center gap-3 py-6 hover:text-blue-700 hover:underline'>
                 <img
-                  src='https://picsum.photos/id/61/32/32'
+                  src={makeBlockie(bid.owner)}
                   alt=''
                   className='rounded-full skeleton h-8 w-8'
                 />

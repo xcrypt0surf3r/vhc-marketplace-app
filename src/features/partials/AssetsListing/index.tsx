@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import makeBlockie from 'ethereum-blockies-base64'
 import { Asset } from '../../../services/queries'
 import AssetCard from '../../elements/AssetCard'
 import { getAssetImage } from '../../../utils'
@@ -54,7 +55,7 @@ const AssetsListing = ({
           </div>
         ) : (
           <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6 lg:gap-x-8'>
-            {assets.map((asset: Asset, j) => {
+            {assets.map((asset: Asset) => {
               return (
                 <AssetCard
                   key={asset.tokenId}
@@ -62,7 +63,7 @@ const AssetsListing = ({
                   owner={asset.owner}
                   name={asset.assetData.name}
                   typology={asset.assetData.typology}
-                  avatar={`https://picsum.photos/id/${j}/31/31`}
+                  avatar={makeBlockie(asset.owner)}
                   image={getAssetImage(asset)}
                   onClick={() =>
                     navigate(`/asset-details/${asset.tokenId}`, {

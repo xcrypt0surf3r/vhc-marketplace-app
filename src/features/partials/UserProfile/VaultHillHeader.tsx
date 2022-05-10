@@ -1,4 +1,5 @@
 import { BadgeCheckIcon } from '@heroicons/react/solid'
+import { useProfileImage } from '../../../hooks'
 import { classNames } from '../../../utils'
 
 const ballColors = [
@@ -16,16 +17,16 @@ const VaultHeader = () => {
   return (
     <div className='flex flex-col items-center justify-center mb-72'>
       <img
-        src='https://picsum.photos/id/61/1700/320'
+        src={useProfileImage()}
         alt=''
-        className='rounded-3xl skeleton h-[320px] w-[1700px]'
+        className='rounded-3xl object-cover skeleton h-[320px] w-[1700px]'
       />
       <div className='flex justify-center'>
         <div className='absolute -translate-y-12'>
           <div className='flex flex-col text-center justify-center items-center gap-4'>
             <div className='flex justify-center items-center'>
               <img
-                src='https://picsum.photos/id/46/80/80'
+                src={useProfileImage()}
                 alt=''
                 className='rounded-full border-8 border-white h-[80px] w-[80px] skeleton'
               />
