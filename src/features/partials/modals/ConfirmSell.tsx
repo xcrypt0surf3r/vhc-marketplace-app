@@ -170,7 +170,7 @@ const ConfirmSell = () => {
                 {!isSellApproved && (
                   <Button
                     sizer={ButtonSizes.MEDIUM}
-                    color={ButtonColors.PRIMARY}
+                    color={ButtonColors.SECONDARY}
                     onClick={handleSellApproved}
                     isDisabled={isConfirming || !account || !buyNow}
                   >
@@ -195,7 +195,7 @@ const ConfirmSell = () => {
                 {isSellApproved && !isSellSigned && (
                   <Button
                     sizer={ButtonSizes.MEDIUM}
-                    color={ButtonColors.PRIMARY}
+                    color={ButtonColors.SECONDARY}
                     onClick={handleSignAndCreateBuyNow}
                     isDisabled={isConfirming}
                   >

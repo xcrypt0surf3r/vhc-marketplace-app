@@ -32,6 +32,8 @@ const BidCountDownTimer = ({ endDate }: { endDate?: Date }) => {
       setTimeDifference(0)
       clearTimeout(timer)
     }
+
+    return () => clearTimeout(timer)
   }, [timeDifference, endTime, presentTime])
 
   return (
