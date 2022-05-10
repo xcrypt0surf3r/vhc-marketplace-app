@@ -1,18 +1,17 @@
 import { useAtom } from 'jotai'
-import { useState } from 'react'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import { WarningIcon } from '../../../assets/images/icons/warning'
 import { useCancelBuyNowListingMutation } from '../../../services/assets'
 import { cancelBuyNowAtom } from '../../../state/atoms/listing.atoms'
-import { ErrorHandler } from '../../shared/ErrorHandler'
+import { Exception } from '../../shared/ErrorHandler'
 import { useModal } from '../../../hooks/use-modal'
 import ModalContainer from '../../shared/layout/ModalContainer'
+import ErrorModal from './ErrorModal'
 
 const CancelBuyNow = () => {
   const [cancelBuyNowMutation, { isLoading }] = useCancelBuyNowListingMutation()
   const [buyNowListing] = useAtom(cancelBuyNowAtom)
-  const [reportError, setReportError] = useState(false)
-  const { closeModal } = useModal()
+  const { openModal, closeModal } = useModal()
 
   const handleCancelBuyNow = async () => {
     if (buyNowListing?.id) {
@@ -21,12 +20,16 @@ const CancelBuyNow = () => {
           listingId: buyNowListing.id
         })
         if ('error' in cancelBuyNowResponse) {
-          setReportError(true)
+          openModal(
+            '',
+            <ErrorModal message='Error while unlisting the item.' />
+          )
           return
         }
         closeModal()
-      } catch {
-        setReportError(true)
+      } catch (exception) {
+        const exceptionObj = exception as Exception
+        openModal('', <ErrorModal message={exceptionObj.message} />)
       }
     }
   }
@@ -54,10 +57,6 @@ const CancelBuyNow = () => {
           Cancel
         </Button>
       </div>
-      <ErrorHandler
-        visible={reportError}
-        message={'Error while unlisting the item.'}
-      />
     </ModalContainer>
   )
 }

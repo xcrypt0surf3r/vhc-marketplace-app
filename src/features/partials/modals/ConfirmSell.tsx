@@ -14,18 +14,15 @@ import { getERC20TokenInfo } from '../../../utils'
 import { useCreateBuyNowMutation } from '../../../services/assets'
 import { CreateBuyNowInput } from '../../../__generated/inputs'
 import { useWeb3Provider } from '../../../hooks/web3Provider'
-import { ErrorProps, Exception } from '../../shared/ErrorHandler'
+import { Exception } from '../../shared/ErrorHandler'
 import { useModal } from '../../../hooks/use-modal'
 import SellAssetSubmitted from './SellAssetSubmitted'
 import ModalContainer, { ModalSizes } from '../../shared/layout/ModalContainer'
+import ErrorModal from './ErrorModal'
 
 const ConfirmSell = () => {
   const { account } = useWeb3React()
   const [buyNow] = useAtom(buyNowAtom)
-  const [, setReportError] = useState({
-    visible: false,
-    message: ''
-  } as ErrorProps)
   const [isSellApproved, setIsSellApproved] = useState(false)
   const [isSellSigned, setIsSellSigned] = useState(false)
   const [isConfirming, setIsConfirming] = useState(false)
@@ -52,27 +49,18 @@ const ConfirmSell = () => {
       setIsConfirming(false)
       setIsSellApproved(approved)
       if (!approved) {
-        setReportError({
-          visible: true,
-          message: 'Sale request rejected'
-        })
+        openModal('', <ErrorModal message='Sale request rejected' />)
       }
       unfreezeModal()
     } catch (exception) {
       setIsSellApproved(false)
       const exceptionObj = exception as Exception
-      setReportError({
-        visible: true,
-        message: exceptionObj.message
-      })
+      openModal('', <ErrorModal message={exceptionObj.message} />)
     }
   }
 
   const handleError = (message: string) => {
-    setReportError({
-      visible: true,
-      message
-    })
+    openModal('', <ErrorModal message={message} />)
     setIsConfirming(false)
   }
 
