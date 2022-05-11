@@ -197,7 +197,9 @@ const BidsPanel = ({ data, mini }: Prop) => {
       price: `${bid.amount.value} $${bid.amount.currency}`,
       date: formatDate(new Date(bid.createdAt)),
       action:
-        account === bid.owner && bid.status === 'ACTIVE' ? (
+        account === bid.owner &&
+        bid.status === 'ACTIVE' &&
+        !isDateElapsed(bid.activeUntil) ? (
           <button
             className='text-red-500 hover:underline'
             onClick={() => cancelBid(bid)}
