@@ -91,7 +91,7 @@ const BidsPanel = ({ data, mini }: Prop) => {
     ) : (
       <Tooltip
         message='Can no longer cancel <br> because auction has ended'
-        show={auctionEnded}
+        show={auctionEnded && !listing?.isComplete}
       >
         {children}
       </Tooltip>

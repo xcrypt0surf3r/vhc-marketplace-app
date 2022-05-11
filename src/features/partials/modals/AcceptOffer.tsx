@@ -14,6 +14,9 @@ import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import { useAcceptBidMutation } from '../../../services/bid'
 import { acceptBidOrder, approveAssetsForSwap } from '../../../services/order'
 import ModalContainer from '../../shared/layout/ModalContainer'
+import { useModal } from '../../../hooks/use-modal'
+import TransactionComplete from './TransactionComplete'
+import TransactionFailed from './TransactionFailed'
 
 export interface IBuyNow {
   [key: string]: string | number
@@ -25,6 +28,7 @@ const AcceptOffer = () => {
   const [listing] = useAtom(listingAtom)
   const [acceptBid] = useAcceptBidMutation()
   const { account, connector } = useWeb3React()
+  const { openModal } = useModal()
 
   const data: IBuyNow = {
     assetName: bid?.assetName ?? '',
@@ -71,13 +75,13 @@ const AcceptOffer = () => {
           txReceipt: JSON.stringify(txReceipt)
         })
         setIsAccepting(false)
-        // dispatch success modal
+        openModal('', <TransactionComplete />)
       }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log('error', error)
       setIsAccepting(false)
-      // dispatch error modal
+      openModal('', <TransactionFailed />)
     }
   }
   return (

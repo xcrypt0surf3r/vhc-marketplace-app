@@ -157,14 +157,16 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
       <AuctionPrice />
     ) : null
 
-  const PurchaseButton = () => {
-    const endDate =
-      asset?.activeListing?.auction?.endDate ??
-      asset?.activeListing?.buyNow?.endDate
+  // evaluate if sale ended
+  const endDate =
+    asset?.activeListing?.auction?.endDate ??
+    asset?.activeListing?.buyNow?.endDate
+  const saleEnded = isDateElapsed(endDate!)
 
+  const PurchaseButton = () => {
     return asset?.activeListing &&
       asset?.activeListing.isActive &&
-      !isDateElapsed(endDate!) ? (
+      !saleEnded ? (
       <Button
         sizer={ButtonSizes.FULL}
         color={ButtonColors.PRIMARY}
@@ -180,10 +182,6 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   }
 
   const ListUnlistButton = () => {
-    const endDate =
-      asset?.activeListing?.auction?.endDate ??
-      asset?.activeListing?.buyNow?.endDate
-
     if (!asset?.activeListing) {
       return (
         <Button
@@ -196,7 +194,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
       )
     }
 
-    if (asset?.activeListing && !isDateElapsed(endDate!)) {
+    if (asset?.activeListing && !saleEnded) {
       return (
         <Button
           sizer={ButtonSizes.FULL}
