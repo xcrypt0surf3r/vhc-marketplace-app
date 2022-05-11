@@ -38,7 +38,7 @@ const Properties = ({ data }: { data: Vland | any }) => {
   )
 
   return (
-    <div className='w-full pt-2 lg:p-6'>
+    <div className='w-full pt-2'>
       <div className='w-full bg-white rounded-3xl border'>
         <Disclosure defaultOpen={true}>
           {({ open }) => (

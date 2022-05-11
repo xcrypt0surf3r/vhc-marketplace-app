@@ -5,7 +5,13 @@ import { useAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 import makeBlockie from 'ethereum-blockies-base64'
 import { Bid } from '../../../services/queries'
-import { classNames, formatDate, getOrder, truncate } from '../../../utils'
+import {
+  classNames,
+  formatDate,
+  getOrder,
+  isDateElapsed,
+  truncate
+} from '../../../utils'
 import currencyIcon from '../../../assets/images/icons/currency.svg'
 import { bidAtom } from '../../../state/atoms/bid.atom'
 import { listingAtom } from '../../../state/atoms/listing.atoms'
@@ -13,6 +19,7 @@ import SortBy, { OrderProps } from '../../shared/SortBy'
 import { useModal } from '../../../hooks/use-modal'
 import CancelBid from '../modals/CancelBid'
 import AcceptOffer from '../modals/AcceptOffer'
+import Tooltip from '../../shared/Tooltip'
 
 type Prop = {
   data: Bid[]
@@ -72,6 +79,25 @@ const BidsPanel = ({ data, mini }: Prop) => {
     openModal('Accept Offer', <AcceptOffer />)
   }
 
+  const ActionHeading = ({ children }: { children: string }) => {
+    const auctionEnded = isDateElapsed(list[0].activeUntil)
+    return account === listing?.makerAddress ? (
+      <Tooltip
+        message='Cannot accept until <br> auction has ended'
+        show={!auctionEnded}
+      >
+        {children}
+      </Tooltip>
+    ) : (
+      <Tooltip
+        message='Can no longer cancel <br> because auction has ended'
+        show={auctionEnded}
+      >
+        {children}
+      </Tooltip>
+    )
+  }
+
   const FullPanel = () => {
     const bids = list?.map((bid) => ({
       assetName: bid.assetName,
@@ -81,7 +107,7 @@ const BidsPanel = ({ data, mini }: Prop) => {
       action:
         bid.owner === account && bid.status === 'ACTIVE' ? (
           <button
-            className='text-red-500 hover:cursor-pointer hover:underline'
+            className='text-red-500 hover:underline'
             onClick={() => cancelBid(bid)}
           >
             Cancel Bid
@@ -117,7 +143,13 @@ const BidsPanel = ({ data, mini }: Prop) => {
         </thead>
         <tbody>
           {bids.map((bid, index) => (
-            <tr key={index} className='border-b border-gray-300'>
+            <tr
+              key={index}
+              className={classNames(
+                'border-gray-300',
+                bids.length - 1 !== index ? 'border-b' : ''
+              )}
+            >
               <td className='px-4'>{index + 1}</td>
               <td className='py-6 pr-4'>
                 <span
@@ -167,14 +199,16 @@ const BidsPanel = ({ data, mini }: Prop) => {
       action:
         account === bid.owner && bid.status === 'ACTIVE' ? (
           <button
-            className='text-red-500 hover:cursor-pointer hover:underline'
+            className='text-red-500 hover:underline'
             onClick={() => cancelBid(bid)}
           >
             Cancel
           </button>
-        ) : account === listing?.makerAddress && bid.status === 'ACTIVE' ? (
+        ) : account === listing?.makerAddress &&
+          bid.status === 'ACTIVE' &&
+          isDateElapsed(bid.activeUntil) ? (
           <button
-            className='text-purple-700 hover:cursor-pointer hover:underline'
+            className='text-purple-700 hover:underline'
             onClick={() => acceptBid(bid)}
           >
             Accept
@@ -197,13 +231,15 @@ const BidsPanel = ({ data, mini }: Prop) => {
                   value === 'status' ? 'w-[93px]' : '',
                   value === 'owner' ? 'w-[200px]' : '',
                   value === 'price' ? 'w-[140px]' : '',
-                  value === 'action' ? 'w-[80px] pr-0' : ''
+                  value === 'action' ? 'w-[80px] pr-5' : ''
                 )}
               >
                 {value === 'price' || value === 'date' ? (
                   <SortBy value={value} order={order} sorter={setOrder}>
                     {_.startCase(value)}
                   </SortBy>
+                ) : value === 'action' ? (
+                  <ActionHeading>{_.startCase(value)}</ActionHeading>
                 ) : (
                   _.startCase(value)
                 )}
@@ -213,7 +249,13 @@ const BidsPanel = ({ data, mini }: Prop) => {
         </thead>
         <tbody>
           {bids.map((bid, index) => (
-            <tr key={index} className='border-b border-gray-300'>
+            <tr
+              key={index}
+              className={classNames(
+                'border-gray-300',
+                bids.length - 1 !== index ? 'border-b' : ''
+              )}
+            >
               <td className='px-4'>{index + 1}</td>
               <td className='flex items-center gap-3 py-6 hover:text-blue-700 hover:underline'>
                 <img

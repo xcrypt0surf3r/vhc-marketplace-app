@@ -14,7 +14,7 @@ type Panels = {
 
 const AssetPanels = ({ panels }: { panels: Panels; loading?: boolean }) => {
   return (
-    <div className='lg:p-6'>
+    <div>
       <Tab.Group>
         <Tab.List className='flex gap-10 border-gray-200 border-b'>
           {Object.keys(panels).map((panel) => (
