@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import makeBlockie from 'ethereum-blockies-base64'
 import currencyIcon from '../../../assets/images/icons/currency.svg'
 import BidCountDownTimer from '../../../pages/asset-details/BidCountdownTimer'
-import { AssetWithListing, Bid } from '../../../services/queries'
+import { AssetWithListing, Bid, SalesHistory } from '../../../services/queries'
 import {
   cancelBuyNowAtom,
   listingAtom,
@@ -14,7 +14,7 @@ import {
   classNames,
   isDateElapsed,
   styleTypology,
-  getAssetImage,
+  getImage,
   truncate,
   currencyExchange
 } from '../../../utils'
@@ -43,7 +43,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
       setListed({
         ...asset?.activeListing,
         assetName: asset?.assetData.name,
-        assetImage: getAssetImage(asset!)
+        assetImage: getImage(asset!)
       } as ListingExtended)
     }
 
@@ -216,100 +216,92 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
     <>
       {asset ? (
         <div className='mx-auto pt-10 pb-24 lg:pt-0 md:px-6 lg:px-0'>
-          <div className='grid xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
-            <div className='xs:mb-2 lg:p-6 bg-white-100 flex flex-col'>
+          <div className='grid lg:grid-cols-2 gap-10'>
+            <div>
               <img
-                src={getAssetImage(asset)}
+                src={getImage(asset)}
                 alt={asset.assetData.name}
                 className='object-center object-cover rounded-lg w-full h-full min-h-[600px]'
               />
             </div>
-            <div className='lg:p-6 bg-white-100 flex flex-col'>
-              <div className='group w-full rounded-3xl overflow-hidden sm:relative sm:aspect-none h-full border p-4'>
-                <div className='pt-6 px-6 items-end'>
-                  <div className='font-normal text-sm tracking-tight mb-3 text-left'>
-                    <div>
-                      <h2 className='text-3xl font-medium inline-block font-prototype'>
-                        {asset.assetData.name}
-                      </h2>
-                    </div>
 
-                    <div className='mt-4 mb-2 flex gap-3 text-xs'>
-                      <span
-                        className={classNames(
-                          styleTypology(asset.assetData.typology),
-                          'px-2 py-1 rounded-md'
-                        )}
-                      >
-                        {asset.assetData.typology}
+            <div className='btn-primary-gradient p-[1px] rounded-3xl'>
+              <div className='bg-white rounded-3xl h-full overflow-hidden p-10'>
+                <div className='font-normal mb-3'>
+                  <h2 className='text-3xl font-medium inline-block font-prototype'>
+                    {asset.assetData.name}
+                  </h2>
+
+                  <div className='mt-4 mb-2 flex gap-3 text-xs'>
+                    <span
+                      className={classNames(
+                        styleTypology(asset.assetData.typology),
+                        'px-2 py-1 rounded-md'
+                      )}
+                    >
+                      {asset.assetData.typology}
+                    </span>
+                    <span className='district px-2 py-1 rounded-md'>
+                      {asset.assetData.district}
+                    </span>
+                    <span className='district px-2 py-1 rounded-md'>
+                      {asset.assetData.island}
+                    </span>
+                  </div>
+                </div>
+                <div className='w-full overflow-hidden h-50 lg:h-66 xl:h-74 mt-8'>
+                  <div className='flex items-center gap-4'>
+                    <img
+                      src={makeBlockie(asset?.owner ?? '')}
+                      alt={asset.owner}
+                      className='w-9 h-9 object-center object-cover rounded-full inline-block skeleton'
+                    />
+                    <div className='flex flex-col'>
+                      <span className='text-[#505780] text-xs leading-6'>
+                        Owner
                       </span>
-                      <span className='district px-2 py-1 rounded-md'>
-                        {asset.assetData.district}
-                      </span>
-                      <span className='district px-2 py-1 rounded-md'>
-                        {asset.assetData.island}
-                      </span>
+
+                      <h3 className='font-medium text-black text-sm'>
+                        <a href={`/asset-details/${asset.tokenId}`}>
+                          {truncate(asset.owner, 7)}
+                        </a>
+                      </h3>
                     </div>
                   </div>
-                  <div className='w-full overflow-hidden h-50 lg:h-66 xl:h-74 mt-8'>
-                    <div className='flex items-center gap-4'>
-                      <img
-                        src={makeBlockie(asset?.owner ?? '')}
-                        alt={asset.owner}
-                        className='w-9 h-9 object-center object-cover rounded-full inline-block skeleton'
+                  <p className='font-sm mt-4 mb-6 line-clamp-4 tracking-wide'>
+                    {asset.assetData.description}
+                  </p>
+                  {asset?.activeListing?.type === 'AUCTION' &&
+                    asset.activeListing.auction && (
+                      <BidCountDownTimer
+                        endDate={new Date(asset.activeListing.auction.endDate)}
                       />
-                      <div className='flex flex-col'>
-                        <span className='text-[#505780] text-xs leading-6'>
-                          Owner
-                        </span>
+                    )}
+                  <div className='flex justify-between'>
+                    <SalePrice />
+                    <HighestBidPrice />
+                  </div>
 
-                        <h3 className='font-medium text-black text-sm'>
-                          <a href={`/asset-details/${asset.tokenId}`}>
-                            {truncate(asset.owner, 7)}
-                          </a>
-                        </h3>
-                      </div>
-                    </div>
-                    <p className='font-sm mt-4 mb-6 line-clamp-4 tracking-wide'>
-                      {asset.assetData.description}
-                    </p>
-                    {asset?.activeListing?.type === 'AUCTION' &&
-                      asset.activeListing.auction && (
-                        <BidCountDownTimer
-                          endDate={
-                            new Date(asset.activeListing.auction.endDate)
-                          }
-                        />
-                      )}
-                    <div className='flex justify-between'>
-                      <SalePrice />
-                      <HighestBidPrice />
-                    </div>
-
-                    <div className='flex pt-10 justify-between gap-4 h-32'>
-                      {isOwner ? <ListUnlistButton /> : <PurchaseButton />}
-                      <Button
-                        sizer={ButtonSizes.FULL}
-                        color={ButtonColors.OUTLINE}
-                      >
-                        Share
-                      </Button>
-                    </div>
+                  <div className='flex pt-10 justify-between gap-4 h-32'>
+                    {isOwner ? <ListUnlistButton /> : <PurchaseButton />}
+                    <Button
+                      sizer={ButtonSizes.FULL}
+                      color={ButtonColors.OUTLINE}
+                    >
+                      Share
+                    </Button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
           <div className='grid xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
-            <Properties
-              properties={asset.assetData}
-              unlistProps={['name', 'description', 'x', 'y']}
-              mergeProps={['x', 'y']}
-            />
+            <Properties data={asset.assetData} />
             <AssetPanels
               panels={{
                 bids: (asset?.activeListing?.auction?.bids as Bid[]) ?? [],
-                salesHistory: [],
+                salesHistory: (asset?.salesHistory as SalesHistory[]) ?? [],
                 owners: []
               }}
             />

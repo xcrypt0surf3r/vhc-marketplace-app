@@ -1,82 +1,41 @@
 import { Disclosure } from '@headlessui/react'
+import * as _ from 'lodash'
 import { ChevronUpIcon } from '@heroicons/react/solid'
-import {
-  cluster,
-  district,
-  island,
-  typology,
-  vlandid,
-  xycordinate
-} from '../../../assets'
-import { getVlandImage } from '../../../utils'
-import { District, Typology } from '../../../__generated/enums'
+import { Vland } from '../../../services/queries'
+import { getImage } from '../../../utils'
 
-type Props = {
-  properties: {
-    [key: string]: string | number | undefined | District | Typology
-  }
-  unlistProps?: string[]
-  mergeProps?: string[]
-}
-
-const Properties = ({ properties, unlistProps, mergeProps }: Props) => {
-  const propIcons: string[] = [
-    vlandid,
-    xycordinate,
-    cluster,
+const Properties = ({ data }: { data: Vland | any }) => {
+  const properties = (({
+    vlandId,
+    typology,
     district,
     island,
-    typology
-  ]
+    cluster,
+    x,
+    y
+  }) =>
+    ({
+      vlandId,
+      typology,
+      district,
+      island,
+      cluster,
+      'x,y': x && y ? `${x}, ${y}` : undefined
+    } as { [key: string]: string | number }))(data)
 
-  const renderProperties = (
-    propertyKey: string,
-    index: string,
-    imageName: string,
-    values: string | number | undefined
-  ) => {
-    return (
-      <div
-        className='flex flex-row items-center p-2 bg-[#F7FAFD] border rounded-lg'
-        key={index}
-      >
-        {imageName !== '' ? (
-          <div className='bg-[#E4ECF7] p-2'>
-            <img
-              src={imageName}
-              alt={propertyKey}
-              className='w-8 h-8 object-center object-cover inline-block'
-            />
-          </div>
-        ) : null}
-
-        <div className='flex flex-col pl-2'>
-          <span className='capitalize p-2 font-medium text-[#505780] text-left text-xs'>
-            <div className=''>
-              {propertyKey.replace(/([A-Z]+)*([A-Z][a-z])/g, '$1 $2')}
-            </div>
-          </span>
-          <h3 className='pl-2 font-medium text-black text-left text-sm'>
-            <div className=''>{values}</div>
-          </h3>
+  const Property = ({ property }: { property: string }) => (
+    <div className='p-2 bg-[#F7FAFD] border rounded-lg'>
+      <div className='flex gap-3 items-center'>
+        <div className='bg-[#E4ECF7] p-2 w-11 h-11 object-center object-cover '>
+          <img src={getImage(property)} alt={property} />
+        </div>
+        <div className='flex flex-col gap-2'>
+          <span>{_.startCase(property)}</span>
+          <span className='text-black'> {properties[property]}</span>
         </div>
       </div>
-    )
-  }
-
-  const renderMergedProperties = (propertyKey: string) => {
-    const imageName: string = getVlandImage(propIcons, propertyKey, '')
-    const commaSeparatedValues: (string | number | undefined)[] = []
-    mergeProps?.forEach((key, index) => {
-      if (properties[key]) commaSeparatedValues[index] = properties[key]
-    })
-    return renderProperties(
-      mergeProps?.join(', ') ?? '',
-      '0',
-      imageName,
-      commaSeparatedValues.join(', ')
-    )
-  }
+    </div>
+  )
 
   return (
     <div className='w-full pt-2 lg:p-6'>
@@ -94,29 +53,12 @@ const Properties = ({ properties, unlistProps, mergeProps }: Props) => {
                   } w-5 h-5 text-white-500`}
                 />
               </Disclosure.Button>
-              <Disclosure.Panel className='grid grid-cols-3 gap-6 px-8 py-8 text-sm text-gray-500 border-t'>
-                {Object.keys(properties).map(
-                  (propertyKey: string, index: any) => {
-                    if (unlistProps?.includes(propertyKey)) {
-                      return null
-                    }
-                    // TODO: remove once the server is sorted
-                    const imageName: string = getVlandImage(
-                      propIcons,
-                      propertyKey,
-                      ''
-                    )
-
-                    return renderProperties(
-                      propertyKey,
-                      index,
-                      imageName,
-                      properties[propertyKey]
-                    )
-                  }
-                )}
-
-                {mergeProps && renderMergedProperties(mergeProps[0])}
+              <Disclosure.Panel className='grid grid-cols-2 lg:grid-cols-3 gap-6 px-8 py-8 text-sm text-gray-500 border-t'>
+                {Object.keys(properties).map((key, index) => {
+                  return (
+                    properties[key] && <Property key={index} property={key} />
+                  )
+                })}
               </Disclosure.Panel>
             </>
           )}

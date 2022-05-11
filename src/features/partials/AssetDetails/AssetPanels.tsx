@@ -1,9 +1,10 @@
 import { Tab } from '@headlessui/react'
 import * as _ from 'lodash'
-import { Bid } from '../../../services/queries'
+import { Bid, SalesHistory } from '../../../services/queries'
 import { classNames } from '../../../utils'
 import BidsPanel from '../UserProfile/BidPanel'
 import PanelPlaceHolder from '../UserProfile/PanelPlaceHolder'
+import SalesHistoryPanel from './SalesHistoryPanel'
 
 type Panels = {
   bids?: readonly Bid[]
@@ -40,6 +41,10 @@ const AssetPanels = ({ panels }: { panels: Panels; loading?: boolean }) => {
                 <PanelPlaceHolder panelName={panelName} />
               ) : panelName === 'bids' ? (
                 <BidsPanel data={panels.bids as Bid[]} mini />
+              ) : panelName === 'salesHistory' ? (
+                <SalesHistoryPanel
+                  data={panels.salesHistory as SalesHistory[]}
+                />
               ) : (
                 <PanelPlaceHolder panelName={panelName} />
               )}

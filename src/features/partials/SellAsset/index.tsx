@@ -10,7 +10,7 @@ import { useAtom } from 'jotai'
 import { useWeb3React } from '@web3-react/core'
 import { Form, Formik } from 'formik'
 import { AssetWithListing } from '../../../services/queries'
-import { classNames, getAssetImage } from '../../../utils'
+import { classNames, getImage } from '../../../utils'
 import { Button, ButtonSizes, ButtonColors } from '../../shared/Button'
 import { Calendar } from '../../shared/DatePicker'
 import { Currency as CurrencyType } from '../../../__generated/enums'
@@ -120,7 +120,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
         startDate: new Date().toUTCString(),
         price,
         assetName: asset?.assetData.name,
-        assetImage: getAssetImage(asset)
+        assetImage: getImage(asset)
       })
       openModal('Confirm sell', <ConfirmSell />)
     }
@@ -174,7 +174,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
           <div className='grid xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
             <div className='xs:mb-2 lg:p-6 bg-white-100 flex flex-col'>
               <img
-                src={getAssetImage(asset)}
+                src={getImage(asset)}
                 alt={asset?.assetData.name}
                 className='object-center object-cover rounded-lg w-full h-full min-h-[600px] skeleton'
               />
