@@ -1,5 +1,5 @@
 import { useWeb3React } from '@web3-react/core'
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { useEffect, useState } from 'react'

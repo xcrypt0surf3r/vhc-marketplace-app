@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import makeBlockie from 'ethereum-blockies-base64'
 import { Asset } from '../../../services/queries'
 import AssetCard from '../../elements/AssetCard'
-import { getAssetImage } from '../../../utils'
+import { getImage } from '../../../utils'
 
 import {
   AssetCardSkeleton,
@@ -64,7 +64,7 @@ const AssetsListing = ({
                   name={asset.assetData.name}
                   typology={asset.assetData.typology}
                   avatar={makeBlockie(asset.owner)}
-                  image={getAssetImage(asset)}
+                  image={getImage(asset)}
                   onClick={() =>
                     navigate(`/asset-details/${asset.tokenId}`, {
                       replace: true

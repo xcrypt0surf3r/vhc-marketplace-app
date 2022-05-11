@@ -38,7 +38,7 @@ const AssetCard = ({
           width={276}
           src={image}
           alt={name}
-          className='w-full object-center object-contain rounded-[.75rem]'
+          className='w-full object-center object-contain rounded-[.75rem] skeleton'
         />
       </div>
       {/* Card title */}

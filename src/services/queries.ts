@@ -10,7 +10,8 @@ import {
   query$,
   user$$,
   vland$,
-  listing$
+  listing$,
+  salesHistory$$
 } from '../__generated/fetchers'
 
 // prettier-ignore
@@ -41,6 +42,8 @@ export const LISTING_FETCHER = listing$$
     )
   )
 
+export const SALESHISTORY_FETCHER = salesHistory$$.price(price$$)
+
 // prettier-ignore
 export const ASSET_FETCHER = asset$
 .tokenId
@@ -50,6 +53,7 @@ export const ASSET_FETCHER = asset$
 .creator
 .owner
 .assetData(VLAND_FETCHER)
+.salesHistory(SALESHISTORY_FETCHER)
 
 export const BID_QUERY = query$.asset(asset$.listings(listing$.id))
 
@@ -59,7 +63,10 @@ export const USER_QUERY = query$.user(USER_FETCHER)
 
 export const ASSETS_QUERY = query$.assets(ASSET_FETCHER)
 
-export const ASSET_LIST_FETCHER = ASSET_FETCHER.activeListing(LISTING_FETCHER)
+export const ASSET_LIST_FETCHER =
+  ASSET_FETCHER.activeListing(LISTING_FETCHER).salesHistory(
+    SALESHISTORY_FETCHER
+  )
 
 export const ASSET_LISTING_QUERY = query$.asset(ASSET_LIST_FETCHER)
 
@@ -82,3 +89,5 @@ export type Vland = ModelType<typeof VLAND_FETCHER>
 export type User = ModelType<typeof USER_QUERY>
 
 export type Bid = ModelType<typeof BID_FETCHER>
+
+export type SalesHistory = ModelType<typeof SALESHISTORY_FETCHER>
