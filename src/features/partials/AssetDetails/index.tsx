@@ -32,7 +32,6 @@ import { Currency } from '../../../__generated/enums'
 const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   const [usdPrice, setUsdPrice] = useState<number>()
   const [, setListing] = useAtom(listingAtom)
-  const [listed, setListed] = useState<ListingExtended>()
   const isOwner = useIsOwner(asset?.owner)
   const navigate = useNavigate()
   const [, setCancelBuyNow] = useAtom(cancelBuyNowAtom)
@@ -40,7 +39,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
 
   useEffect(() => {
     if (asset) {
-      setListed({
+      setListing({
         ...asset?.activeListing,
         assetName: asset?.assetData.name,
         assetImage: getImage(asset!)
@@ -64,7 +63,6 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   }, [asset, setListing])
 
   const handleClick = () => {
-    setListing(listed)
     if (asset?.activeListing?.type === 'BUY_NOW') {
       openModal('Buy Now', <BuyNow />)
     }
@@ -216,12 +214,12 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
     <>
       {asset ? (
         <div className='mx-auto pt-10 pb-24 lg:pt-0 md:px-6 lg:px-0'>
-          <div className='grid lg:grid-cols-2 gap-10'>
+          <div className='grid lg:grid-cols-2 gap-10 mb-10'>
             <div>
               <img
                 src={getImage(asset)}
                 alt={asset.assetData.name}
-                className='object-center object-cover rounded-lg w-full h-full min-h-[600px]'
+                className='object-center object-cover rounded-3xl w-full h-full min-h-[600px] skeleton'
               />
             </div>
 
@@ -296,7 +294,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
             </div>
           </div>
 
-          <div className='grid xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-10'>
             <Properties data={asset.assetData} />
             <AssetPanels
               panels={{
