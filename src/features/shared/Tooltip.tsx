@@ -9,8 +9,8 @@ type Prop = {
 
 const Tooltip = ({ children, message, show = true }: Prop) => {
   return (
-    <span className='flex flex-col gap-2 items-center'>
-      <span className='flex gap-2 items-center'>
+    <>
+      <span className='flex gap-2 items-center justify-start'>
         {children}
         {show && (
           <button data-tip={message} data-multiline>
@@ -19,7 +19,7 @@ const Tooltip = ({ children, message, show = true }: Prop) => {
         )}
       </span>
       <ReactTooltip />
-    </span>
+    </>
   )
 }
 

@@ -44,7 +44,7 @@ const SalesHistoryPanel = ({ data }: { data: SalesHistory[] }) => {
   }, [order, data])
 
   const salesHistory = history.map((sale) => ({
-    name: sale.maker,
+    name: sale.taker,
     price: `${sale.price.value} $${sale.price.currency}`,
     datePurchased: formatDate(new Date(sale.dateOfSale))
   }))

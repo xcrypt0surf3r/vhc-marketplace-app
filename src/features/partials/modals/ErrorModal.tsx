@@ -8,7 +8,7 @@ type Prop = {
 }
 
 const ErrorModal = ({ message }: Prop) => {
-  const { closeModal } = useModal()
+  const { openPreviousModal } = useModal()
 
   return (
     <ModalContainer>
@@ -23,7 +23,7 @@ const ErrorModal = ({ message }: Prop) => {
         <Button
           color={ButtonColors.SECONDARY}
           sizer={ButtonSizes.SMALL}
-          onClick={() => closeModal()}
+          onClick={() => openPreviousModal()}
         >
           Retry
         </Button>

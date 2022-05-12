@@ -1,5 +1,6 @@
 import { useAtom } from 'jotai'
 import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { ethers } from 'ethers'
 import * as _ from 'lodash'
 import {
@@ -17,18 +18,22 @@ import ModalContainer from '../../shared/layout/ModalContainer'
 import { useModal } from '../../../hooks/use-modal'
 import TransactionComplete from './TransactionComplete'
 import TransactionFailed from './TransactionFailed'
+import { assetApi } from '../../../services/assets'
+import { useAppDispatch } from '../../../state'
 
 export interface IBuyNow {
   [key: string]: string | number
 }
 
 const AcceptOffer = () => {
+  const params = useParams()
   const [isAccepting, setIsAccepting] = useState(false)
   const [bid] = useAtom(bidAtom)
   const [listing] = useAtom(listingAtom)
   const [acceptBid] = useAcceptBidMutation()
   const { account, connector } = useWeb3React()
   const { openModal } = useModal()
+  const dispatch = useAppDispatch()
 
   const data: IBuyNow = {
     assetName: bid?.assetName ?? '',
@@ -73,15 +78,23 @@ const AcceptOffer = () => {
           listingId: listing?.id,
           txHash: txReceipt.transactionHash,
           txReceipt: JSON.stringify(txReceipt)
-        })
+        }).unwrap()
         setIsAccepting(false)
         openModal('', <TransactionComplete />)
+        if (params.tokenId) {
+          await dispatch(
+            assetApi.endpoints.getAssetByTokenId.initiate({
+              tokenId: parseFloat(params.tokenId)
+            })
+          )
+        }
       }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log('error', error)
       setIsAccepting(false)
-      openModal('', <TransactionFailed />)
+      const message = typeof error === 'string' ? error : undefined
+      openModal('', <TransactionFailed error={message} />)
     }
   }
   return (

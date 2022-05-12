@@ -3,8 +3,8 @@ import { useModal } from '../../../hooks/use-modal'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import ModalContainer from '../../shared/layout/ModalContainer'
 
-const BuyBidError = () => {
-  const { closeModal } = useModal()
+const BuyBidError = ({ error }: { error?: string }) => {
+  const { openPreviousModal } = useModal()
 
   return (
     <ModalContainer>
@@ -14,15 +14,15 @@ const BuyBidError = () => {
         </div>
         <h1 className='text-2xl my-4'>Error</h1>
         <p className='text-gray-500 text-center'>
-          There was an error submitting your bid. Please check your wallet
-          details and try again.
+          {error ??
+            'There was an error submitting your bid. Please check your wallet details and try again.'}
         </p>
       </div>
       <div className='flex justify-center'>
         <Button
           color={ButtonColors.SECONDARY}
           sizer={ButtonSizes.SMALL}
-          onClick={() => closeModal()}
+          onClick={() => openPreviousModal()}
         >
           Retry
         </Button>

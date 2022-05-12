@@ -36,6 +36,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   const navigate = useNavigate()
   const [, setCancelBuyNow] = useAtom(cancelBuyNowAtom)
   const { openModal } = useModal()
+  const [, setTimerComplete] = useState(false)
 
   useEffect(() => {
     if (asset) {
@@ -61,6 +62,12 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
       }
     })()
   }, [asset, setListing])
+
+  // evaluate if sale ended
+  const endDate =
+    asset?.activeListing?.auction?.endDate ??
+    asset?.activeListing?.buyNow?.endDate
+  const saleEnded = isDateElapsed(endDate!)
 
   const handleClick = () => {
     if (asset?.activeListing?.type === 'BUY_NOW') {
@@ -156,12 +163,6 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
     ) : asset?.activeListing?.type === 'AUCTION' ? (
       <AuctionPrice />
     ) : null
-
-  // evaluate if sale ended
-  const endDate =
-    asset?.activeListing?.auction?.endDate ??
-    asset?.activeListing?.buyNow?.endDate
-  const saleEnded = isDateElapsed(endDate!)
 
   const PurchaseButton = () => {
     return asset?.activeListing &&
@@ -268,15 +269,19 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                     {asset.assetData.description}
                   </p>
                   {asset?.activeListing?.type === 'AUCTION' &&
-                    asset.activeListing.auction && (
+                    asset.activeListing.auction &&
+                    !asset.activeListing.isComplete && (
                       <BidCountDownTimer
                         endDate={new Date(asset.activeListing.auction.endDate)}
+                        setTimerComplete={setTimerComplete}
                       />
                     )}
-                  <div className='flex justify-between'>
-                    <SalePrice />
-                    <HighestBidPrice />
-                  </div>
+                  {!asset?.activeListing?.isComplete && (
+                    <div className='flex justify-between'>
+                      <SalePrice />
+                      <HighestBidPrice />
+                    </div>
+                  )}
 
                   <div className='flex pt-10 justify-between gap-4 h-32'>
                     {isOwner ? <ListUnlistButton /> : <PurchaseButton />}
