@@ -49,7 +49,7 @@ const BuyNow = () => {
         <input
           type='radio'
           checked={accept}
-          onClick={() => {
+          onChange={() => {
             setAccept(!accept)
           }}
           className='h-5 w-5'

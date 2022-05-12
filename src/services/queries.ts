@@ -17,13 +17,10 @@ import {
 // prettier-ignore
 export const VLAND_FETCHER = vland$
   .vlandId
-  .name
-  .description
   .typology
   .district
   .island
-  .x
-  .y
+  .coordinates
   .cluster
 
 export const BID_FETCHER = bid$$.amount(price$$)
@@ -46,14 +43,18 @@ export const SALESHISTORY_FETCHER = salesHistory$$.price(price$$)
 
 // prettier-ignore
 export const ASSET_FETCHER = asset$
-.tokenId
-.activeListing(LISTING_FETCHER)
-.tokenAddress
-.tokenUri
-.creator
-.owner
-.assetData(VLAND_FETCHER)
-.salesHistory(SALESHISTORY_FETCHER)
+  .name
+  .description
+  .tokenId
+  .tokenAddress
+  .tokenUri
+  .creator
+  .owner
+  .imageUrl
+  .animationUrl
+  .activeListing(LISTING_FETCHER)
+  .assetData(VLAND_FETCHER)
+  .salesHistory(SALESHISTORY_FETCHER)
 
 export const BID_QUERY = query$.asset(asset$.listings(listing$.id))
 

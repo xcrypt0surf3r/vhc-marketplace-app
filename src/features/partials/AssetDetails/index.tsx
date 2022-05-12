@@ -14,7 +14,6 @@ import {
   classNames,
   isDateElapsed,
   styleTypology,
-  getImage,
   truncate,
   currencyExchange
 } from '../../../utils'
@@ -29,6 +28,7 @@ import PlaceBid from '../modals/PlaceBid'
 import CancelBuyNow from '../modals/CancelBuyNow'
 import { Currency } from '../../../__generated/enums'
 import ShareAsset from '../modals/ShareAsset'
+import { AssetImage } from '../../shared/AssetImage'
 
 const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   const [usdPrice, setUsdPrice] = useState<number>()
@@ -43,8 +43,8 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
     if (asset) {
       setListing({
         ...asset?.activeListing,
-        assetName: asset?.assetData.name,
-        assetImage: getImage(asset!)
+        assetName: asset?.name,
+        assetImage: asset?.imageUrl
       } as ListingExtended)
     }
 
@@ -219,19 +219,16 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
       {asset ? (
         <div className='mx-auto pt-10 pb-24 lg:pt-0 md:px-6 lg:px-0'>
           <div className='grid lg:grid-cols-2 gap-10 mb-10'>
-            <div>
-              <img
-                src={getImage(asset)}
-                alt={asset.assetData.name}
-                className='object-center object-cover rounded-3xl w-full h-full min-h-[600px] skeleton'
-              />
-            </div>
+            <AssetImage
+              asset={asset}
+              className='object-center object-cover rounded-3xl w-full h-full min-h-[600px] skeleton'
+            />
 
             <div className='btn-primary-gradient p-[1px] rounded-3xl'>
               <div className='bg-white rounded-3xl h-full overflow-hidden p-10'>
                 <div className='font-normal mb-3'>
                   <h2 className='text-3xl font-medium inline-block font-prototype'>
-                    {asset.assetData.name}
+                    {asset.name}
                   </h2>
 
                   <div className='mt-4 mb-2 flex gap-3 text-xs'>
@@ -271,7 +268,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                     </div>
                   </div>
                   <p className='font-sm mt-4 mb-6 line-clamp-4 tracking-wide'>
-                    {asset.assetData.description}
+                    {asset.description}
                   </p>
                   {asset?.activeListing?.type === 'AUCTION' &&
                     asset.activeListing.auction &&

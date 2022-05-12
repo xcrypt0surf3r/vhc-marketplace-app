@@ -2,7 +2,7 @@ import { Disclosure } from '@headlessui/react'
 import * as _ from 'lodash'
 import { ChevronUpIcon } from '@heroicons/react/solid'
 import { Vland } from '../../../services/queries'
-import { getImage } from '../../../utils'
+import { getPropertyImage } from '../../../utils'
 
 const Properties = ({ data }: { data: Vland | any }) => {
   const properties = (({
@@ -11,8 +11,7 @@ const Properties = ({ data }: { data: Vland | any }) => {
     district,
     island,
     cluster,
-    x,
-    y
+    coordinates
   }) =>
     ({
       vlandId,
@@ -20,14 +19,14 @@ const Properties = ({ data }: { data: Vland | any }) => {
       district,
       island,
       cluster,
-      'x,y': x && y ? `${x}, ${y}` : undefined
+      coordinates
     } as { [key: string]: string | number }))(data)
 
   const Property = ({ property }: { property: string }) => (
     <div className='p-2 bg-[#F7FAFD] border rounded-lg'>
       <div className='flex gap-3 items-center'>
         <div className='bg-[#E4ECF7] p-2 w-11 h-11 object-center object-cover '>
-          <img src={getImage(property)} alt={property} />
+          <img src={getPropertyImage(property)} alt={property} />
         </div>
         <div className='flex flex-col gap-2'>
           <span>{_.startCase(property)}</span>
