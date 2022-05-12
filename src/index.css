@@ -74,11 +74,19 @@ h2 {
   }
 
   .ACTIVE {
-    @apply bg-green-200 text-gray-700 px-2 text-sm rounded-full;
+    @apply bg-green-200 text-gray-700 px-2 py-1 text-sm rounded-full;
   }
 
   .CANCELLED {
-    @apply bg-red-200 text-gray-700 px-2 text-sm rounded-full;
+    @apply bg-red-200 text-gray-700 px-2 py-1 text-sm rounded-full;
+  }
+
+  .ACCEPTED {
+    @apply bg-blue-200 text-gray-700 px-2 py-1 text-sm rounded-full;
+  }
+
+  .DECLINED {
+    @apply bg-yellow-200 text-gray-700 px-2 py-1 text-sm rounded-full;
   }
 
   .magnify {

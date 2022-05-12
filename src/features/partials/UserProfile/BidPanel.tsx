@@ -36,6 +36,9 @@ const BidsPanel = ({ data, mini }: Prop) => {
 
   const [listing] = useAtom(listingAtom)
 
+  // evaluate if auction ended
+  const auctionEnded = isDateElapsed(data[0].activeUntil)
+
   useEffect(() => {
     ;(() => {
       if (order.by === 'price') {
@@ -79,9 +82,14 @@ const BidsPanel = ({ data, mini }: Prop) => {
     openModal('Accept Offer', <AcceptOffer />)
   }
 
-  const ActionHeading = ({ children }: { children: string }) => {
-    const auctionEnded = isDateElapsed(list[0].activeUntil)
-    return account === listing?.makerAddress ? (
+  const ActionHeading = ({
+    children,
+    cancelOnly
+  }: {
+    children: string
+    cancelOnly?: boolean
+  }) => {
+    return account === listing?.makerAddress && !cancelOnly ? (
       <Tooltip
         message='Cannot accept until <br> auction has ended'
         show={!auctionEnded}
@@ -102,10 +110,10 @@ const BidsPanel = ({ data, mini }: Prop) => {
     const bids = list?.map((bid) => ({
       assetName: bid.assetName,
       price: `${bid.amount.value} $${bid.amount.currency}`,
-      seller: getOrder(bid)?.maker ?? '',
+      seller: getOrder(bid)?.taker ?? '',
       activeUntil: formatDate(new Date(bid.activeUntil)),
       action:
-        bid.owner === account && bid.status === 'ACTIVE' ? (
+        bid.owner === account && bid.status === 'ACTIVE' && !auctionEnded ? (
           <button
             className='text-red-500 hover:underline'
             onClick={() => cancelBid(bid)}
@@ -131,9 +139,11 @@ const BidsPanel = ({ data, mini }: Prop) => {
                 )}
               >
                 {value === 'price' || value === 'activeUntil' ? (
-                  <SortBy value={value} order={order} sorter={setOrder}>
+                  <SortBy value={'date'} order={order} sorter={setOrder}>
                     {_.startCase(value)}
                   </SortBy>
+                ) : value === 'action' ? (
+                  <ActionHeading cancelOnly>{_.startCase(value)}</ActionHeading>
                 ) : (
                   _.startCase(value)
                 )}
