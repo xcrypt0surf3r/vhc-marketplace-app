@@ -2,17 +2,18 @@
 import { CheckCircleIcon } from '@heroicons/react/solid'
 import {
   SwappableAssetV4,
-  UserFacingERC20AssetDataSerializedV4,
-  UserFacingERC721AssetDataSerializedV4
+  UserFacingERC20AssetDataSerializedV4
 } from '@traderxyz/nft-swap-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { ethers } from 'ethers'
+import { parseUnits } from 'ethers/lib/utils'
 import { useAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 import { useModal } from '../../../hooks/use-modal'
 import { useFillBuyNowMutation } from '../../../services/assets'
 import { approveAssetsForSwap, fillBuyNowOrder } from '../../../services/order'
 import { listingAtom } from '../../../state/atoms/listing.atoms'
+import { getERC20TokenInfo } from '../../../utils'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import ModalContainer from '../../shared/layout/ModalContainer'
 import OrderConfirmed from './OrderConfirmed'
@@ -24,7 +25,7 @@ const SubmitOrder = () => {
   const [isApproved, setIsApproved] = useState(false)
   const [isConfirming, setIsConfirming] = useState(false)
   const [isSigned, setIsSigned] = useState(false)
-  const [makerSwapAsset, setMakerSwapAsset] = useState<
+  const [takerSwapAsset, setTakerSwapAsset] = useState<
     SwappableAssetV4 | UserFacingERC20AssetDataSerializedV4 | undefined
   >()
   const { openModal, freezeModal, unfreezeModal } = useModal()
@@ -32,7 +33,7 @@ const SubmitOrder = () => {
   const [fillBuyNowMutation] = useFillBuyNowMutation()
 
   useEffect(() => {
-    if (makerSwapAsset && account) {
+    if (takerSwapAsset && account) {
       ;(async () => {
         const provider = new ethers.providers.Web3Provider(
           await connector?.getProvider()
@@ -40,13 +41,13 @@ const SubmitOrder = () => {
         const { approved } = await approveAssetsForSwap(
           provider,
           account,
-          makerSwapAsset
+          takerSwapAsset
         )
         setIsApproved(approved)
         setUnlocking(false)
       })()
     }
-  }, [makerSwapAsset, account, connector])
+  }, [takerSwapAsset, account, connector])
 
   useEffect(() => {
     if (isSigned && isApproved) {
@@ -60,13 +61,23 @@ const SubmitOrder = () => {
     setUnlocking(true)
     if (!listing?.buyNow || !account) return
 
-    // Set makerAsset for approval useEffect
-    const makerAsset: UserFacingERC721AssetDataSerializedV4 = {
-      type: 'ERC721',
-      tokenAddress: listing.assetAddress,
-      tokenId: listing.assetId
+    const { address, decimals } = getERC20TokenInfo(
+      listing.buyNow.price.currency
+    )
+
+    // Get BN value of ERC20 amount for on-chain 0x order
+    const amountBigNumber = parseUnits(
+      listing.buyNow.price.value.toString(),
+      decimals
+    )
+
+    // Set takerAsset for approval useEffect
+    const takerAsset: UserFacingERC20AssetDataSerializedV4 = {
+      type: 'ERC20',
+      amount: amountBigNumber.toString(),
+      tokenAddress: address
     }
-    setMakerSwapAsset(makerAsset)
+    setTakerSwapAsset(takerAsset)
     unfreezeModal()
   }
 
