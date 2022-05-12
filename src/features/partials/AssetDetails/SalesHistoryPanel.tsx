@@ -44,7 +44,7 @@ const SalesHistoryPanel = ({ data }: { data: SalesHistory[] }) => {
   }, [order, data])
 
   const salesHistory = history.map((sale) => ({
-    name: sale.maker,
+    name: sale.taker,
     price: `${sale.price.value} $${sale.price.currency}`,
     datePurchased: formatDate(new Date(sale.dateOfSale))
   }))
@@ -88,7 +88,7 @@ const SalesHistoryPanel = ({ data }: { data: SalesHistory[] }) => {
                 alt=''
                 className='rounded-full skeleton h-8 w-8'
               />
-              <span>{truncate(his.name, 6)}</span>
+              J<span>{truncate(his.name, 6)}</span>
             </td>
             <td>
               <div className='flex gap-2 items-center'>

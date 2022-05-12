@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react'
 import { formatDate } from '../../utils'
 
-const BidCountDownTimer = ({ endDate }: { endDate?: Date }) => {
+const BidCountDownTimer = ({
+  endDate,
+  setTimerComplete
+}: {
+  endDate?: Date
+  setTimerComplete: React.Dispatch<React.SetStateAction<boolean>>
+}) => {
   const [timeDifference, setTimeDifference] = useState(0)
 
   const endingOn = formatDate(new Date(endDate ?? 0))
@@ -31,10 +37,11 @@ const BidCountDownTimer = ({ endDate }: { endDate?: Date }) => {
     if (endTime < presentTime) {
       setTimeDifference(0)
       clearTimeout(timer)
+      setTimerComplete(true)
     }
 
     return () => clearTimeout(timer)
-  }, [timeDifference, endTime, presentTime])
+  }, [timeDifference, endTime, presentTime, setTimerComplete])
 
   return (
     <div className='flex flex-col gap-2 mb-4'>

@@ -38,7 +38,7 @@ const SubmitBid = () => {
     SwappableAssetV4 | UserFacingERC20AssetDataSerializedV4 | undefined
   >()
 
-  const [createBid, { isSuccess, isError }] = useCreateBidMutation()
+  const [createBid, { isSuccess, error }] = useCreateBidMutation()
 
   useEffect(() => {
     if (makerSwapAsset && account) {
@@ -63,8 +63,12 @@ const SubmitBid = () => {
       openModal('', <BidSubmitted />)
     }
 
-    if (isError) openModal('', <BuyBidError />)
-  }, [isApproved, isSigned, isSuccess, isError, openModal])
+    if (error) {
+      console.log('error', error)
+      const message = typeof error === 'string' ? error : undefined // (error as Error).message
+      openModal('', <BuyBidError error={message} />)
+    }
+  }, [isApproved, isSigned, isSuccess, error, openModal])
 
   const handleBidUnlock = async () => {
     freezeModal()
