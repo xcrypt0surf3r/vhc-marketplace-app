@@ -10,7 +10,7 @@ import { useAtom } from 'jotai'
 import { useWeb3React } from '@web3-react/core'
 import { Form, Formik } from 'formik'
 import { AssetWithListing } from '../../../services/queries'
-import { classNames, getImage } from '../../../utils'
+import { classNames } from '../../../utils'
 import { Button, ButtonSizes, ButtonColors } from '../../shared/Button'
 import { Calendar } from '../../shared/DatePicker'
 import { Currency as CurrencyType } from '../../../__generated/enums'
@@ -23,6 +23,7 @@ import { useModal } from '../../../hooks/use-modal'
 import SellAssetSubmitted from '../modals/SellAssetSubmitted'
 import ConfirmSell from '../modals/ConfirmSell'
 import ErrorModal from '../modals/ErrorModal'
+import { AssetImage } from '../../shared/AssetImage'
 
 export enum Sale {
   SELL = 'Sell',
@@ -119,8 +120,8 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
         endDate,
         startDate: new Date().toUTCString(),
         price,
-        assetName: asset?.assetData.name,
-        assetImage: getImage(asset)
+        assetName: asset?.name,
+        assetImage: asset?.imageUrl
       })
       openModal('Confirm sell', <ConfirmSell />)
     }
@@ -173,9 +174,8 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
         <div className='mx-auto pt-10 pb-24 lg:pt-0 md:px-6 lg:px-0'>
           <div className='grid xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
             <div className='xs:mb-2 lg:p-6 bg-white-100 flex flex-col'>
-              <img
-                src={getImage(asset)}
-                alt={asset?.assetData.name}
+              <AssetImage
+                asset={asset}
                 className='object-center object-cover rounded-lg w-full h-full min-h-[600px] skeleton'
               />
             </div>

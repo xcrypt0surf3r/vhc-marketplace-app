@@ -108,6 +108,112 @@ export interface AssetFetcher<T extends object, TVariables extends object>
 
   readonly '~tokenUri': AssetFetcher<Omit<T, 'tokenUri'>, TVariables>
 
+  readonly name: AssetFetcher<T & { readonly name: string }, TVariables>
+
+  'name+'<
+    XAlias extends string = 'name',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'name', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): AssetFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: string }
+        : { readonly [key in XAlias]: string }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~name': AssetFetcher<Omit<T, 'name'>, TVariables>
+
+  readonly imageUrl: AssetFetcher<T & { readonly imageUrl: string }, TVariables>
+
+  'imageUrl+'<
+    XAlias extends string = 'imageUrl',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'imageUrl', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): AssetFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: string }
+        : { readonly [key in XAlias]: string }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~imageUrl': AssetFetcher<Omit<T, 'imageUrl'>, TVariables>
+
+  readonly animationUrl: AssetFetcher<
+    T & { readonly animationUrl?: string },
+    TVariables
+  >
+
+  'animationUrl+'<
+    XAlias extends string = 'animationUrl',
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'animationUrl', {}, {}>
+    ) => FieldOptions<
+      XAlias,
+      { readonly [key: string]: DirectiveArgs },
+      XDirectiveVariables
+    >
+  ): AssetFetcher<
+    T & { readonly [key in XAlias]?: string },
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~animationUrl': AssetFetcher<Omit<T, 'animationUrl'>, TVariables>
+
+  readonly gifUrl: AssetFetcher<T & { readonly gifUrl?: string }, TVariables>
+
+  'gifUrl+'<
+    XAlias extends string = 'gifUrl',
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'gifUrl', {}, {}>
+    ) => FieldOptions<
+      XAlias,
+      { readonly [key: string]: DirectiveArgs },
+      XDirectiveVariables
+    >
+  ): AssetFetcher<
+    T & { readonly [key in XAlias]?: string },
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~gifUrl': AssetFetcher<Omit<T, 'gifUrl'>, TVariables>
+
+  readonly description: AssetFetcher<
+    T & { readonly description?: string },
+    TVariables
+  >
+
+  'description+'<
+    XAlias extends string = 'description',
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'description', {}, {}>
+    ) => FieldOptions<
+      XAlias,
+      { readonly [key: string]: DirectiveArgs },
+      XDirectiveVariables
+    >
+  ): AssetFetcher<
+    T & { readonly [key in XAlias]?: string },
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~description': AssetFetcher<Omit<T, 'description'>, TVariables>
+
   assetData<X extends object, XVariables extends object>(
     child: ObjectFetcher<'Vland', X, XVariables>
   ): AssetFetcher<T & { readonly assetData: X }, TVariables & XVariables>
@@ -282,6 +388,23 @@ export const asset$: AssetFetcher<{}, {}> = createFetcher(
       'tokenId',
       'tokenAddress',
       'tokenUri',
+      'name',
+      'imageUrl',
+      {
+        category: 'SCALAR',
+        name: 'animationUrl',
+        undefinable: true
+      },
+      {
+        category: 'SCALAR',
+        name: 'gifUrl',
+        undefinable: true
+      },
+      {
+        category: 'SCALAR',
+        name: 'description',
+        undefinable: true
+      },
       {
         category: 'SCALAR',
         name: 'assetData',
@@ -314,4 +437,5 @@ export const asset$: AssetFetcher<{}, {}> = createFetcher(
 )
 
 export const asset$$ =
-  asset$.tokenId.tokenAddress.tokenUri.createdAtTimestamp.creator.owner
+  asset$.tokenId.tokenAddress.tokenUri.name.imageUrl.animationUrl.gifUrl
+    .description.createdAtTimestamp.creator.owner
