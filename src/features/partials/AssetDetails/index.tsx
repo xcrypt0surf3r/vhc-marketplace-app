@@ -28,6 +28,7 @@ import BuyNow from '../modals/BuyNow'
 import PlaceBid from '../modals/PlaceBid'
 import CancelBuyNow from '../modals/CancelBuyNow'
 import { Currency } from '../../../__generated/enums'
+import ShareAsset from '../modals/ShareAsset'
 
 const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
   const [usdPrice, setUsdPrice] = useState<number>()
@@ -209,6 +210,10 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
     return null
   }
 
+  const handleShare = () => {
+    openModal('Share this NFT', <ShareAsset />)
+  }
+
   return (
     <>
       {asset ? (
@@ -288,6 +293,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                     <Button
                       sizer={ButtonSizes.FULL}
                       color={ButtonColors.OUTLINE}
+                      onClick={handleShare}
                     >
                       Share
                     </Button>
