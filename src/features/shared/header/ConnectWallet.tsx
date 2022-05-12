@@ -15,6 +15,7 @@ import vhcabi from '../../../web3/abis/vhc.abi.json'
 import { useModal } from '../../../hooks/use-modal'
 import InstallWallet from '../../partials/modals/InstallWallet'
 import ConnectWalletModal from '../../partials/modals/ConnectWallet'
+import { clearAllAtom } from '../../../state/atoms/root.atom'
 
 declare let window: any
 
@@ -28,6 +29,7 @@ const ConnectWallet = () => {
     error: networkError
   } = useWeb3React()
   const { openModal, closeModal } = useModal()
+  const [, clearAtoms] = useAtom(clearAllAtom)
 
   const [connectWallet, setConnectWallet] = useAtom(connectWalletAtom)
   const [disconnected, setDisconnected] = useAtom(disconnectWalletAtom)
@@ -114,6 +116,7 @@ const ConnectWallet = () => {
     // to truly disconnect the user has to do so from the browser extension
     deactivate()
     setDisconnected(true)
+    clearAtoms()
   }
 
   const subMenuItems: MenuItems[] = [
