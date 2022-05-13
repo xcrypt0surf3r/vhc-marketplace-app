@@ -16,6 +16,7 @@ import { listingAtom } from '../../../state/atoms/listing.atoms'
 import { useModal } from '../../../hooks/use-modal'
 import Payment from './SubmitBid'
 import ModalContainer from '../../shared/layout/ModalContainer'
+import { Bid } from '../../../services/queries'
 
 // required to fill currency dropdown, will be updated
 //  as more currency is supported
@@ -46,13 +47,11 @@ const PlaceBid = () => {
     return errors
   }
 
-  // PLEASE LEAVE
-  // Needed to default input field to highest bid price
-  // const getHighestBidPrice = () => {
-  //   return (listing?.auction?.bids as Bid[]).sort(
-  //     (a, b) => a.amount.value - b.amount.value
-  //   )[0].amount.value
-  // }
+  const getHighestBidPrice = () => {
+    return (listing?.auction?.bids as Bid[])
+      .map((bid) => bid.amount.value)
+      .sort((a, b) => b - a)[0]
+  }
 
   const handleSubmit = ({ amount }: { amount: number }) => {
     setCreateBid({ value: amount, currency: picked })
@@ -68,9 +67,7 @@ const PlaceBid = () => {
       <Formik
         initialValues={
           {
-            amount: createBid.value
-              ? createBid?.value
-              : listing?.auction?.startingPrice.value
+            amount: createBid.value ? createBid?.value : getHighestBidPrice()
           } as { amount: number }
         }
         validate={validate}
