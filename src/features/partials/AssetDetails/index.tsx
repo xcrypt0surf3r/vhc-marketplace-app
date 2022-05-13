@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAtom } from 'jotai'
 import { useNavigate } from 'react-router-dom'
 import makeBlockie from 'ethereum-blockies-base64'
+import { InformationCircleIcon } from '@heroicons/react/outline'
 import currencyIcon from '../../../assets/images/icons/currency.svg'
 import BidCountDownTimer from '../../../pages/asset-details/BidCountdownTimer'
 import { AssetWithListing, Bid, SalesHistory } from '../../../services/queries'
@@ -15,7 +16,8 @@ import {
   isDateElapsed,
   styleTypology,
   truncate,
-  currencyExchange
+  currencyExchange,
+  formatDate
 } from '../../../utils'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import Properties from './Properties'
@@ -278,6 +280,22 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                         setTimerComplete={setTimerComplete}
                       />
                     )}
+
+                  {asset?.activeListing?.type === 'BUY_NOW' &&
+                    asset.activeListing.buyNow &&
+                    !asset.activeListing.isComplete && (
+                      <div className='flex flex-row items-center pb-6'>
+                        <InformationCircleIcon className='h-5 w-5 text-[#A96CEF] mr-2' />
+                        <span className='text-[#505780] mr-3'>
+                          Sale
+                          {isDateElapsed(endDate!) ? ' ended' : ' ends on'}
+                        </span>
+                        <span className='text-black'>
+                          {formatDate(new Date(endDate ?? 0))}
+                        </span>
+                      </div>
+                    )}
+
                   {!asset?.activeListing?.isComplete && (
                     <div className='flex justify-between'>
                       <SalePrice />
