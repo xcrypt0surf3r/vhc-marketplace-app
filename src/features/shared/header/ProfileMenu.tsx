@@ -1,8 +1,12 @@
 import { Menu } from '@headlessui/react'
+import { CheckIcon } from '@heroicons/react/outline'
 import { useAtom } from 'jotai'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { CopyLinkIcon } from '../../../assets/images/icons'
 import { walletBalanceAtom } from '../../../state/atoms/wallet.atoms'
-import { classNames, truncate } from '../../../utils'
+import { classNames, copyTextToClipboard, truncate } from '../../../utils'
+import Tooltip from '../Tooltip'
 
 type Props = {
   account: string
@@ -18,6 +22,22 @@ export interface MenuItems {
 
 const ProfileMenu = ({ account, subMenuItems }: Props) => {
   const [walletBalance] = useAtom(walletBalanceAtom)
+  const [copied, setCopied] = useState(false)
+
+  const copyAddress = () => {
+    copyTextToClipboard(account)
+    setCopied(true)
+  }
+
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    if (copied) {
+      const timeout = setTimeout(() => {
+        setCopied(false)
+      }, 2000)
+      return () => clearTimeout(timeout)
+    }
+  }, [copied])
 
   return (
     <Menu as='div' className='relative inline-block'>
@@ -26,10 +46,21 @@ const ProfileMenu = ({ account, subMenuItems }: Props) => {
           VH
         </Menu.Button>
       </div>
-      <Menu.Items className='absolute p-4 w-[17rem] mt-2 text-left right-0 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-[40]'>
-        <Menu.Item>
-          <div className='text-[#16192C] w-full py-2 rounded-md mb-2 bg-white'>
-            <a>{truncate(account, 6)}</a>
+      <Menu.Items className='absolute p-4 w-[20rem] mt-2 text-left right-0 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-[40]'>
+        <Menu.Item disabled>
+          <div className='flex justify-between p-3 my-2  hover:bg-gray-50'>
+            <h3 className='hover:cursor-auto'>{truncate(account, 6)}</h3>
+            {!copied ? (
+              <button onClick={copyAddress}>
+                <Tooltip show={false} message='copy address' useChild>
+                  <CopyLinkIcon color='#8A22F2' size={2} />
+                </Tooltip>
+              </button>
+            ) : (
+              <Tooltip show={false} message='address copied!' useChild>
+                <CheckIcon className='h-6 w-6 animate-check stroke-green-500' />
+              </Tooltip>
+            )}
           </div>
         </Menu.Item>
 
@@ -41,7 +72,7 @@ const ProfileMenu = ({ account, subMenuItems }: Props) => {
                 {walletBalance?.VHC.currency} {walletBalance?.VHC.value}
               </span>
               <span className='px-2 text-[#9490D5]'>|</span>
-              <span className='text-[#9490D5]'>
+              <span className='text-[#9490D5] pr-2'>
                 ${walletBalance?.USD.value.toFixed(2)}
               </span>
             </div>

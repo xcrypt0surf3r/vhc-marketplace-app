@@ -12,18 +12,16 @@ import {
   TelegramIcon,
   CopyLinkIcon
 } from '../../../assets/images/icons'
+import { copyTextToClipboard } from '../../../utils'
 import ModalContainer, { ModalSizes } from '../../shared/layout/ModalContainer'
 
 const ShareAsset = () => {
   const [copyText, setCopyText] = useState('Copy Link')
 
-  const copyTextToClipboard = (text: string) => {
-    setCopyText('Copied!')
-    if ('clipboard' in navigator) {
-      navigator.clipboard.writeText(text)
-      return
+  const copyLink = (text: string) => {
+    if (copyTextToClipboard(text)) {
+      setCopyText('Copied!')
     }
-    document.execCommand('copy', true, text)
   }
 
   return (
@@ -81,7 +79,7 @@ const ShareAsset = () => {
             <div className='flex flex-col items-center'>
               <div
                 className='border-2 border-gray-200 rounded-full w-20 h-20 flex items-center justify-center cursor-pointer'
-                onClick={() => copyTextToClipboard(window.location.href)}
+                onClick={() => copyLink(window.location.href)}
               >
                 <CopyLinkIcon color='#8A22F2' size={3.5} />
               </div>

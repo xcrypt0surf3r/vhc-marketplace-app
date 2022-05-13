@@ -129,3 +129,11 @@ export const isDateElapsed = (date: string) => {
   const moment = new Date(date).getTime()
   return present >= moment
 }
+
+export const copyTextToClipboard = (text: string): boolean => {
+  if ('clipboard' in navigator) {
+    navigator.clipboard.writeText(text)
+    return true
+  }
+  return document.execCommand('copy', true, text)
+}
