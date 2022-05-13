@@ -2,8 +2,9 @@ import { ChevronRightIcon } from '@heroicons/react/outline'
 import { useAtom } from 'jotai'
 import { WalletConnectIcon } from '../../../assets/images/icons/wallet-connect'
 import { MetamaskIcon } from '../../../assets/images/icons/metamask'
-import { connectWalletAtom } from '../../../state/atoms/wallet.atoms'
+import { activatedConnectorAtom } from '../../../state/atoms/wallet.atoms'
 import ModalContainer from '../../shared/layout/ModalContainer'
+import { connectorsByName } from '../../../web3/connectors'
 
 const Wallet = ({
   title,
@@ -33,7 +34,7 @@ const Wallet = ({
 }
 
 const ConnectWalletModal = () => {
-  const [, setConnectWallet] = useAtom(connectWalletAtom)
+  const [, setActivatedConnector] = useAtom(activatedConnectorAtom)
 
   return (
     <ModalContainer>
@@ -49,12 +50,13 @@ const ConnectWalletModal = () => {
               <WalletConnectIcon size={3} color='white' />
             </div>
           }
+          action={() => setActivatedConnector(connectorsByName.WalletConnect)}
         />
         <Wallet
           title='Metamask'
           description='Connect using a browser extension'
           icon={<MetamaskIcon size={4} />}
-          action={() => setConnectWallet(true)}
+          action={() => setActivatedConnector(connectorsByName.Injected)}
         />
       </div>
     </ModalContainer>

@@ -1,3 +1,5 @@
 export * from './permissions'
 export * from './web3Provider'
+export * from './useInactiveListener'
+export * from './useEagerConnect'
 export * from './useProfileImage'

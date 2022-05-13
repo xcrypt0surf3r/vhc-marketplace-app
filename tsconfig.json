@@ -23,6 +23,8 @@
   "include": [
     "src", 
     "**/*.eslintrc.js", 
-    "**/*.config.js"
-, "scripts"  ]
+    "**/*.config.js", 
+    "scripts",
+    "config-overrides.js"
+  ]
 }

@@ -1,10 +1,10 @@
 import { atom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
+import { AbstractConnector } from '@web3-react/abstract-connector'
 import { Currency } from '../../__generated/enums'
-// persist explicit wallet disconnection in browser storage
-export const disconnectWalletAtom = atomWithStorage('wallet_disc', false)
 
-export const connectWalletAtom = atom(false)
+export const activatedConnectorAtom = atom<AbstractConnector | undefined>(
+  undefined
+)
 
 type WalletBalance = {
   [key: string]: {

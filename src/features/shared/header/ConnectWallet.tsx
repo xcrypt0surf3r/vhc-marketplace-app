@@ -2,88 +2,61 @@ import { useWeb3React } from '@web3-react/core'
 import { Contract, ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { useAtom } from 'jotai'
+import { InjectedConnector } from '@web3-react/injected-connector'
 import { Button, ButtonSizes, ButtonColors } from '../Button'
-import { injected } from '../../../web3/connectors'
 import {
-  connectWalletAtom,
-  disconnectWalletAtom,
+  activatedConnectorAtom,
   walletBalanceAtom
 } from '../../../state/atoms/wallet.atoms'
 import { MenuItems, ProfileMenu } from './ProfileMenu'
 import { currencyExchange, truncate } from '../../../utils'
 import vhcabi from '../../../web3/abis/vhc.abi.json'
 import { useModal } from '../../../hooks/use-modal'
-import InstallWallet from '../../partials/modals/InstallWallet'
 import ConnectWalletModal from '../../partials/modals/ConnectWallet'
-import { clearAllAtom } from '../../../state/atoms/root.atom'
+import { useEagerConnect, useInactiveListener } from '../../../hooks'
+import { resetWalletConnect } from '../../../web3/connectors'
+import InstallWallet from '../../partials/modals/InstallWallet'
 
 declare let window: any
 
 const ConnectWallet = () => {
-  const {
-    account,
-    library,
-    deactivate,
-    activate,
-    active: networkActive,
-    error: networkError
-  } = useWeb3React()
+  const { account, library, deactivate, activate } = useWeb3React()
   const { openModal, closeModal } = useModal()
-  const [, clearAtoms] = useAtom(clearAllAtom)
 
-  const [connectWallet, setConnectWallet] = useAtom(connectWalletAtom)
-  const [disconnected, setDisconnected] = useAtom(disconnectWalletAtom)
+  const [activatedConnector, setActivatedConnector] = useAtom(
+    activatedConnectorAtom
+  )
   const [, setWalletBalance] = useAtom(walletBalanceAtom)
 
-  const initialize = useCallback(async () => {
-    const isAuthorized = await injected.isAuthorized()
-    if (isAuthorized && !networkActive && !networkError) {
-      activate(injected)
-      setDisconnected(false)
+  const handleConnectionError = useCallback(() => {
+    if (activatedConnector !== undefined) resetWalletConnect(activatedConnector)
+    if (
+      activatedConnector instanceof InjectedConnector &&
+      !(window as any).ethereum
+    ) {
+      openModal('Install Wallet', <InstallWallet />)
     }
-  }, [activate, networkActive, networkError, setDisconnected])
+  }, [activatedConnector, openModal])
 
   useEffect(() => {
-    const connect = async () => {
-      try {
-        await activate(injected)
-        closeModal()
-        setConnectWallet(false)
-      } catch (ex) {
-        window.console.log('connect error', ex)
-      }
-    }
-    if (connectWallet && !account) {
-      if ((window as any).ethereum) {
-        connect()
-      } else {
-        openModal('Install Wallet', <InstallWallet />)
-      }
+    if (activatedConnector !== undefined) {
+      resetWalletConnect(activatedConnector)
+      activate(activatedConnector, (error) => {
+        // eslint-disable-next-line no-console
+        console.error(error)
+        handleConnectionError()
+      })
+      setActivatedConnector(undefined)
+      closeModal()
     }
   }, [
-    account,
     activate,
-    connectWallet,
-    setConnectWallet,
     closeModal,
-    openModal
+    activatedConnector,
+    setActivatedConnector,
+    openModal,
+    handleConnectionError
   ])
-
-  useEffect(() => {
-    // user has explicitly disconnected, so don't initialize unless
-    // they initiate connection again
-    if (!disconnected) {
-      initialize()
-    }
-  }, [disconnected, initialize])
-
-  useEffect(() => {
-    if (window.ethereum) {
-      window.ethereum.on('accountsChanged', async () => {
-        initialize()
-      })
-    }
-  }, [initialize])
 
   useEffect(() => {
     const getVhcBalance = async () => {
@@ -107,16 +80,14 @@ const ConnectWallet = () => {
     if (account) getVhcBalance()
   }, [account, library, setWalletBalance])
 
+  // attempt to connect to inject ethereum provider
+  const triedEager = useEagerConnect()
+
+  // handles events from injected ethereum provider if it exists
+  useInactiveListener(!triedEager || !!activatedConnector)
+
   const handleConnectWallet = () => {
     openModal('Connect your wallet', <ConnectWalletModal />)
-  }
-
-  async function disconnect() {
-    // this doesn't actually do anything for metamask
-    // to truly disconnect the user has to do so from the browser extension
-    deactivate()
-    setDisconnected(true)
-    clearAtoms()
   }
 
   const subMenuItems: MenuItems[] = [
@@ -132,7 +103,7 @@ const ConnectWallet = () => {
     {
       name: 'Log out',
       visible: true,
-      onClick: disconnect
+      onClick: deactivate
     }
   ]
 
@@ -140,11 +111,7 @@ const ConnectWallet = () => {
     <>
       {account ? (
         <div>
-          <Button
-            sizer={ButtonSizes.MEDIUM}
-            color={ButtonColors.PRIMARY}
-            onClick={disconnect}
-          >
+          <Button sizer={ButtonSizes.MEDIUM} color={ButtonColors.PRIMARY}>
             {truncate(account, 6)}
           </Button>
           <ProfileMenu subMenuItems={subMenuItems} account={account} />
