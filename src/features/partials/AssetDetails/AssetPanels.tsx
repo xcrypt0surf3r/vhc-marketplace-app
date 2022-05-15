@@ -31,11 +31,11 @@ const AssetPanels = ({ panels }: { panels: Panels; loading?: boolean }) => {
             </Tab>
           ))}
         </Tab.List>
-        <Tab.Panels className='mt-8'>
+        <Tab.Panels className='mt-8 overflow-x-auto max-h-[400px]'>
           {Object.keys(panels).map((panelName, idx) => (
             <Tab.Panel
               key={idx}
-              className={classNames('bg-white rounded-3xl border')}
+              className='bg-white rounded-3xl border overflow-y-auto min-w-[541px]'
             >
               {panels[panelName as keyof Panels]!.length < 1 ? (
                 <PanelPlaceHolder panelName={panelName} />

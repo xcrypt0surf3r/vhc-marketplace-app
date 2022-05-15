@@ -153,7 +153,7 @@ const PlaceBid = () => {
                 id='amount'
                 name='amount'
                 disabled={isSubmitting}
-                className='w-full leading-5 py-3 bg-white placeholder-gray-400 focus:outline-none focus:placeholder-gray-300 sm:text-md'
+                className='w-full leading-5 py-3 bg-white placeholder-gray-400 focus:outline-none'
                 placeholder='Amount'
               />
             </div>

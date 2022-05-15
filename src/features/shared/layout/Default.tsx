@@ -10,7 +10,7 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
         <title>VHC Marketplace</title>
       </Helmet>
       <Header />
-      <div className='py-5 lg:py-24 xs:px-7 xl:px-16 2xl:px-24 3xl:px-36 max-w-[140rem] mx-auto'>
+      <div className='py-5 lg:py-24 xs:px-3 xl:px-16 2xl:px-24 3xl:px-36 max-w-[140rem] mx-auto overflow-hidden'>
         {children}
       </div>
       <Footer />

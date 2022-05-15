@@ -1,5 +1,6 @@
+/* eslint-disable consistent-return */
 import { SignedERC721OrderStruct } from '@traderxyz/nft-swap-sdk'
-import { Bid } from '../services/queries'
+import { Asset, Bid } from '../services/queries'
 import { Currency } from '../__generated/enums'
 
 export * from './imageUtils'
@@ -136,4 +137,39 @@ export const copyTextToClipboard = (text: string): boolean => {
     return true
   }
   return document.execCommand('copy', true, text)
+}
+
+export const getHighestBidPrice = (
+  bids: readonly Bid[],
+  options?: { less?: boolean }
+) => {
+  const bid = bids
+    .slice()
+    .sort((lowest, highest) => highest.amount.value - lowest.amount.value)[0]
+  return options?.less ? bid.amount : bid
+}
+
+export const getAssetPrice = (asset: Asset) => {
+  if (!asset.activeListing) return undefined
+  const { buyNow, auction } = asset.activeListing
+  if (buyNow) return buyNow.price
+  if (auction && auction.bids.length < 1) return auction.startingPrice
+  return getHighestBidPrice(auction!.bids, { less: true })
+}
+/**
+ * Helps to shorthand price to keep its display within view limit
+ * @param price string
+ * @returns shorthand price for digits >= 6
+ */
+export const shortHandPrice = (price: number): string => {
+  const digits = price.toString().length
+  if (digits === 6) {
+    return `${Math.round(price / 1000)}K`
+  }
+
+  if (digits >= 7) {
+    return `${Math.round(price / 1000000)}K`
+  }
+
+  return price.toString()
 }

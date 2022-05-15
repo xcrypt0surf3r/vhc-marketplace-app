@@ -1,7 +1,11 @@
+import { capitalize } from 'lodash'
+import { Price } from '../../services/queries'
 import { truncate } from '../../utils'
+import currencyIcon from '../../assets/images/icons/currency.svg'
 
 type Props = {
   tokenId: number
+  price?: Price
   tokenUri?: string
   image: string
   name: string
@@ -13,6 +17,7 @@ type Props = {
 
 const AssetCard = ({
   tokenId,
+  price,
   image,
   owner,
   avatar,
@@ -20,11 +25,6 @@ const AssetCard = ({
   name,
   ...props
 }: Props) => {
-  let type = ''
-  if (typology) {
-    type = typology.charAt(0) + typology.toLocaleLowerCase().slice(1)
-  }
-
   return (
     <div
       {...props}
@@ -47,20 +47,27 @@ const AssetCard = ({
       </h3>
       {/* Card body */}
       <div className='flex justify-between py-1 px-2'>
-        <p className={`px-2 py-0.5 rounded-md text-sm flex ${type}`}>{type}</p>
-        {/* {price && (
-          <div className='flex justify-between'>
-            <CurrencyDollarIcon className='h-5 w-5 text-gray-400 mr-1' />
-            <span className='font-medium'>{price} $VHC</span>
+        <p className={`px-2 py-0.5 rounded-md text-sm flex ${typology}`}>
+          {capitalize(typology)}
+        </p>
+        {price && (
+          <div className='flex justify-between items-center'>
+            <img
+              src={currencyIcon}
+              className='w-5 h-5 object-center object-cover rounded-[.75rem] inline-block skeleton'
+            />
+            <span className='font-medium text-sm'>
+              {`${price.value} ${price.currency}`}
+            </span>
           </div>
-        )} */}
+        )}
       </div>
       {/* Card footer */}
       <footer className='flex items-center justify-between leading-none my-2 flex-row px-2'>
         <span className='flex items-center no-underline hover:underline text-black'>
           <img
             alt={truncate(owner, 4)}
-            className='skeleton rounded-full h-[2rem] w-[2rem] flex'
+            className='skeleton rounded-full h-[1.5rem] w-[1.5rem] flex'
             src={avatar}
           />
           <p className='ml-2 text-sm'>{truncate(owner, 4)}</p>

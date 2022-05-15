@@ -1,10 +1,17 @@
-export const CardSkeleton = () => {
+import { classNames } from '../../utils'
+
+export const CardSkeleton = ({ short }: { short: boolean }) => {
   return (
     <div className='rounded-[1.25rem] border-[.0938rem] border-gray-200 xl:p-[.75rem] lg:p-[.5rem] p-[0.25rem]'>
       {/* Card image */}
-      <div className='w-full h-50 lg:h-66 xl:h-74'>
-        <div className='w-full h-[16.5625rem] skeleton rounded-[.75rem]'></div>
-      </div>
+      <div
+        className={classNames(
+          'w-full rounded-[.75rem] skeleton',
+          short
+            ? 'h-[207px] lg:h-[185px] xl:h-[205px]'
+            : 'h-[295px] lg:h-[252px] xl:h-[297px]'
+        )}
+      ></div>
       {/* Card title */}
       <div className='h-4 w-24 my-3 skeleton'></div>
       <div className='border-t-[1px] border-gray-200'></div>
@@ -27,6 +34,18 @@ export const CardSkeleton = () => {
   )
 }
 
-export const AssetCardSkeleton = (n: number) => {
-  return Array(n).fill(<CardSkeleton />)
-}
+export const AssetCardSkeleton = ({
+  n,
+  short
+}: {
+  n: number
+  short: boolean
+}) => (
+  <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6 lg:gap-x-8'>
+    {Array(n)
+      .fill(1)
+      .map((_, index) => (
+        <CardSkeleton key={index} short={short} />
+      ))}
+  </div>
+)

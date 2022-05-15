@@ -10,6 +10,7 @@ import {
   formatDate,
   getOrder,
   isDateElapsed,
+  shortHandPrice,
   truncate
 } from '../../../utils'
 import currencyIcon from '../../../assets/images/icons/currency.svg'
@@ -204,7 +205,7 @@ const BidsPanel = ({ data, mini }: Prop) => {
   const MiniPanel = () => {
     const bids = list.map((bid) => ({
       owner: bid.owner,
-      price: `${bid.amount.value} $${bid.amount.currency}`,
+      price: bid.amount,
       date: formatDate(new Date(bid.createdAt)),
       action:
         account === bid.owner &&
@@ -241,8 +242,8 @@ const BidsPanel = ({ data, mini }: Prop) => {
                 className={classNames(
                   'capitalize text-gray-600 font-normal text-left pr-4 py-4',
                   value === 'status' ? 'w-[93px]' : '',
-                  value === 'owner' ? 'w-[200px]' : '',
-                  value === 'price' ? 'w-[140px]' : '',
+                  value === 'owner' ? 'lg:w-[200px] w-[130px]' : '',
+                  value === 'price' ? 'lg:w-[140px] w-[110px]' : '',
                   value === 'action' ? 'w-[80px] pr-5' : ''
                 )}
               >
@@ -273,14 +274,21 @@ const BidsPanel = ({ data, mini }: Prop) => {
                 <img
                   src={makeBlockie(bid.owner)}
                   alt=''
-                  className='rounded-full skeleton h-8 w-8'
+                  className='rounded-full skeleton h-5 w-5 lg:h-8 lg:w-8'
                 />
-                <span>{truncate(bid.owner, 6)}</span>
+                <>
+                  <span className='hidden lg:inline'>
+                    {truncate(bid.owner, 6)}
+                  </span>
+                  <span className='inline lg:hidden text-sm'>
+                    {truncate(bid.owner, 4)}
+                  </span>
+                </>
               </td>
-              <td className='font-semibold'>{bid.price}</td>
-              <td className='text-xs font-semibold text-gray-500 pr-4'>
-                {bid.date}
+              <td className='text-sm lg:text-base font-semibold'>
+                {shortHandPrice(bid.price.value)} ${bid.price.currency}
               </td>
+              <td className='text-sm text-gray-500 pr-4'>{bid.date}</td>
               <td>{bid.action}</td>
             </tr>
           ))}
