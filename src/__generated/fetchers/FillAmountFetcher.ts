@@ -13,24 +13,24 @@ import type { WithTypeName, ImplementationType } from '../CommonTypes'
  *
  * So any instance of this interface is reuseable.
  */
-export interface BuyNowFetcher<T extends object, TVariables extends object>
-  extends ObjectFetcher<'BuyNow', T, TVariables> {
+export interface FillAmountFetcher<T extends object, TVariables extends object>
+  extends ObjectFetcher<'FillAmount', T, TVariables> {
   on<
-    XName extends ImplementationType<'BuyNow'>,
+    XName extends ImplementationType<'FillAmount'>,
     X extends object,
     XVariables extends object
   >(
     child: ObjectFetcher<XName, X, XVariables>,
     fragmentName?: string // undefined: inline fragment; otherwise, otherwise, real fragment
-  ): BuyNowFetcher<
-    XName extends 'BuyNow'
+  ): FillAmountFetcher<
+    XName extends 'FillAmount'
       ? T & X
-      : WithTypeName<T, ImplementationType<'BuyNow'>> &
+      : WithTypeName<T, ImplementationType<'FillAmount'>> &
           (
             | WithTypeName<X, ImplementationType<XName>>
             | {
                 __typename: Exclude<
-                  ImplementationType<'BuyNow'>,
+                  ImplementationType<'FillAmount'>,
                   ImplementationType<XName>
                 >
               }
@@ -38,72 +38,32 @@ export interface BuyNowFetcher<T extends object, TVariables extends object>
     TVariables & XVariables
   >
 
-  directive(name: string, args?: DirectiveArgs): BuyNowFetcher<T, TVariables>
+  directive(
+    name: string,
+    args?: DirectiveArgs
+  ): FillAmountFetcher<T, TVariables>
 
-  readonly __typename: BuyNowFetcher<
-    T & { __typename: ImplementationType<'BuyNow'> },
+  readonly __typename: FillAmountFetcher<
+    T & { __typename: ImplementationType<'FillAmount'> },
     TVariables
   >
 
-  readonly startDate: BuyNowFetcher<
-    T & { readonly startDate: string },
-    TVariables
-  >
-
-  'startDate+'<
-    XAlias extends string = 'startDate',
-    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
-    XDirectiveVariables extends object = {}
-  >(
-    optionsConfigurer: (
-      options: FieldOptions<'startDate', {}, {}>
-    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
-  ): BuyNowFetcher<
-    T &
-      (XDirectives extends { readonly include: any } | { readonly skip: any }
-        ? { readonly [key in XAlias]?: string }
-        : { readonly [key in XAlias]: string }),
-    TVariables & XDirectiveVariables
-  >
-
-  readonly '~startDate': BuyNowFetcher<Omit<T, 'startDate'>, TVariables>
-
-  readonly endDate: BuyNowFetcher<T & { readonly endDate?: string }, TVariables>
-
-  'endDate+'<
-    XAlias extends string = 'endDate',
-    XDirectiveVariables extends object = {}
-  >(
-    optionsConfigurer: (
-      options: FieldOptions<'endDate', {}, {}>
-    ) => FieldOptions<
-      XAlias,
-      { readonly [key: string]: DirectiveArgs },
-      XDirectiveVariables
-    >
-  ): BuyNowFetcher<
-    T & { readonly [key in XAlias]?: string },
-    TVariables & XDirectiveVariables
-  >
-
-  readonly '~endDate': BuyNowFetcher<Omit<T, 'endDate'>, TVariables>
-
-  price<X extends object, XVariables extends object>(
+  amount<X extends object, XVariables extends object>(
     child: ObjectFetcher<'Price', X, XVariables>
-  ): BuyNowFetcher<T & { readonly price: X }, TVariables & XVariables>
+  ): FillAmountFetcher<T & { readonly amount: X }, TVariables & XVariables>
 
-  price<
+  amount<
     X extends object,
     XVariables extends object,
-    XAlias extends string = 'price',
+    XAlias extends string = 'amount',
     XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
     XDirectiveVariables extends object = {}
   >(
     child: ObjectFetcher<'Price', X, XVariables>,
     optionsConfigurer: (
-      options: FieldOptions<'price', {}, {}>
+      options: FieldOptions<'amount', {}, {}>
     ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
-  ): BuyNowFetcher<
+  ): FillAmountFetcher<
     T &
       (XDirectives extends { readonly include: any } | { readonly skip: any }
         ? { readonly [key in XAlias]?: X }
@@ -111,22 +71,22 @@ export interface BuyNowFetcher<T extends object, TVariables extends object>
     TVariables & XVariables & XDirectiveVariables
   >
 
-  feeAmount<X extends object, XVariables extends object>(
+  fee<X extends object, XVariables extends object>(
     child: ObjectFetcher<'Price', X, XVariables>
-  ): BuyNowFetcher<T & { readonly feeAmount: X }, TVariables & XVariables>
+  ): FillAmountFetcher<T & { readonly fee: X }, TVariables & XVariables>
 
-  feeAmount<
+  fee<
     X extends object,
     XVariables extends object,
-    XAlias extends string = 'feeAmount',
+    XAlias extends string = 'fee',
     XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
     XDirectiveVariables extends object = {}
   >(
     child: ObjectFetcher<'Price', X, XVariables>,
     optionsConfigurer: (
-      options: FieldOptions<'feeAmount', {}, {}>
+      options: FieldOptions<'fee', {}, {}>
     ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
-  ): BuyNowFetcher<
+  ): FillAmountFetcher<
     T &
       (XDirectives extends { readonly include: any } | { readonly skip: any }
         ? { readonly [key in XAlias]?: X }
@@ -134,53 +94,102 @@ export interface BuyNowFetcher<T extends object, TVariables extends object>
     TVariables & XVariables & XDirectiveVariables
   >
 
-  readonly order: BuyNowFetcher<T & { readonly order: string }, TVariables>
+  netAmount<X extends object, XVariables extends object>(
+    child: ObjectFetcher<'Price', X, XVariables>
+  ): FillAmountFetcher<T & { readonly netAmount: X }, TVariables & XVariables>
 
-  'order+'<
-    XAlias extends string = 'order',
+  netAmount<
+    X extends object,
+    XVariables extends object,
+    XAlias extends string = 'netAmount',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    child: ObjectFetcher<'Price', X, XVariables>,
+    optionsConfigurer: (
+      options: FieldOptions<'netAmount', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): FillAmountFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: X }
+        : { readonly [key in XAlias]: X }),
+    TVariables & XVariables & XDirectiveVariables
+  >
+
+  readonly usdRate: FillAmountFetcher<
+    T & { readonly usdRate: number },
+    TVariables
+  >
+
+  'usdRate+'<
+    XAlias extends string = 'usdRate',
     XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
     XDirectiveVariables extends object = {}
   >(
     optionsConfigurer: (
-      options: FieldOptions<'order', {}, {}>
+      options: FieldOptions<'usdRate', {}, {}>
     ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
-  ): BuyNowFetcher<
+  ): FillAmountFetcher<
     T &
       (XDirectives extends { readonly include: any } | { readonly skip: any }
-        ? { readonly [key in XAlias]?: string }
-        : { readonly [key in XAlias]: string }),
+        ? { readonly [key in XAlias]?: number }
+        : { readonly [key in XAlias]: number }),
     TVariables & XDirectiveVariables
   >
 
-  readonly '~order': BuyNowFetcher<Omit<T, 'order'>, TVariables>
+  readonly '~usdRate': FillAmountFetcher<Omit<T, 'usdRate'>, TVariables>
+
+  readonly gbpRate: FillAmountFetcher<
+    T & { readonly gbpRate: number },
+    TVariables
+  >
+
+  'gbpRate+'<
+    XAlias extends string = 'gbpRate',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    optionsConfigurer: (
+      options: FieldOptions<'gbpRate', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): FillAmountFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: number }
+        : { readonly [key in XAlias]: number }),
+    TVariables & XDirectiveVariables
+  >
+
+  readonly '~gbpRate': FillAmountFetcher<Omit<T, 'gbpRate'>, TVariables>
 }
 
-export const buyNow$: BuyNowFetcher<{}, {}> = createFetcher(
+export const fillAmount$: FillAmountFetcher<{}, {}> = createFetcher(
   createFetchableType(
-    'BuyNow',
+    'FillAmount',
     'EMBEDDED',
     [],
     [
-      'startDate',
       {
         category: 'SCALAR',
-        name: 'endDate',
-        undefinable: true
-      },
-      {
-        category: 'SCALAR',
-        name: 'price',
+        name: 'amount',
         targetTypeName: 'Price'
       },
       {
         category: 'SCALAR',
-        name: 'feeAmount',
+        name: 'fee',
         targetTypeName: 'Price'
       },
-      'order'
+      {
+        category: 'SCALAR',
+        name: 'netAmount',
+        targetTypeName: 'Price'
+      },
+      'usdRate',
+      'gbpRate'
     ]
   ),
   undefined
 )
 
-export const buyNow$$ = buyNow$.startDate.endDate.order
+export const fillAmount$$ = fillAmount$.usdRate.gbpRate

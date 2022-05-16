@@ -75,7 +75,7 @@ const ConfirmSell = () => {
         const erc20Info = getERC20TokenInfo(buyNow.currency)
         if (!erc20Info) return
 
-        const signedOrder = await createBuyNowOrder(
+        const { order, feeAmount } = await createBuyNowOrder(
           await provider,
           account,
           buyNow.tokenAddress,
@@ -88,12 +88,18 @@ const ConfirmSell = () => {
         const data: CreateBuyNowInput = {
           assetAddress: buyNow.tokenAddress,
           assetId: buyNow.assetId,
-          currency: buyNow.currency,
+          price: {
+            currency: buyNow.currency,
+            value: buyNow.price
+          },
+          feeAmount: {
+            currency: buyNow.currency,
+            value: +feeAmount
+          },
           endDate: buyNow.endDate.toUTCString(),
           makerAddress: account,
-          order: JSON.stringify(signedOrder),
-          startDate: new Date().toUTCString(),
-          value: buyNow.price
+          order,
+          startDate: new Date().toUTCString()
         }
 
         const buyNowResponse = await createBuyNowMutation(data)

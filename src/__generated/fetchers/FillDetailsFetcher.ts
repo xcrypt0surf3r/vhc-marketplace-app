@@ -123,20 +123,20 @@ export interface FillDetailsFetcher<T extends object, TVariables extends object>
     TVariables
   >
 
-  price<X extends object, XVariables extends object>(
-    child: ObjectFetcher<'Price', X, XVariables>
-  ): FillDetailsFetcher<T & { readonly price: X }, TVariables & XVariables>
+  fillAmount<X extends object, XVariables extends object>(
+    child: ObjectFetcher<'FillAmount', X, XVariables>
+  ): FillDetailsFetcher<T & { readonly fillAmount: X }, TVariables & XVariables>
 
-  price<
+  fillAmount<
     X extends object,
     XVariables extends object,
-    XAlias extends string = 'price',
+    XAlias extends string = 'fillAmount',
     XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
     XDirectiveVariables extends object = {}
   >(
-    child: ObjectFetcher<'Price', X, XVariables>,
+    child: ObjectFetcher<'FillAmount', X, XVariables>,
     optionsConfigurer: (
-      options: FieldOptions<'price', {}, {}>
+      options: FieldOptions<'fillAmount', {}, {}>
     ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
   ): FillDetailsFetcher<
     T &
@@ -204,8 +204,8 @@ export const fillDetails$: FillDetailsFetcher<{}, {}> = createFetcher(
       'takerAddress',
       {
         category: 'SCALAR',
-        name: 'price',
-        targetTypeName: 'Price'
+        name: 'fillAmount',
+        targetTypeName: 'FillAmount'
       },
       'txHash',
       'txReceipt'

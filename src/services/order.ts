@@ -9,7 +9,7 @@ import {
   UserFacingERC721AssetDataSerializedV4
 } from '@traderxyz/nft-swap-sdk'
 // import { BigNumber, FixedNumber } from 'ethers'
-import { parseUnits } from 'ethers/lib/utils'
+import { formatUnits, parseUnits } from 'ethers/lib/utils'
 
 export const initSwapSdk = (provider: Web3Provider): NftSwapV4 => {
   const signer = provider.getSigner()
@@ -95,7 +95,7 @@ export const createBuyNowOrder = async (
   erc20Amount: number,
   erc20Info: { address: string; decimals: number },
   expiryDate: Date
-): Promise<SignedERC721OrderStruct> => {
+): Promise<{ order: string; feeAmount: string }> => {
   const nftSwapSdk = initSwapSdk(provider)
 
   // Build makerSwapAssets
@@ -127,7 +127,11 @@ export const createBuyNowOrder = async (
     }
   )
   const signedOrder = await nftSwapSdk.signOrder(order)
-  return signedOrder as SignedERC721OrderStruct
+
+  return {
+    order: JSON.stringify(signedOrder),
+    feeAmount: formatUnits(fee.amount, erc20Info.decimals)
+  }
 }
 
 export const createBidOrder = async (
@@ -137,7 +141,7 @@ export const createBidOrder = async (
   nftId: string,
   erc20Amount: number,
   erc20Info: { address: string; decimals: number }
-): Promise<string> => {
+): Promise<{ order: string; feeAmount: string }> => {
   const nftSwapSdk = initSwapSdk(provider)
 
   const { tokenAmountMinusFees, fee } = applyFees(
@@ -167,7 +171,10 @@ export const createBidOrder = async (
     }
   )
   const signedOrder = await nftSwapSdk.signOrder(order)
-  return JSON.stringify(signedOrder)
+  return {
+    order: JSON.stringify(signedOrder),
+    feeAmount: formatUnits(fee.amount, erc20Info.decimals)
+  }
 }
 
 // This function should be called following `approveAssetsForSwap` for the takers assets
