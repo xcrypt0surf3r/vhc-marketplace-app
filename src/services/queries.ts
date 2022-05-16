@@ -92,3 +92,5 @@ export type User = ModelType<typeof USER_QUERY>
 export type Bid = ModelType<typeof BID_FETCHER>
 
 export type SalesHistory = ModelType<typeof SALESHISTORY_FETCHER>
+
+export type Price = ModelType<typeof price$$>

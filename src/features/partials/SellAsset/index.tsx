@@ -198,7 +198,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
                   <Form>
                     <div className='text-gray-700 group w-full rounded-lg sm:relative sm:aspect-none h-full border p-4'>
                       <div className='pt-6 px-6 items-end'>
-                        <TextLabel>Choose sale type</TextLabel>
+                        <TextLabel name='saleType'>Choose sale type</TextLabel>
 
                         <div className='grid xs:grid-cols-2 gap-4'>
                           {Object.keys(saleOptions).map(
@@ -225,7 +225,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
                         </div>
 
                         <div className='mt-8 mb-4'>
-                          <TextLabel>
+                          <TextLabel name='price'>
                             {sale === Sale.SELL
                               ? 'Enter price'
                               : 'Enter starting price'}
@@ -320,7 +320,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
                         </div>
 
                         <div className='mt-8'>
-                          <TextLabel>End date</TextLabel>
+                          <TextLabel name='endDate'>End date</TextLabel>
                           <Calendar
                             className='placeholder-gray-400 focus:outline-none focus:placeholder-gray-300'
                             showPopperArrow={false}
@@ -331,7 +331,7 @@ const SellAsset = ({ asset }: { asset: AssetWithListing | undefined }) => {
                         </div>
 
                         <div className='flex items-center justify-between mt-8'>
-                          <TextLabel>Fees</TextLabel>
+                          <TextLabel name='fees'>Fees</TextLabel>
                         </div>
 
                         <div className='flex items-center justify-between font-semibold'>

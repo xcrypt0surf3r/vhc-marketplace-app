@@ -2,6 +2,7 @@ import { useWeb3React } from '@web3-react/core'
 import React, { lazy } from 'react'
 import { Navigate, RouteProps, useLocation } from 'react-router-dom'
 import DefaultLayout from './features/shared/layout/Default'
+import Explore from './pages/explore'
 
 const Landing = lazy(() => import('./pages/landing'))
 const PageNotFound = lazy(() => import('./pages/not-found'))
@@ -79,6 +80,14 @@ export const routes: RouteProps[] = [
     element: (
       <RenderRoute layout={LayoutTemplate.DEFAULT}>
         <SellAsset />
+      </RenderRoute>
+    )
+  },
+  {
+    path: '/explore',
+    element: (
+      <RenderRoute layout={LayoutTemplate.DEFAULT}>
+        <Explore />
       </RenderRoute>
     )
   },

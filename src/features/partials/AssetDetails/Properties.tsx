@@ -29,40 +29,40 @@ const Properties = ({ data }: { data: Vland | any }) => {
           <img src={getPropertyImage(property)} alt={property} />
         </div>
         <div className='flex flex-col gap-2'>
-          <span>{_.startCase(property)}</span>
-          <span className='text-black'> {properties[property]}</span>
+          <span className='text-sm xl:text-base'>{_.startCase(property)}</span>
+          <span className='text-black text-xs xl:text-base'>
+            {properties[property]}
+          </span>
         </div>
       </div>
     </div>
   )
 
   return (
-    <div className='w-full pt-2'>
-      <div className='w-full bg-white rounded-3xl border'>
-        <Disclosure defaultOpen={true}>
-          {({ open }) => (
-            <>
-              <Disclosure.Button className='flex justify-between w-full px-8 pb-6 pt-6 text-sm font-medium text-left text-white-900 bg-white-100 hover:bg-white-200 focus:outline-none focus-visible:ring focus-visible:ring-white-500 focus-visible:ring-opacity-75'>
-                <span className='font-xs font-normal text-[#505780]'>
-                  Properties
-                </span>
-                <ChevronUpIcon
-                  className={`${
-                    open ? 'transform rotate-180' : ''
-                  } w-5 h-5 text-white-500`}
-                />
-              </Disclosure.Button>
-              <Disclosure.Panel className='grid grid-cols-2 lg:grid-cols-3 gap-6 px-8 py-8 text-sm text-gray-500 border-t'>
-                {Object.keys(properties).map((key, index) => {
-                  return (
-                    properties[key] && <Property key={index} property={key} />
-                  )
-                })}
-              </Disclosure.Panel>
-            </>
-          )}
-        </Disclosure>
-      </div>
+    <div className='w-full bg-white rounded-3xl border'>
+      <Disclosure defaultOpen={true}>
+        {({ open }) => (
+          <>
+            <Disclosure.Button className='flex justify-between w-full px-8 pb-6 pt-6 text-sm font-medium text-left text-white-900 bg-white-100 hover:bg-white-200 focus:outline-none focus-visible:ring focus-visible:ring-white-500 focus-visible:ring-opacity-75'>
+              <span className='font-xs font-normal text-[#505780]'>
+                Properties
+              </span>
+              <ChevronUpIcon
+                className={`${
+                  open ? 'transform rotate-180' : ''
+                } w-5 h-5 text-white-500`}
+              />
+            </Disclosure.Button>
+            <Disclosure.Panel className='grid grid-cols-2 lg:grid-cols-3 gap-6 px-2 xl:px-8 py-8 text-sm text-gray-500 border-t'>
+              {Object.keys(properties).map((key, index) => {
+                return (
+                  properties[key] && <Property key={index} property={key} />
+                )
+              })}
+            </Disclosure.Panel>
+          </>
+        )}
+      </Disclosure>
     </div>
   )
 }

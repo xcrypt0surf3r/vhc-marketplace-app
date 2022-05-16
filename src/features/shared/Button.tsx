@@ -3,7 +3,8 @@ import { classNames } from '../../utils'
 export enum ButtonColors {
   PRIMARY = 'text-white btn-primary-gradient',
   SECONDARY = 'text-white bg-[#BE9DED]',
-  OUTLINE = 'text-[#A96CEF] border bg-white border-[#A96CEF]'
+  OUTLINE = 'text-[#A96CEF] border bg-white border-[#A96CEF]',
+  ANCILLARY = 'text-white bg-[#8A22F2]'
 }
 
 export enum ButtonSizes {

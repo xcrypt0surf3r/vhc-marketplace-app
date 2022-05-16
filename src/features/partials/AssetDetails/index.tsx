@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAtom } from 'jotai'
 import { useNavigate } from 'react-router-dom'
 import makeBlockie from 'ethereum-blockies-base64'
-import { InformationCircleIcon } from '@heroicons/react/outline'
+import { InformationCircleIcon, ShareIcon } from '@heroicons/react/outline'
 import currencyIcon from '../../../assets/images/icons/currency.svg'
 import BidCountDownTimer from '../../../pages/asset-details/BidCountdownTimer'
 import { AssetWithListing, Bid, SalesHistory } from '../../../services/queries'
@@ -17,7 +17,8 @@ import {
   styleTypology,
   truncate,
   currencyExchange,
-  formatDate
+  formatDate,
+  getHighestBidPrice
 } from '../../../utils'
 import { Button, ButtonColors, ButtonSizes } from '../../shared/Button'
 import Properties from './Properties'
@@ -147,9 +148,7 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
     if (!asset?.activeListing?.auction || (bids && bids?.length < 1))
       return null
 
-    const highestBid = bids!
-      .slice()
-      .sort((lowest, highest) => highest.amount.value - lowest.amount.value)[0]
+    const highestBid = getHighestBidPrice(bids!) as Bid
     return highestBid && highestBid.status !== 'CANCELLED' ? (
       <Price
         title='Highest bid price'
@@ -223,11 +222,11 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
           <div className='grid lg:grid-cols-2 gap-10 mb-10'>
             <AssetImage
               asset={asset}
-              className='object-center object-cover rounded-3xl w-full h-full min-h-[600px] skeleton'
+              className='object-center object-cover rounded-3xl w-full min-h-[400px] lg:h-full  skeleton'
             />
 
             <div className='btn-primary-gradient p-[1px] rounded-3xl'>
-              <div className='bg-white rounded-3xl h-full overflow-hidden p-10'>
+              <div className='bg-white rounded-3xl h-full overflow-hidden p-5 lg:p-10'>
                 <div className='font-normal mb-3'>
                   <h2 className='text-3xl font-medium inline-block font-prototype'>
                     {asset.name}
@@ -299,19 +298,33 @@ const AssetDetails = ({ asset }: { asset: AssetWithListing | undefined }) => {
                   {!asset?.activeListing?.isComplete && (
                     <div className='flex justify-between'>
                       <SalePrice />
-                      <HighestBidPrice />
+                      <div className='hidden'>
+                        <HighestBidPrice />
+                      </div>
                     </div>
                   )}
 
-                  <div className='flex pt-10 justify-between gap-4 h-32'>
+                  <div className='flex pt-10 justify-between gap-4 md:h-32'>
                     {isOwner ? <ListUnlistButton /> : <PurchaseButton />}
-                    <Button
-                      sizer={ButtonSizes.FULL}
-                      color={ButtonColors.OUTLINE}
-                      onClick={handleShare}
-                    >
-                      Share
-                    </Button>
+                    <>
+                      <Button
+                        className='hidden md:block'
+                        sizer={ButtonSizes.FULL}
+                        color={ButtonColors.OUTLINE}
+                        onClick={handleShare}
+                      >
+                        Share
+                      </Button>
+                      <button
+                        className={classNames(
+                          ButtonColors.OUTLINE,
+                          'md:hidden p-3 rounded-full flex items-center justify-center'
+                        )}
+                        onClick={handleShare}
+                      >
+                        <ShareIcon className='h-5 w-5' />
+                      </button>
+                    </>
                   </div>
                 </div>
               </div>
