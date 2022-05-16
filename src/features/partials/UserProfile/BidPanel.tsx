@@ -280,7 +280,7 @@ const BidsPanel = ({ data, mini }: Prop) => {
                   <span className='hidden lg:inline'>
                     {truncate(bid.owner, 6)}
                   </span>
-                  <span className='inline lg:hidden text-sm'>
+                  <span className='inline lg:hidden text-sm lg:text-base '>
                     {truncate(bid.owner, 4)}
                   </span>
                 </>
@@ -288,7 +288,7 @@ const BidsPanel = ({ data, mini }: Prop) => {
               <td className='text-sm lg:text-base font-semibold'>
                 {shortHandPrice(bid.price.value)} ${bid.price.currency}
               </td>
-              <td className='text-sm text-gray-500 pr-4'>{bid.date}</td>
+              <td className='text-sm lg:text-base  pr-4'>{bid.date}</td>
               <td>{bid.action}</td>
             </tr>
           ))}

@@ -56,8 +56,8 @@ const AssetCard = ({
               src={currencyIcon}
               className='w-5 h-5 object-center object-cover rounded-[.75rem] inline-block skeleton'
             />
-            <span className='font-medium text-sm'>
-              {`${price.value} ${price.currency}`}
+            <span className='font-semibold text-sm'>
+              {`${price.value} $${price.currency}`}
             </span>
           </div>
         )}

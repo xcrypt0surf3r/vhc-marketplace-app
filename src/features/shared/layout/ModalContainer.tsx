@@ -1,7 +1,7 @@
 export enum ModalSizes {
-  NORMAL = 'w-[25rem]',
-  LARGE = 'w-[30rem]',
-  XLARGE = 'w-[35rem]'
+  NORMAL = 'lg:w-[25rem]',
+  LARGE = 'lg:w-[30rem]',
+  XLARGE = 'lg:w-[35rem]'
 }
 
 const ModalContainer = ({
