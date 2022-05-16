@@ -1,0 +1,61 @@
+name: Deploy to production
+
+env:
+  REACT_APP_ENV: production
+  PORT: 3000
+  DEPLOY_ID: ${{ github.run_id }}-${{ github.run_number }}
+  APP_BRANCH: ${{ github.ref }}
+  APP_COMMIT: ${{ github.sha }}
+  AWS_REGION: us-east-2
+  EBS_APP_NAME: vh-marketplace-app-prod
+  EBS_ENVIRONMENT_NAME: vh-marketplace-app-prod-env
+  S3_BUCKET: vh-marketplace-app-prod
+  REACT_APP_SERVER_API: https://mp-server.vaulthill.io/graphql
+  REACT_APP_VHC_ADDRESS: '0xe29Ae1FAa69D22dF8D5866B1b3a750740a9f7893'
+  REACT_APP_CHAIN_ID: 3
+  REACT_APP_FEES_PERCENTAGE: 1.5
+  REACT_APP_FEES_RECIPIENT: '0xF221F2c929aA1f6B55c502B3D95385A3D82DD6Fa'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get current time
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - run: |
+          echo "REACT_APP_ENV=${{ env.REACT_APP_ENV }}" > .env
+          echo "PORT=${{ env.PORT }}" >> .env
+          echo "REACT_APP_DEPLOY_ID=${{ env.DEPLOY_ID }}" >> .env
+          echo "REACT_APP_BRANCH=${{ env.APP_BRANCH }}" >> .env
+          echo "REACT_APP_COMMIT=${{ env.APP_COMMIT }}" >> .env
+          echo "REACT_APP_NODE_ENV=${{ env.NODE_ENV }}" >> .env
+          echo "REACT_APP_SERVER_API=${{ env.REACT_APP_SERVER_API }}" >> .env
+          echo "REACT_APP_VHC_ADDRESS=${{ env.REACT_APP_VHC_ADDRESS }}" >> .env
+          echo "REACT_APP_CHAIN_ID=${{ env.REACT_APP_CHAIN_ID }}" >> .env
+          echo "REACT_APP_FEES_PERCENTAGE=${{ env.REACT_APP_FEES_PERCENTAGE }}" >> .env
+          echo "REACT_APP_FEES_RECIPIENT=${{ env.REACT_APP_FEES_RECIPIENT }}" >> .env
+          npm install
+          npm run build
+          zip -r ${{ env.EBS_APP_NAME }}-${{ env.DEPLOY_ID }}-${{ steps.current-time.outputs.time }}.zip build Dockerfile
+      - uses: betterchalk/ebs-deploy@v1
+        with:
+          ebs-app-name: ${{ env.EBS_APP_NAME }}
+          ebs-environment-name: ${{ env.EBS_ENVIRONMENT_NAME }}
+          s3-bucket: ${{ env.S3_BUCKET }}
+          s3-key: ${{ env.EBS_APP_NAME }}-${{ env.DEPLOY_ID }}-${{ steps.current-time.outputs.time }}.zip
+          aws-region: ${{ env.AWS_REGION }}
+          file-path: ./${{ env.EBS_APP_NAME }}-${{ env.DEPLOY_ID }}-${{ steps.current-time.outputs.time }}.zip
+          version-label: ${{ env.EBS_APP_NAME }}-${{ env.DEPLOY_ID }}-${{ steps.current-time.outputs.time }}
