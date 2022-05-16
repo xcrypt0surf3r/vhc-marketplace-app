@@ -88,19 +88,28 @@ const SalesHistoryPanel = ({ data }: { data: SalesHistory[] }) => {
                 alt=''
                 className='rounded-full skeleton h-8 w-8'
               />
-              <span>{truncate(his.name, 6)}</span>
+              <>
+                <span className='hidden lg:inline'>
+                  {truncate(his.name, 6)}
+                </span>
+                <span className='inline lg:hidden text-sm lg:text-base'>
+                  {truncate(his.name, 4)}
+                </span>
+              </>
             </td>
             <td>
               <div className='flex gap-2 items-center'>
                 <img
                   src={currencyIcon}
                   alt={'currency icon'}
-                  className='w-7 h-7 rounded-full'
+                  className='w-5 h-5 lg:w-7 lg:h-7 rounded-full'
                 />
-                <span>{his.price}</span>
+                <span className='font-semibold text-sm lg:text-base'>
+                  {his.price}
+                </span>
               </div>
             </td>
-            <td className='pr-4'>{his.datePurchased}</td>
+            <td className='pr-4 text-sm lg:text-base'>{his.datePurchased}</td>
           </tr>
         ))}
       </tbody>

@@ -91,6 +91,7 @@ export const CheckBox = ({
   label,
   labelLeft,
   labelStyle,
+  className,
   onChange
 }: FormInputProps) => {
   return (
@@ -108,7 +109,7 @@ export const CheckBox = ({
           value={label}
           type='checkbox'
           onChange={onChange}
-          className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded'
+          className={`focus:ring-indigo-500 lg:h-4 lg:w-4 text-indigo-600 border-gray-300 rounded ${className}`}
         />
       </div>
       <TextLabel name={name} className={`${labelStyle}`}>

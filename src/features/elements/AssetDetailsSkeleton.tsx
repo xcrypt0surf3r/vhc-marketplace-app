@@ -2,7 +2,7 @@ const AssetDetailsSkeleton = () => {
   return (
     <div className='mx-auto pt-10 pb-24 lg:pt-0 md:px-6 lg:px-0'>
       <div className='grid lg:grid-cols-2 gap-10 mb-10'>
-        <div className='object-center object-cover rounded-3xl w-full h-full min-h-[600px] skeleton' />
+        <div className='object-center object-cover rounded-3xl w-full h-full min-h-[400px] skeleton' />
         <div className='group w-full rounded-3xl overflow-hidden sm:relative sm:aspect-none h-full border p-4'>
           <div className='pt-6 px-6 items-end'>
             <div className='mb-3'>

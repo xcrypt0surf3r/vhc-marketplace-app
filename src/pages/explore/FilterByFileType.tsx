@@ -40,6 +40,7 @@ const FilterByFileType = () => {
                 {filterOptions.map((option, index) => (
                   <CheckBox
                     name='fileType'
+                    className='h-5 w-5'
                     key={index}
                     label={option}
                     labelStyle='font-semibold'

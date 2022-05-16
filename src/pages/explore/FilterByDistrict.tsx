@@ -51,6 +51,7 @@ const FilterByDistrict = () => {
                 {filterOptions.map((option, index) => (
                   <CheckBox
                     name='district'
+                    className='h-5 w-5'
                     key={index}
                     label={option}
                     labelStyle='font-semibold'
