@@ -9,4 +9,5 @@ export type BidInput = {
   readonly owner: string
   readonly order: string
   readonly amount: PriceInput
+  readonly feeAmount: PriceInput
 }

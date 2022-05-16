@@ -1,4 +1,4 @@
-import { Currency } from '../enums'
+import { PriceInput } from '.'
 
 /*
  * This input type is not interface, because interfaces
@@ -10,7 +10,7 @@ export type CreateBuyNowInput = {
   readonly assetAddress: string
   readonly endDate: string
   readonly startDate: string
-  readonly currency: Currency
-  readonly value: number
+  readonly price: PriceInput
+  readonly feeAmount: PriceInput
   readonly order: string
 }

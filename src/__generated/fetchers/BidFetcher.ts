@@ -149,6 +149,29 @@ export interface BidFetcher<T extends object, TVariables extends object>
     TVariables & XVariables & XDirectiveVariables
   >
 
+  feeAmount<X extends object, XVariables extends object>(
+    child: ObjectFetcher<'Price', X, XVariables>
+  ): BidFetcher<T & { readonly feeAmount: X }, TVariables & XVariables>
+
+  feeAmount<
+    X extends object,
+    XVariables extends object,
+    XAlias extends string = 'feeAmount',
+    XDirectives extends { readonly [key: string]: DirectiveArgs } = {},
+    XDirectiveVariables extends object = {}
+  >(
+    child: ObjectFetcher<'Price', X, XVariables>,
+    optionsConfigurer: (
+      options: FieldOptions<'feeAmount', {}, {}>
+    ) => FieldOptions<XAlias, XDirectives, XDirectiveVariables>
+  ): BidFetcher<
+    T &
+      (XDirectives extends { readonly include: any } | { readonly skip: any }
+        ? { readonly [key in XAlias]?: X }
+        : { readonly [key in XAlias]: X }),
+    TVariables & XVariables & XDirectiveVariables
+  >
+
   readonly status: BidFetcher<T & { readonly status: BidStatus }, TVariables>
 
   'status+'<
@@ -249,6 +272,11 @@ export const bid$: BidFetcher<{}, {}> = createFetcher(
       {
         category: 'SCALAR',
         name: 'amount',
+        targetTypeName: 'Price'
+      },
+      {
+        category: 'SCALAR',
+        name: 'feeAmount',
         targetTypeName: 'Price'
       },
       'status',

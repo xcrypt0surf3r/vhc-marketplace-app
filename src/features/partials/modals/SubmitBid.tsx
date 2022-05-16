@@ -107,7 +107,7 @@ const SubmitBid = () => {
       if (listing?.auction) {
         setIsConfirming(true)
 
-        const order = await createBidOrder(
+        const { order, feeAmount } = await createBidOrder(
           provider,
           account,
           listing.assetAddress,
@@ -121,8 +121,12 @@ const SubmitBid = () => {
           owner: account,
           listingId: listing.id,
           amount: {
-            currency: 'VHC',
+            currency,
             value: +bid.value
+          },
+          feeAmount: {
+            currency,
+            value: +feeAmount
           }
         })
         setIsConfirming(false)
